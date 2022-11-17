@@ -1,0 +1,7 @@
+{
+    "info":"This is the example config file for the bot. All the <name>_info are not used and just comments. The bot will use the info in the <name> field of the config.json. Feel free to remove all the _info values.",
+    "ticket_users": [111111111111111111, 222222222222222222],
+    "info_ticket_users": "User IDs. The bot will create threads under channels created by those users.",
+    "staff": [111111111111111111, 222222222222222222],
+    "info_staff": "Role IDs. They will be added to the threads when they are created."
+}
