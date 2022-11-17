@@ -1,2 +1,2 @@
-# TicketNotes
- A Discord bot to make private threads for staff discussion on Tickets!
+# Tickets Plus
+ A Discord bot that adds extensions to the
