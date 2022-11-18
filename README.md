@@ -1,9 +1,21 @@
 # Tickets Plus
- A Discord bot that adds extensions to the Tickets (https://github.com/TicketsBot) discord bot.
- Works as a supplimentary, separate bot.
- When a feature is added to the main bot it will be removed from here.
+A Discord bot that adds extensions to the Tickets (https://github.com/TicketsBot) discord bot.
+Works as a supplimentary, separate bot.
+When a feature is added to the main bot it will be removed from here.
  
-# Feature 1 - Staff Notes:
- Private threads are free!
+## Feature 1 - Staff Notes:
+Private threads are free!
 
- This creates a private thread in a channel and adds the staff roles to it.
+This creates a private thread in a channel and adds the staff roles to it.
+
+## Setup
+ Here are the steps to host your copy of this bot:
+1. Clone or Download the repo to your machine of choice.
+2. Create the bot on [Discord Developers](https://discord.com/developers/applications).
+    1. Create application however you want.
+    2. Create a bot. No Privilaged intents are necessary. Probably disable 'Public Bot'.
+    3. Input your bot token to secret.json. (Refer to example_secret.json)
+    4. Use `https://discord.com/api/oauth2/authorize?client_id=<APP_ID>&permissions=397284478096&scope=bot%20applications.commands` to invite the bot. replace `<APP_ID>` with the numbers from your apps `https://discord.com/developers/applications/<APP_ID>/`.
+3. Fill out config.json based on the information about your server. (Refer to example_config.json)
+4. Start your bot!
+    1. Probably add a background service that will restart the bot on boot. I use systemctl for my bots.
