@@ -151,6 +151,9 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
+# Vscode
+.vscode/
+
 # Files that should not be synced. They have corresponding example_* files in the repo.
 config.json*
 secret.json*
