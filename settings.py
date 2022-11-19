@@ -64,7 +64,7 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
         """This command is used to change the open message."""
         self._config.open_msg = message
         await ctx.response.send_message(f"Open message is now {message}", ephemeral=True)
-    
+
     @app_commands.command(name="staffteam", description="Change the staff team's name.")
     @commands.has_permissions(administrator=True)
     @commands.guild_only()
