@@ -3,6 +3,7 @@ Declare variables used in bot.
 This file is a based on the variables.py file from my other bot.
 '''
 import json
+from string import Template
 from typing import List
 from logging.handlers import RotatingFileHandler
 
@@ -93,4 +94,25 @@ class Config: #Note: Currently config is global, but I plan to make it per serve
         '''Sets the list of users who are staff'''
         self._config['staff'] = [role.id for role in value]
         self.update()
-        
+
+    @property
+    def staff_ping(self) -> bool:
+        '''Returns if staff should be pinged on ticket creation'''
+        return self._config['staff_ping']
+
+    @staff_ping.setter
+    def staff_ping(self, value: bool) -> None:
+        '''Sets if staff should be pinged on ticket creation'''
+        self._config['staff_ping'] = value
+        self.update()
+
+    @property
+    def open_msg(self) -> Template:
+        '''Returns the message sent when a ticket is opened'''
+        return Template(self._config['open_msg'])
+
+    @open_msg.setter
+    def open_msg(self, value: str) -> None:
+        '''Sets the message sent when a ticket is opened'''
+        self._config['open_msg'] = value
+        self.update()
