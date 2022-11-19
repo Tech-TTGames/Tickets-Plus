@@ -4,14 +4,14 @@ This file is a based on the variables.py file from my other bot.
 '''
 import json
 from string import Template
-from typing import List
+from typing import List, Union, Literal
 from logging.handlers import RotatingFileHandler
 
 import discord
 from discord.ext import commands
 
 #v[major].[minor].[release].[build]
-VERSION = "v0.0.2.0"
+VERSION = "v0.0.2.1-DEV"
 
 
 intents = discord.Intents.default()
@@ -39,7 +39,7 @@ class Secret:
 
 class Config: #Note: Currently config is global, but I plan to make it per server.
     '''Class for convinient config access'''
-    def __init__(self,bot: commands.Bot) -> None:
+    def __init__(self,bot: Union[commands.Bot,Literal["offline"]]) -> None:
         self._file = 'config.json'
         with open(self._file,encoding="utf-8",mode='r') as config_f:
             self._config: dict = json.load(config_f)
@@ -57,6 +57,8 @@ class Config: #Note: Currently config is global, but I plan to make it per serve
     @property
     def guild(self) -> discord.Guild:
         '''Returns the guild object'''
+        if isinstance(self._bot,str):
+            raise ValueError("Use online config.")
         gld = self._bot.get_guild(self._config['guild_id'])
         if isinstance(gld, discord.Guild):
             return gld
@@ -131,4 +133,15 @@ class Config: #Note: Currently config is global, but I plan to make it per serve
     def staff_team(self, value: str) -> None:
         '''Sets the staff team name'''
         self._config['staff_team'] = value
+        self.update()
+
+    @property
+    def msg_discovery(self) -> bool:
+        '''Returns if messages should be discovered'''
+        return self._config.get('msg_discovery', True)
+
+    @msg_discovery.setter
+    def msg_discovery(self, value: bool) -> None:
+        '''Sets if messages should be discovered'''
+        self._config['msg_discovery'] = value
         self.update()

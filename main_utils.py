@@ -2,12 +2,15 @@
 The main cog. Contains 'mainstream' utilities.
 '''
 import logging
+import re
 
 import discord
 from discord import app_commands
 from discord.ext import commands
 
 from variables import VERSION, Config
+
+CONFG = Config('offline')
 
 class Utility(commands.Cog, name="Main Utilities"):
     '''Main bot utilities'''
@@ -34,6 +37,25 @@ class Utility(commands.Cog, name="Main Utilities"):
                     if self._config.staff_ping:
                         inv = await nts_thrd.send(" ".join([role.mention for role in cnfg.staff]))
                         await inv.delete()
+
+    @commands.Cog.listener(name="on_message")
+    async def on_message(self, message: discord.Message) -> None:
+        '''Minor Extension: Message Discovery
+        Displays the message linked to as an embed.'''
+        if message.author.bot:
+            return
+        if self._bt.intents.message_content:
+            alpha = re.search(r"https:\/\/(?:canary)?.discord.com\/channels/(?P<srv>\d{18})/(?P<cha>\d{18})/(?P<msg>\d*)",message.content) # pylint: disable=line-too-long
+            if alpha:
+                try:
+                    chan = self._bt.get_guild(int(alpha.group('srv'))).get_channel_or_thread(int(alpha.group('cha'))) #type: ignore pylint: disable=line-too-long
+                    got_msg = await chan.fetch_message(int(alpha.groupdict()["msg"])) # type: ignore # pylint: disable=line-too-long
+                except: # pylint: disable=bare-except
+                    return
+                data = discord.Embed(description=got_msg.content, color=0x0d0eb4)
+                data.set_author(name=got_msg.author.name, icon_url=got_msg.author.avatar.url) # type: ignore # pylint: disable=line-too-long
+                data.set_footer(text=f"Sent in {got_msg.channel.name} at {got_msg.created_at}")
+                await message.reply(embed=data)
 
     @app_commands.command(name="ping",
                          description="The classic ping command. Checks the bot's latency.")
@@ -71,6 +93,6 @@ class Utility(commands.Cog, name="Main Utilities"):
 
 async def setup(bot: commands.Bot):
     '''Setup function for the cog.'''
-    global CONFG # pylint: disable=global-variable-undefined
+    global CONFG # pylint: disable=global-statement
     CONFG = Config(bot)
     await bot.add_cog(Utility(bot, Config(bot)))

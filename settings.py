@@ -73,6 +73,14 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
         self._config.staff_team = name
         await ctx.response.send_message(f"Staff team is now {name}", ephemeral=True)
 
+    @app_commands.command(name="togglemsgdiscovery", description="Toggle message link discovery.")
+    @commands.has_permissions(administrator=True)
+    @commands.guild_only()
+    async def toggle_msg_discovery(self, ctx: discord.Interaction):
+        """This command is used to toggle message link discovery."""
+        self._config.msg_discovery = not self._config.msg_discovery
+        await ctx.response.send_message(f"Message link discovery is now {self._config.msg_discovery}", ephemeral=True)
+
 async def setup(bot: commands.Bot):
     '''Adds the cog to the bot.'''
     await bot.add_cog(Settings(bot, Config(bot)))
