@@ -8,11 +8,8 @@ from discord import app_commands
 from discord.ext import commands
 
 from variables import VERSION, Config
-confg = Config('static')
-# ^^^ This is a workaround for the fact that I can't access the bot object in the cog.
 
-
-class Utility(commands.Cog, name="Main Bot Utilites"):
+class Utility(commands.Cog, name="Main Utilities"):
     '''Main bot utilities'''
     def __init__(self, bot: commands.Bot, config: Config):
         self._config = config
@@ -56,7 +53,7 @@ class Utility(commands.Cog, name="Main Bot Utilites"):
                   "Check it out and report issues at https://github.com/Tech-TTGames/Tickets-Plus")
 
     @app_commands.command(name="respond", description="Respond to a ticket as the bot.")
-    @commands.has_any_role(*confg.staff_ids)
+    @commands.has_any_role(*CONFG.staff_ids)
     async def respond(self, ctx: discord.Interaction, message: str):
         """EXTENSION 2: Anonymised staff responses.
         This command is used to respond to a ticket as the bot."""
@@ -71,3 +68,9 @@ class Utility(commands.Cog, name="Main Bot Utilites"):
             await ctx.response.send_message("Anonymously responding to ticket with message:\n"
                   + message, ephemeral=True)
             await ctx.channel.send("**Staff Team:** " + message)
+
+async def setup(bot: commands.Bot):
+    '''Setup function for the cog.'''
+    global CONFG # pylint: disable=global-variable-undefined
+    CONFG = Config(bot)
+    await bot.add_cog(Utility(bot, Config(bot)))
