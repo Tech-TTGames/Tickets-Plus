@@ -42,7 +42,7 @@ class Config: #Note: Currently config is global, but I plan to make it per serve
     def __init__(self,bot: commands.Bot) -> None:
         self._file = 'config.json'
         with open(self._file,encoding="utf-8",mode='r') as config_f:
-            self._config = json.load(config_f)
+            self._config: dict = json.load(config_f)
         self._bt = bot
 
     def __dict__(self) -> dict:
@@ -71,7 +71,7 @@ class Config: #Note: Currently config is global, but I plan to make it per serve
     @property
     def ticket_users(self) -> List[int]:
         '''List of users who are tracked for ticket creation'''
-        return self._config['ticket_users']
+        return self._config.get('ticket_users', [508391840525975553])
 
     @ticket_users.setter
     def ticket_users(self, value: List[int]) -> None:
@@ -83,7 +83,7 @@ class Config: #Note: Currently config is global, but I plan to make it per serve
     def staff(self) -> List[discord.Role]:
         '''List of users who are staff'''
         staff = []
-        for role in self._config['staff']:
+        for role in self._config.get('staff',[]):
             stf_role = self.guild.get_role(role)
             if isinstance(stf_role, discord.Role):
                 staff.append(stf_role)
@@ -98,7 +98,7 @@ class Config: #Note: Currently config is global, but I plan to make it per serve
     @property
     def staff_ping(self) -> bool:
         '''Returns if staff should be pinged on ticket creation'''
-        return self._config['staff_ping']
+        return self._config.get('staff_ping', True)
 
     @staff_ping.setter
     def staff_ping(self, value: bool) -> None:
@@ -109,7 +109,7 @@ class Config: #Note: Currently config is global, but I plan to make it per serve
     @property
     def open_msg(self) -> Template:
         '''Returns the message sent when a ticket is opened'''
-        return Template(self._config['open_msg'])
+        return Template(self._config.get('open_msg', "Staff notes for Ticket $channel."))
 
     @open_msg.setter
     def open_msg(self, value: str) -> None:
