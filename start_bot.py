@@ -8,6 +8,9 @@ from variables import Config, VERSION, intents, handler, Secret
 
 bot = commands.Bot(command_prefix='~', intents=intents)
 cnfg = Config(bot)
+if cnfg.msg_discovery:
+    intents.message_content = True #pylint: disable=assigning-non-slot
+    intents.messages = True #pylint: disable=assigning-non-slot
 scrt = Secret()
 
 @bot.event
