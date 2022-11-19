@@ -5,6 +5,7 @@ import discord
 from discord.ext import commands
 
 from main_utils import Utility
+from settings import Settings
 from variables import Config, VERSION, intents, handler, Secret
 
 bot = commands.Bot(command_prefix='~', intents=intents)
@@ -17,6 +18,7 @@ async def on_ready():
     logging.info("Connected to Discord as %s", bot.user)
     logging.info("Bot version: %s", VERSION)
     logging.info("Discord.py version: %s", discord.__version__)
+    await bot.add_cog(Settings(bot, cnfg))
     await bot.add_cog(Utility(bot, cnfg))
     await bot.tree.sync()
     logging.info("Finished loading cogs.")
