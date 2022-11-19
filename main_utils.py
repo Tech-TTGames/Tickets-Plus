@@ -45,7 +45,7 @@ class Utility(commands.Cog, name="Main Utilities"):
         if message.author.bot:
             return
         if self._bt.intents.message_content:
-            alpha = re.search(r"https:\/\/(?:canary)?.discord.com\/channels/(?P<srv>\d{18})/(?P<cha>\d{18})/(?P<msg>\d*)",message.content) # pylint: disable=line-too-long
+            alpha = re.search(r"https:\/\/(?:canary\.)?discord\.com\/channels\/(?P<srv>\d{18})\/(?P<cha>\d{18})\/(?P<msg>\d*)",message.content) # pylint: disable=line-too-long
             if alpha:
                 try:
                     chan = self._bt.get_guild(int(alpha.group('srv'))).get_channel_or_thread(int(alpha.group('cha'))) #type: ignore pylint: disable=line-too-long
