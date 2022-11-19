@@ -24,6 +24,7 @@ class Utility(commands.Cog, name="Main Bot Utilites"):
         '''EXTENSION 1: Staff notes for tickets!'''
         if isinstance(channel, discord.channel.TextChannel):
             gld = channel.guild
+            cnfg = self._config
             async for entry in gld.audit_logs(limit=3,
                                              action=discord.AuditLogAction.channel_create):
                 if entry.user is None:
@@ -31,10 +32,11 @@ class Utility(commands.Cog, name="Main Bot Utilites"):
                 if entry.target == channel and entry.user.id in self._watched_users:
                     nts_channel: discord.Thread = await channel.create_thread(name="Staff Notes",
                      reason=f"Staff notes for Ticket {channel.name}",auto_archive_duration=10080)
-                    await nts_channel.send(f"Staff notes for Ticket {channel.mention}")
-                    for staff in self._staff:
-                        bop_msg = await nts_channel.send(staff.mention)
-                        await bop_msg.delete()
+                    await nts_thrd.send(cnfg.open_msg.safe_substitute(channel=channel.mention))
+                    logging.info("Created thread %s for %s", nts_thrd.name, channel.name)
+                    if self._config.staff_ping:
+                        inv = await nts_thrd.send(" ".join([role.mention for role in cnfg.staff]))
+                        await inv.delete()
 
     @app_commands.command(name="ping",
                          description="The classic ping command. Checks the bot's latency.")
