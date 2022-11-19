@@ -43,7 +43,7 @@ class Config: #Note: Currently config is global, but I plan to make it per serve
         self._file = 'config.json'
         with open(self._file,encoding="utf-8",mode='r') as config_f:
             self._config: dict = json.load(config_f)
-        self._bt = bot
+        self._bot = bot
 
     def __dict__(self) -> dict:
         return self._config
@@ -57,7 +57,7 @@ class Config: #Note: Currently config is global, but I plan to make it per serve
     @property
     def guild(self) -> discord.Guild:
         '''Returns the guild object'''
-        gld = self._bt.get_guild(self._config['guild_id'])
+        gld = self._bot.get_guild(self._config['guild_id'])
         if isinstance(gld, discord.Guild):
             return gld
         raise ValueError("Guild Not Found")
@@ -88,6 +88,11 @@ class Config: #Note: Currently config is global, but I plan to make it per serve
             if isinstance(stf_role, discord.Role):
                 staff.append(stf_role)
         return staff
+
+    @property
+    def staff_ids(self) -> List[int]:
+        '''List of user ids who are staff'''
+        return self._config.get('staff',[])
 
     @staff.setter
     def staff(self, value: List[discord.Role]) -> None:
