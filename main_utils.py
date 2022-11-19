@@ -60,14 +60,14 @@ class Utility(commands.Cog, name="Main Utilities"):
         if isinstance(ctx.channel, discord.Thread):
             if isinstance(ctx.channel.parent, discord.TextChannel):
                 await ctx.response.send_message("Responding to ticket with message:\n" + message)
-                await ctx.channel.parent.send("**Staff Team:** " + message)
+                await ctx.channel.parent.send(f"**{self._config.staff_team}:** " + message)
             else:
                 await ctx.response.send_message("Cannot respond to forum channel.", ephemeral=True)
             return
         if isinstance(ctx.channel, discord.TextChannel):
             await ctx.response.send_message("Anonymously responding to ticket with message:\n"
                   + message, ephemeral=True)
-            await ctx.channel.send("**Staff Team:** " + message)
+            await ctx.channel.send(f"**{self._config.staff_team}:** " + message)
 
 async def setup(bot: commands.Bot):
     '''Setup function for the cog.'''

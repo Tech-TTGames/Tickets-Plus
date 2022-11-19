@@ -9,5 +9,7 @@
     "staff_ping": true,
     "info_staff_ping": "If true, the bot will ping the staff role when a thread is created.",
     "open_msg": "Staff notes for Ticket $channel.",
-    "info_open_msg": "Message to be sent when a thread is created. Leave blank for no message insert $channel for the channel mention."
+    "info_open_msg": "Message to be sent when a thread is created. Leave blank for no message insert $channel for the channel mention.",
+    "staff_team": "Staff Team",
+    "info_staff_team": "Name of the staff team. Used in responses"
 }

@@ -64,6 +64,14 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
         """This command is used to change the open message."""
         self._config.open_msg = message
         await ctx.response.send_message(f"Open message is now {message}", ephemeral=True)
+    
+    @app_commands.command(name="staffteam", description="Change the staff team's name.")
+    @commands.has_permissions(administrator=True)
+    @commands.guild_only()
+    async def change_staffteam(self, ctx: discord.Interaction, name: str):
+        """This command is used to change the staff team's name."""
+        self._config.staff_team = name
+        await ctx.response.send_message(f"Staff team is now {name}", ephemeral=True)
 
 async def setup(bot: commands.Bot):
     '''Adds the cog to the bot.'''

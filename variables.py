@@ -11,7 +11,7 @@ import discord
 from discord.ext import commands
 
 #v[major].[minor].[release].[build]
-VERSION = "v0.0.1.0"
+VERSION = "v0.0.2.0-dev"
 
 
 intents = discord.Intents.default()
@@ -120,4 +120,15 @@ class Config: #Note: Currently config is global, but I plan to make it per serve
     def open_msg(self, value: str) -> None:
         '''Sets the message sent when a ticket is opened'''
         self._config['open_msg'] = value
+        self.update()
+
+    @property
+    def staff_team(self) -> str:
+        '''Returns the staff team name'''
+        return self._config.get('staff_team', "Staff Team")
+
+    @staff_team.setter
+    def staff_team(self, value: str) -> None:
+        '''Sets the staff team name'''
+        self._config['staff_team'] = value
         self.update()
