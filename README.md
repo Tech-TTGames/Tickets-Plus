@@ -7,6 +7,13 @@ When a feature is added to the main bot it will be removed from here.
 Private threads are free!
 
 This creates a private thread in a channel and adds the staff roles to it.
+You can now disable pings, just use /settings staffpings to toggle.
+The 'open message' is adjustable via /settings openmsg. $channels is replaced with the channel mention.
+
+## Feature 2 - Staff Response:
+You can now respond as the staff team using /respond.
+The command is limited to users with roles added to staff.
+The 'name' of the team is adjustable via /settings staffname.
 
 ## Setup
  Here are the steps to host your copy of this bot:

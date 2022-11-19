@@ -9,14 +9,11 @@ from discord.ext import commands
 
 from variables import VERSION, Config
 
-
-class Utility(commands.Cog, name="Main Bot Utilites"):
+class Utility(commands.Cog, name="Main Utilities"):
     '''Main bot utilities'''
     def __init__(self, bot: commands.Bot, config: Config):
         self._config = config
         self._bt = bot
-        self._watched_users = config.ticket_users
-        self._staff = config.staff
         logging.info("Loaded %s", self.__class__.__name__)
 
     @commands.Cog.listener(name="on_guild_channel_create")
@@ -24,17 +21,19 @@ class Utility(commands.Cog, name="Main Bot Utilites"):
         '''EXTENSION 1: Staff notes for tickets!'''
         if isinstance(channel, discord.channel.TextChannel):
             gld = channel.guild
+            cnfg = self._config
             async for entry in gld.audit_logs(limit=3,
                                              action=discord.AuditLogAction.channel_create):
                 if entry.user is None:
                     continue
-                if entry.target == channel and entry.user.id in self._watched_users:
-                    nts_channel: discord.Thread = await channel.create_thread(name="Staff Notes",
+                if entry.target == channel and entry.user.id in cnfg.ticket_users:
+                    nts_thrd: discord.Thread = await channel.create_thread(name="Staff Notes",
                      reason=f"Staff notes for Ticket {channel.name}",auto_archive_duration=10080)
-                    await nts_channel.send(f"Staff notes for Ticket {channel.mention}")
-                    for staff in self._staff:
-                        bop_msg = await nts_channel.send(staff.mention)
-                        await bop_msg.delete()
+                    await nts_thrd.send(cnfg.open_msg.safe_substitute(channel=channel.mention))
+                    logging.info("Created thread %s for %s", nts_thrd.name, channel.name)
+                    if self._config.staff_ping:
+                        inv = await nts_thrd.send(" ".join([role.mention for role in cnfg.staff]))
+                        await inv.delete()
 
     @app_commands.command(name="ping",
                          description="The classic ping command. Checks the bot's latency.")
@@ -53,34 +52,25 @@ class Utility(commands.Cog, name="Main Bot Utilites"):
                   "This bot is open source and experimental!" + \
                   "Check it out and report issues at https://github.com/Tech-TTGames/Tickets-Plus")
 
-    setting_commands = app_commands.Group(name="settings", description="Settings for the bot.")
+    @app_commands.command(name="respond", description="Respond to a ticket as the bot.")
+    @commands.has_any_role(*CONFG.staff_ids)
+    async def respond(self, ctx: discord.Interaction, message: str):
+        """EXTENSION 2: Anonymised staff responses.
+        This command is used to respond to a ticket as the bot."""
+        if isinstance(ctx.channel, discord.Thread):
+            if isinstance(ctx.channel.parent, discord.TextChannel):
+                await ctx.response.send_message("Responding to ticket with message:\n" + message)
+                await ctx.channel.parent.send(f"**{self._config.staff_team}:** " + message)
+            else:
+                await ctx.response.send_message("Cannot respond to forum channel.", ephemeral=True)
+            return
+        if isinstance(ctx.channel, discord.TextChannel):
+            await ctx.response.send_message("Anonymously responding to ticket with message:\n"
+                  + message, ephemeral=True)
+            await ctx.channel.send(f"**{self._config.staff_team}:** " + message)
 
-    @setting_commands.command(name="tracked", description="Change the tracked users.")
-    @commands.has_permissions(administrator=True)
-    @commands.guild_only()
-    async def change_tracked(self, ctx: discord.Interaction, user: discord.User):
-        """This command is used to change the tracked users.
-        If a user is already tracked, they will be untracked."""
-        rspns = ctx.response
-        if user.id in self._watched_users:
-            self._watched_users.remove(user.id)
-            await rspns.send_message(f"Untracked {user.mention}", ephemeral=True)
-        else:
-            self._watched_users.append(user.id)
-            await rspns.send_message(f"Tracked {user.mention}", ephemeral=True)
-        self._config.ticket_users = self._watched_users
-
-    @setting_commands.command(name="staff", description="Change the staff roles.")
-    @commands.has_permissions(administrator=True)
-    @commands.guild_only()
-    async def change_staff(self, ctx: discord.Interaction, role: discord.Role):
-        """This command is used to change the staff roles, Staff is added to the notes threads.
-        If a role is already here, it will be removed."""
-        rspns = ctx.response
-        if role.id in self._staff:
-            self._staff.remove(role)
-            await rspns.send_message(f"Removed {role.mention} from staff roles.", ephemeral=True)
-        else:
-            self._staff.append(role)
-            await rspns.send_message(f"Added {role.mention} to staff roles.", ephemeral=True)
-        self._config.staff = self._staff
+async def setup(bot: commands.Bot):
+    '''Setup function for the cog.'''
+    global CONFG # pylint: disable=global-variable-undefined
+    CONFG = Config(bot)
+    await bot.add_cog(Utility(bot, Config(bot)))

@@ -3,6 +3,7 @@ Declare variables used in bot.
 This file is a based on the variables.py file from my other bot.
 '''
 import json
+from string import Template
 from typing import List
 from logging.handlers import RotatingFileHandler
 
@@ -10,7 +11,7 @@ import discord
 from discord.ext import commands
 
 #v[major].[minor].[release].[build]
-VERSION = "v0.0.1.0"
+VERSION = "v0.0.2.0"
 
 
 intents = discord.Intents.default()
@@ -41,8 +42,8 @@ class Config: #Note: Currently config is global, but I plan to make it per serve
     def __init__(self,bot: commands.Bot) -> None:
         self._file = 'config.json'
         with open(self._file,encoding="utf-8",mode='r') as config_f:
-            self._config = json.load(config_f)
-        self._bt = bot
+            self._config: dict = json.load(config_f)
+        self._bot = bot
 
     def __dict__(self) -> dict:
         return self._config
@@ -56,7 +57,7 @@ class Config: #Note: Currently config is global, but I plan to make it per serve
     @property
     def guild(self) -> discord.Guild:
         '''Returns the guild object'''
-        gld = self._bt.get_guild(self._config['guild_id'])
+        gld = self._bot.get_guild(self._config['guild_id'])
         if isinstance(gld, discord.Guild):
             return gld
         raise ValueError("Guild Not Found")
@@ -70,7 +71,7 @@ class Config: #Note: Currently config is global, but I plan to make it per serve
     @property
     def ticket_users(self) -> List[int]:
         '''List of users who are tracked for ticket creation'''
-        return self._config['ticket_users']
+        return self._config.get('ticket_users', [508391840525975553])
 
     @ticket_users.setter
     def ticket_users(self, value: List[int]) -> None:
@@ -82,15 +83,52 @@ class Config: #Note: Currently config is global, but I plan to make it per serve
     def staff(self) -> List[discord.Role]:
         '''List of users who are staff'''
         staff = []
-        for role in self._config['staff']:
+        for role in self._config.get('staff',[]):
             stf_role = self.guild.get_role(role)
             if isinstance(stf_role, discord.Role):
                 staff.append(stf_role)
         return staff
+
+    @property
+    def staff_ids(self) -> List[int]:
+        '''List of user ids who are staff'''
+        return self._config.get('staff',[])
 
     @staff.setter
     def staff(self, value: List[discord.Role]) -> None:
         '''Sets the list of users who are staff'''
         self._config['staff'] = [role.id for role in value]
         self.update()
-        
+
+    @property
+    def staff_ping(self) -> bool:
+        '''Returns if staff should be pinged on ticket creation'''
+        return self._config.get('staff_ping', True)
+
+    @staff_ping.setter
+    def staff_ping(self, value: bool) -> None:
+        '''Sets if staff should be pinged on ticket creation'''
+        self._config['staff_ping'] = value
+        self.update()
+
+    @property
+    def open_msg(self) -> Template:
+        '''Returns the message sent when a ticket is opened'''
+        return Template(self._config.get('open_msg', "Staff notes for Ticket $channel."))
+
+    @open_msg.setter
+    def open_msg(self, value: str) -> None:
+        '''Sets the message sent when a ticket is opened'''
+        self._config['open_msg'] = value
+        self.update()
+
+    @property
+    def staff_team(self) -> str:
+        '''Returns the staff team name'''
+        return self._config.get('staff_team', "Staff Team")
+
+    @staff_team.setter
+    def staff_team(self, value: str) -> None:
+        '''Sets the staff team name'''
+        self._config['staff_team'] = value
+        self.update()
