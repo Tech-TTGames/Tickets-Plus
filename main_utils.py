@@ -55,6 +55,7 @@ class Utility(commands.Cog, name="Main Utilities"):
                 data = discord.Embed(description=got_msg.content, color=0x0d0eb4)
                 data.set_author(name=got_msg.author.name, icon_url=got_msg.author.avatar.url) # type: ignore # pylint: disable=line-too-long
                 data.set_footer(text=f"Sent in {got_msg.channel.name} at {got_msg.created_at}")
+                data.set_image(url=got_msg.attachments[0].url if got_msg.attachments else None)
                 await message.reply(embed=data)
 
     @app_commands.command(name="ping",
