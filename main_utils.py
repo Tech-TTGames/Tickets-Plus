@@ -1,6 +1,4 @@
-'''
-The main cog. Contains 'mainstream' utilities.
-'''
+'''The main cog. Contains 'mainstream' utilities.'''
 import logging
 import re
 
