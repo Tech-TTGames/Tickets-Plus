@@ -53,7 +53,7 @@ class Utility(commands.Cog, name="Main Utilities"):
                         overwrite.use_application_commands = True
                         for role in self._config.community_roles:
                             try:
-                                await channel.set_permissions(gld.get_role(role), overwrite=overwrite) #type: ignore
+                                await channel.set_permissions(role, overwrite=overwrite) #type: ignore
                             except TypeError:
                                 pass
 
