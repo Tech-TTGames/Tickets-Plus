@@ -18,6 +18,11 @@ You can now respond as the staff team using /respond.
 The command is limited to users with roles added to staff.
 The 'name' of the team is adjustable via /settings staffname.
 
+## Feature 3 - Strip Buttons
+
+Due to the main Tickets bot not facilitating permissions check withthe 'Close' and 'Close with Reason' buttons this bot will strip the buttons enabling the use of / command perms to limit access.
+Toggle with /setting stripbuttons.
+
 ### Minor Feature 1 - Message Discovery
 
 The bot will display previews of discord message links.
