@@ -12,7 +12,7 @@ import discord
 from discord.ext import commands
 
 #v[major].[minor].[release].[build]
-VERSION = "v0.0.2.2"
+VERSION = "v0.0.2.2a"
 
 
 intents = discord.Intents.default()
