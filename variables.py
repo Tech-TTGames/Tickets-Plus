@@ -3,6 +3,7 @@ Declare variables used in bot.
 This file is a based on the variables.py file from my other bot.
 '''
 import json
+import os
 from string import Template
 from typing import List, Union, Literal
 from logging.handlers import RotatingFileHandler
@@ -24,7 +25,8 @@ handler = RotatingFileHandler(filename='discord.log',
 class Secret:
     '''Class for secret.json management'''
     def __init__(self) -> None:
-        self._file = 'secret.json'
+        path = os.path.dirname(os.path.realpath(__file__))
+        self._file = os.path.join(parh,'secret.json')
         with open(self._file,encoding="utf-8",mode='r') as secret_f:
             self.secret = json.load(secret_f)
         self.token = self.secret['token']
@@ -40,7 +42,8 @@ class Secret:
 class Config: #Note: Currently config is global, but I plan to make it per server.
     '''Class for convinient config access'''
     def __init__(self,bot: Union[commands.Bot,Literal["offline"]]) -> None:
-        self._file = 'config.json'
+        path = os.path.dirname(os.path.realpath(__file__))
+        self._file = os.path.join(parh,'config.json')
         with open(self._file,encoding="utf-8",mode='r') as config_f:
             self._config: dict = json.load(config_f)
         self._bot = bot
