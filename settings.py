@@ -31,10 +31,10 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
             await rspns.send_message(f"Tracked {user.mention}", ephemeral=True)
         self._config.ticket_users = wtchd_users
 
-    @app_commands.command(name="communitysupport", description="Change the community support roles.")
+    @app_commands.command(name="staff", description="Change the staff roles.")
     @commands.check_any(commands.has_permissions(administrator=True), commands.is_owner())
     @commands.guild_only()
-    async def change_comsup(self, ctx: discord.Interaction, role: discord.Role):
+    async def change_staff(self, ctx: discord.Interaction, role: discord.Role):
         """This command is used to change the staff roles, Staff is added to the notes threads.
         If a role is already here, it will be removed."""
         rspns = ctx.response
