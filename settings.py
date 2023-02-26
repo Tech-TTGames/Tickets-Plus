@@ -100,10 +100,10 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
         comsup = self._config.community_roles
         if role.id in comsup:
             comsup.remove(role)
-            await rspns.send_message(f"Removed {role.mention} from staff roles.", ephemeral=True)
+            await rspns.send_message(f"Removed {role.mention} from community support roles.", ephemeral=True)
         else:
             comsup.append(role)
-            await rspns.send_message(f"Added {role.mention} to staff roles.", ephemeral=True)
+            await rspns.send_message(f"Added {role.mention} to community support roles.", ephemeral=True)
         self._config.community_roles = comsup
 
 async def setup(bot: commands.Bot):
