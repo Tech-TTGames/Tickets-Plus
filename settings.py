@@ -80,6 +80,14 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
         """This command is used to toggle message link discovery."""
         self._config.msg_discovery = not self._config.msg_discovery
         await ctx.response.send_message(f"Message link discovery is now {self._config.msg_discovery}", ephemeral=True)
+    
+    @app_commands.command(name="stripbuttons", description="Toggle button stripping.")
+    @commands.has_permissions(administrator=True)
+    @commands.guild_only()
+    async def toggle_button_stripping(self, ctx: discord.Interaction):
+        """This command is used to toggle button stripping."""
+        self._config.strip_buttons = not self._config.strip_buttons
+        await ctx.response.send_message(f"Button stripping is now {self._config.strip_buttons}", ephemeral=True)
 
 async def setup(bot: commands.Bot):
     '''Adds the cog to the bot.'''

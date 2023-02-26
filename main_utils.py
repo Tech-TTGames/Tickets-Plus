@@ -19,7 +19,7 @@ class Utility(commands.Cog, name="Main Utilities"):
 
     @commands.Cog.listener(name="on_guild_channel_create")
     async def on_channel_create(self, channel):
-        '''EXTENSION 1: Staff notes for tickets!'''
+        '''EXTENSION 1 + 3: Staff notes for tickets! and button stripping.'''
         if isinstance(channel, discord.channel.TextChannel):
             gld = channel.guild
             cnfg = self._config
@@ -35,6 +35,11 @@ class Utility(commands.Cog, name="Main Utilities"):
                     if self._config.staff_ping:
                         inv = await nts_thrd.send(" ".join([role.mention for role in cnfg.staff]))
                         await inv.delete()
+                    if self._config.strip_buttons:
+                        async for msg in channel.history(oldest_first=True, limit=2):
+                            if msg.author.id in cnfg.ticket_users:
+                                await channel.send(embeds=msg.embeds)
+                                await msg.delete()
 
     @commands.Cog.listener(name="on_message")
     async def on_message(self, message: discord.Message) -> None:
@@ -52,7 +57,7 @@ class Utility(commands.Cog, name="Main Utilities"):
                     return
                 data = discord.Embed(description=got_msg.content, color=0x0d0eb4)
                 data.set_author(name=got_msg.author.name, icon_url=got_msg.author.avatar.url) # type: ignore # pylint: disable=line-too-long
-                data.set_footer(text=f"Sent in {got_msg.channel.name} at {got_msg.created_at}")
+                data.set_footer(text=f"Sent in {got_msg.channel.name} at {got_msg.created_at}") # type: ignore # pylint: disable=line-too-long
                 data.set_image(url=got_msg.attachments[0].url if got_msg.attachments else None)
                 await message.reply(embed=data)
 

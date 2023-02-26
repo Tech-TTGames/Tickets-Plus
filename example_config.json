@@ -13,5 +13,7 @@
     "staff_team": "Staff Team",
     "info_staff_team": "Name of the staff team. Used in responses",
     "msg_discovery": true,
-    "info_msg_discovery": "If true, the bot will reply to all messages with discord message links, previewing the message. REQUIRES THE DISCORD MESSAGE CONTENT INTENT TO BE WORK"
+    "info_msg_discovery": "If true, the bot will reply to all messages with discord message links, previewing the message. REQUIRES THE DISCORD MESSAGE CONTENT INTENT TO BE WORK",
+    "strip_buttons": true,
+    "info_strip_buttons": "If true, the bot will strip buttons from tracked users opening messages. REQUIRES THE DISCORD MESSAGE CONTENT INTENT TO BE WORK"
 }

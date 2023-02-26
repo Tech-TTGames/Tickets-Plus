@@ -11,7 +11,7 @@ import discord
 from discord.ext import commands
 
 #v[major].[minor].[release].[build]
-VERSION = "v0.0.2.1"
+VERSION = "v0.0.2.2"
 
 
 intents = discord.Intents.default()
@@ -144,4 +144,15 @@ class Config: #Note: Currently config is global, but I plan to make it per serve
     def msg_discovery(self, value: bool) -> None:
         '''Sets if messages should be discovered'''
         self._config['msg_discovery'] = value
+        self.update()
+
+    @property
+    def strip_buttons(self) -> bool:
+        '''Returns if buttons should be stripped'''
+        return self._config.get('strip_buttons', True)
+
+    @strip_buttons.setter
+    def strip_buttons(self, value: bool) -> None:
+        '''Sets if buttons should be stripped'''
+        self._config['strip_buttons'] = value
         self.update()
