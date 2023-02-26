@@ -26,6 +26,11 @@ Toggle with /setting stripbuttons.
 ### Minor Feature 1 - Message Discovery
 
 The bot will display previews of discord message links.
+Requires message content intent.
+
+### Minor Feature 2 - Community Support
+
+Automatically adds roles to the channels created by the tracked users.
 
 ## Setup
 

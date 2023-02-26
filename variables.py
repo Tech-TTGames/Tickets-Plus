@@ -83,7 +83,7 @@ class Config: #Note: Currently config is global, but I plan to make it per serve
 
     @property
     def staff(self) -> List[discord.Role]:
-        '''List of users who are staff'''
+        '''List of roles who are staff'''
         staff = []
         for role in self._config.get('staff',[]):
             stf_role = self.guild.get_role(role)
@@ -93,7 +93,7 @@ class Config: #Note: Currently config is global, but I plan to make it per serve
 
     @property
     def staff_ids(self) -> List[int]:
-        '''List of user ids who are staff'''
+        '''List of role ids who are staff'''
         return self._config.get('staff',[])
 
     @staff.setter
@@ -155,4 +155,15 @@ class Config: #Note: Currently config is global, but I plan to make it per serve
     def strip_buttons(self, value: bool) -> None:
         '''Sets if buttons should be stripped'''
         self._config['strip_buttons'] = value
+        self.update()
+
+    @property
+    def community_roles(self) -> List[int]:
+        '''List of role ids who are community support'''
+        return self._config.get('community_roles',[])
+
+    @community_roles.setter
+    def community_roles(self, value: List[discord.Role]) -> None:
+        '''Sets the list of roles for community support'''
+        self._config['community_roles'] = [role.id for role in value]
         self.update()

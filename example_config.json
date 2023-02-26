@@ -15,5 +15,7 @@
     "msg_discovery": true,
     "info_msg_discovery": "If true, the bot will reply to all messages with discord message links, previewing the message. REQUIRES THE DISCORD MESSAGE CONTENT INTENT TO BE WORK",
     "strip_buttons": true,
-    "info_strip_buttons": "If true, the bot will strip buttons from tracked users opening messages. REQUIRES THE DISCORD MESSAGE CONTENT INTENT TO BE WORK"
+    "info_strip_buttons": "If true, the bot will strip buttons from tracked users opening messages. REQUIRES THE DISCORD MESSAGE CONTENT INTENT TO BE WORK",
+    "community_roles": [111111111111111111, 222222222222222222],
+    "info_community_roles": "Role IDs. The bot will add these roles to the channels when they are created."
 }

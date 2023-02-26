@@ -19,7 +19,8 @@ class Utility(commands.Cog, name="Main Utilities"):
 
     @commands.Cog.listener(name="on_guild_channel_create")
     async def on_channel_create(self, channel):
-        '''EXTENSION 1 + 3: Staff notes for tickets! and button stripping.'''
+        '''EXTENSION 1 + 3: Staff notes for tickets! and button stripping.
+        Minor Extension 2: Safe Community Support'''
         if isinstance(channel, discord.channel.TextChannel):
             gld = channel.guild
             cnfg = self._config
@@ -40,6 +41,21 @@ class Utility(commands.Cog, name="Main Utilities"):
                             if msg.author.id in cnfg.ticket_users:
                                 await channel.send(embeds=msg.embeds)
                                 await msg.delete()
+                    if self._config.community_roles:
+                        overwrite = discord.PermissionOverwrite()
+                        overwrite.view_channel = True
+                        overwrite.add_reactions = True
+                        overwrite.send_messages = True
+                        overwrite.read_messages = True
+                        overwrite.read_message_history = True
+                        overwrite.attach_files = True
+                        overwrite.embed_links = True
+                        overwrite.use_application_commands = True
+                        for role in self._config.community_roles:
+                            try:
+                                await channel.set_permissions(gld.get_role(role), overwrite=overwrite) #type: ignore
+                            except TypeError:
+                                pass
 
     @commands.Cog.listener(name="on_message")
     async def on_message(self, message: discord.Message) -> None:
