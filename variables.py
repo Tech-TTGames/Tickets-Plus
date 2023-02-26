@@ -158,12 +158,22 @@ class Config: #Note: Currently config is global, but I plan to make it per serve
         self.update()
 
     @property
-    def community_roles(self) -> List[int]:
-        '''List of role ids who are community support'''
+    def community_roles(self) -> List[discord.Role]:
+        '''List of roles who are staff'''
+        staff = []
+        for role in self._config.get('community_roles',[]):
+            stf_role = self.guild.get_role(role)
+            if isinstance(stf_role, discord.Role):
+                staff.append(stf_role)
+        return staff
+
+    @property
+    def community_roles_ids(self) -> List[int]:
+        '''List of role ids who are staff'''
         return self._config.get('community_roles',[])
 
     @community_roles.setter
     def community_roles(self, value: List[discord.Role]) -> None:
-        '''Sets the list of roles for community support'''
+        '''Sets the list of users who are staff'''
         self._config['community_roles'] = [role.id for role in value]
         self.update()

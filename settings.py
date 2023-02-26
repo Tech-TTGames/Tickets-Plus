@@ -31,10 +31,10 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
             await rspns.send_message(f"Tracked {user.mention}", ephemeral=True)
         self._config.ticket_users = wtchd_users
 
-    @app_commands.command(name="staff", description="Change the staff roles.")
+    @app_commands.command(name="communitysupport", description="Change the community support roles.")
     @commands.has_permissions(administrator=True)
     @commands.guild_only()
-    async def change_staff(self, ctx: discord.Interaction, role: discord.Role):
+    async def change_comsup(self, ctx: discord.Interaction, role: discord.Role):
         """This command is used to change the staff roles, Staff is added to the notes threads.
         If a role is already here, it will be removed."""
         rspns = ctx.response
@@ -80,7 +80,7 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
         """This command is used to toggle message link discovery."""
         self._config.msg_discovery = not self._config.msg_discovery
         await ctx.response.send_message(f"Message link discovery is now {self._config.msg_discovery}", ephemeral=True)
-    
+
     @app_commands.command(name="stripbuttons", description="Toggle button stripping.")
     @commands.has_permissions(administrator=True)
     @commands.guild_only()
@@ -88,6 +88,23 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
         """This command is used to toggle button stripping."""
         self._config.strip_buttons = not self._config.strip_buttons
         await ctx.response.send_message(f"Button stripping is now {self._config.strip_buttons}", ephemeral=True)
+
+    @app_commands.command(name="communitysupport", description="Change the community support roles.")
+    @commands.has_permissions(administrator=True)
+    @commands.guild_only()
+    async def change_community_roles(self, ctx: discord.Interaction, role: discord.Role):
+        """This command is used to change the community support roles,
+        COMSUP roles are added to channels side-by-side without any perms.
+        If a role is already here, it will be removed."""
+        rspns = ctx.response
+        comsup = self._config.community_roles
+        if role.id in comsup:
+            comsup.remove(role)
+            await rspns.send_message(f"Removed {role.mention} from staff roles.", ephemeral=True)
+        else:
+            comsup.append(role)
+            await rspns.send_message(f"Added {role.mention} to staff roles.", ephemeral=True)
+        self._config.community_roles = comsup
 
 async def setup(bot: commands.Bot):
     '''Adds the cog to the bot.'''
