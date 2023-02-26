@@ -26,7 +26,7 @@ class Secret:
     '''Class for secret.json management'''
     def __init__(self) -> None:
         path = os.path.dirname(os.path.realpath(__file__))
-        self._file = os.path.join(parh,'secret.json')
+        self._file = os.path.join(path,'secret.json')
         with open(self._file,encoding="utf-8",mode='r') as secret_f:
             self.secret = json.load(secret_f)
         self.token = self.secret['token']
