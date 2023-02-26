@@ -16,7 +16,7 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
         logging.info("Loaded %s", self.__class__.__name__)
 
     @app_commands.command(name="tracked", description="Change the tracked users.")
-    @commands.has_permissions(administrator=True)
+    @commands.check_any(commands.has_permissions(administrator=True), commands.is_owner())
     @commands.guild_only()
     async def change_tracked(self, ctx: discord.Interaction, user: discord.User):
         """This command is used to change the tracked users.
@@ -32,7 +32,7 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
         self._config.ticket_users = wtchd_users
 
     @app_commands.command(name="communitysupport", description="Change the community support roles.")
-    @commands.has_permissions(administrator=True)
+    @commands.check_any(commands.has_permissions(administrator=True), commands.is_owner())
     @commands.guild_only()
     async def change_comsup(self, ctx: discord.Interaction, role: discord.Role):
         """This command is used to change the staff roles, Staff is added to the notes threads.
@@ -48,7 +48,7 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
         self._config.staff = stff
 
     @app_commands.command(name="staffping", description="Change the staff ping setting.")
-    @commands.has_permissions(administrator=True)
+    @commands.check_any(commands.has_permissions(administrator=True), commands.is_owner())
     @commands.guild_only()
     async def change_staffping(self, ctx: discord.Interaction):
         """This command is used to change the staff ping setting.
@@ -58,7 +58,7 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
         await ctx.response.send_message(f"Staff ping is now {not stf_ping}", ephemeral=True)
 
     @app_commands.command(name="openmsg", description="Change the open message.")
-    @commands.has_permissions(administrator=True)
+    @commands.check_any(commands.has_permissions(administrator=True), commands.is_owner())
     @commands.guild_only()
     async def change_openmsg(self, ctx: discord.Interaction, message: str):
         """This command is used to change the open message."""
@@ -66,7 +66,7 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
         await ctx.response.send_message(f"Open message is now {message}", ephemeral=True)
 
     @app_commands.command(name="staffteam", description="Change the staff team's name.")
-    @commands.has_permissions(administrator=True)
+    @commands.check_any(commands.has_permissions(administrator=True), commands.is_owner())
     @commands.guild_only()
     async def change_staffteam(self, ctx: discord.Interaction, name: str):
         """This command is used to change the staff team's name."""
@@ -74,7 +74,7 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
         await ctx.response.send_message(f"Staff team is now {name}", ephemeral=True)
 
     @app_commands.command(name="msgdiscovery", description="Toggle message link discovery.")
-    @commands.has_permissions(administrator=True)
+    @commands.check_any(commands.has_permissions(administrator=True), commands.is_owner())
     @commands.guild_only()
     async def toggle_msg_discovery(self, ctx: discord.Interaction):
         """This command is used to toggle message link discovery."""
@@ -82,7 +82,7 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
         await ctx.response.send_message(f"Message link discovery is now {self._config.msg_discovery}", ephemeral=True)
 
     @app_commands.command(name="stripbuttons", description="Toggle button stripping.")
-    @commands.has_permissions(administrator=True)
+    @commands.check_any(commands.has_permissions(administrator=True), commands.is_owner())
     @commands.guild_only()
     async def toggle_button_stripping(self, ctx: discord.Interaction):
         """This command is used to toggle button stripping."""
@@ -90,7 +90,7 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
         await ctx.response.send_message(f"Button stripping is now {self._config.strip_buttons}", ephemeral=True)
 
     @app_commands.command(name="communitysupport", description="Change the community support roles.")
-    @commands.has_permissions(administrator=True)
+    @commands.check_any(commands.has_permissions(administrator=True), commands.is_owner())
     @commands.guild_only()
     async def change_community_roles(self, ctx: discord.Interaction, role: discord.Role):
         """This command is used to change the community support roles,
