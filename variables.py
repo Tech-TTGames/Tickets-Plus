@@ -43,7 +43,7 @@ class Config: #Note: Currently config is global, but I plan to make it per serve
     '''Class for convinient config access'''
     def __init__(self,bot: Union[commands.Bot,Literal["offline"]]) -> None:
         path = os.path.dirname(os.path.realpath(__file__))
-        self._file = os.path.join(parh,'config.json')
+        self._file = os.path.join(path,'config.json')
         with open(self._file,encoding="utf-8",mode='r') as config_f:
             self._config: dict = json.load(config_f)
         self._bot = bot
