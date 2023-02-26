@@ -40,7 +40,7 @@ Automatically adds roles to the channels created by the tracked users.
 2. Run `pip install -r requirements.txt`
 3. Create the bot on [Discord Developers](https://discord.com/developers/applications).
     1. Create application however you want.
-    2. Create a bot. No Privilaged intents are necessary. Probably disable 'Public Bot'.
+    2. Create a bot. No Privilaged intents are necessary (Unless you want features that use it). Probably disable 'Public Bot'.
     3. Input your bot token to secret.json. (Refer to example_secret.json)
     4. Use `https://discord.com/api/oauth2/authorize?client_id=<APP_ID>&permissions=397284478096&scope=bot%20applications.commands` to invite the bot. replace `<APP_ID>` with the numbers from your apps `https://discord.com/developers/applications/<APP_ID>/`.
 4. Fill out config.json based on the information about your server. (Refer to example_config.json)
