@@ -6,6 +6,9 @@ from variables import Config
 
 CONFG = Config('offline')
 
-def is_owner(interaction: discord.Interaction):
+async def is_owner(interaction: discord.Interaction):
     """Checks if interaction user is owner."""
-    return interaction.user.id in CONFG.owner
+    if interaction.user.id in CONFG.owner:
+        return True
+    await interaction.response.send_message("Error 400: Forbidden", ephemeral=True)
+    return False
