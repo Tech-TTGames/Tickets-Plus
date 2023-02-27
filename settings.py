@@ -105,7 +105,7 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
         else:
             comsup.append(role)
             await rspns.send_message(f"Added {role.mention} to community support roles.", ephemeral=True)
-        self._config.community_roles = comsp
+        self._config.community_roles = comsup
 
     @app_commands.command(name="owner", description="Change the owners of the bot.")
     @app_commands.check(is_owner)

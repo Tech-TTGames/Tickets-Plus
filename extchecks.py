@@ -1,11 +1,11 @@
-from typing import Optional
+"""Additional checks for bot."""
 
 import discord
-from discord.ext import commands
 
 from variables import Config
 
 CONFG = Config('offline')
 
 def is_owner(interaction: discord.Interaction):
+    """Checks if interaction user is owner."""
     return interaction.user.id in CONFG.owner
