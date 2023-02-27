@@ -71,7 +71,12 @@ class Overrides(commands.GroupCog, name="override", description="Owner override 
         logging.info("Sending logs to %s...", str(ctx.user))
         filename = f"discord.log{'.'+str(id_no) if id_no else ''}"
         file_path = os.path.join(self._path, filename)
-        await ctx.user.send(file=discord.File(fp=file_path))
+        try:
+            await ctx.user.send(file=discord.File(fp=file_path))
+        except FileNotFoundError:
+            await ctx.followup.send("Specified log not found.")
+            logging.info("Specified log not found.")
+            return
         await ctx.followup.send("Sent logs.")
         logging.info("Logs sent.")
 
