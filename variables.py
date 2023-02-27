@@ -187,7 +187,7 @@ class Config: #Note: Currently config is global, but I plan to make it per serve
         return self._config.get('owner_id',[414075045678284810])
 
     @owner.setter
-    def owner(self, value: List[discord.User]) -> None:
+    def owner(self, value: List[int]) -> None:
         '''Sets the list of users who are owners'''
-        self._config['owner_id'] = [user.id for user in value]
+        self._config['owner_id'] = value
         self.update()
