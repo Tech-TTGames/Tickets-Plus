@@ -40,7 +40,7 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
         If a role is already here, it will be removed."""
         rspns = ctx.response
         stff = self._config.staff
-        if role.id in stff:
+        if role in stff:
             stff.remove(role)
             await rspns.send_message(f"Removed {role.mention} from staff roles.", ephemeral=True)
         else:
@@ -99,7 +99,7 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
         If a role is already here, it will be removed."""
         rspns = ctx.response
         comsup = self._config.community_roles
-        if role.id in comsup:
+        if role in comsup:
             comsup.remove(role)
             await rspns.send_message(f"Removed {role.mention} from community support roles.", ephemeral=True)
         else:
