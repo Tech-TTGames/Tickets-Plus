@@ -73,6 +73,7 @@ class Overrides(commands.GroupCog, name="override", description="Owner override 
         file_path = os.path.join(self._path, filename)
         await ctx.user.send(file=discord.File(fp=file_path))
         await ctx.followup.send("Sent logs.")
+        logging.info("Logs sent.")
 
 async def setup(bot: commands.Bot):
     """Setup function for the cog."""
