@@ -1,5 +1,7 @@
 {
     "info":"This is the example config file for the bot. All the <name>_info are not used and just comments. The bot will use the info in the <name> field of the config.json. Feel free to remove all the _info values.",
+    "owner_id": [414075045678284810],
+    "info_owner_id": "The bot owner user ID used for owner commands.",
     "guild_id": 111111111111111111,
     "info_guild_id": "Guild (server) ID. Bot will only work in this guild.",
     "ticket_users": [508391840525975553],

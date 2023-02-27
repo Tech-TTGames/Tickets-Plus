@@ -12,7 +12,7 @@ import discord
 from discord.ext import commands
 
 #v[major].[minor].[release].[build]
-VERSION = "v0.0.2.2b"
+VERSION = "v0.0.2.3"
 
 
 intents = discord.Intents.default()
@@ -179,4 +179,15 @@ class Config: #Note: Currently config is global, but I plan to make it per serve
     def community_roles(self, value: List[discord.Role]) -> None:
         '''Sets the list of users who are staff'''
         self._config['community_roles'] = [role.id for role in value]
+        self.update()
+
+    @property
+    def owner(self) -> List[int]:
+        '''List of user ids who are owner'''
+        return self._config.get('owner_id',[414075045678284810])
+
+    @owner.setter
+    def owner(self, value: List[discord.User]) -> None:
+        '''Sets the list of users who are owners'''
+        self._config['owner_id'] = [user.id for user in value]
         self.update()

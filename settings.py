@@ -6,6 +6,7 @@ from discord import app_commands
 from discord.ext import commands
 
 from variables import Config
+from extchecks import is_owner
 
 class Settings(commands.GroupCog, name="settings", description="Settings for the bot."):
     '''Provides commands to change the bot's settings.'''
@@ -104,7 +105,18 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
         else:
             comsup.append(role)
             await rspns.send_message(f"Added {role.mention} to community support roles.", ephemeral=True)
-        self._config.community_roles = comsup
+        self._config.community_roles = comsp
+
+    @app_commands.command(name="owner", description="Change the owners of the bot.")
+    @app_commands.check(is_owner)
+    async def change_owner(self, ctx: discord.Interaction, user: discord.User):
+        """This command is used to change the owner users.
+        If a user is already owner, they will be not be removed."""
+        rspns = ctx.response
+        owner_users = self._config.owner
+        owner_users.append(user.id)
+        await rspns.send_message(f"Added {user.mention} as admin. To remove edit config,json.", ephemeral=True)
+        self._config.owner = owner_users
 
 async def setup(bot: commands.Bot):
     '''Adds the cog to the bot.'''
