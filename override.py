@@ -29,6 +29,8 @@ class Overrides(commands.GroupCog, name="override", description="Owner override 
         await self._bt.reload_extension("override")
         await ctx.channel.send("Reloaded cogs.") #type: ignore
         logging.info("Finished reloading cogs.")
+        await self._bt.tree.sync()
+        logging.info("Finished syncing tree.")
 
     @app_commands.command(name="restart", description="Restarts the bot.")
     @app_commands.check(is_owner)
