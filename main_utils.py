@@ -95,7 +95,8 @@ class Utility(commands.Cog, name="Main Utilities"):
                   "Check it out and report issues at https://github.com/Tech-TTGames/Tickets-Plus")
 
     @app_commands.command(name="respond", description="Respond to a ticket as the bot.")
-    @commands.has_any_role(*CONFG.staff_ids)
+    @app_commands.guild_only()
+    @app_commands.checks.has_any_role(*CONFG.staff_ids)
     async def respond(self, ctx: discord.Interaction, message: str):
         """EXTENSION 2: Anonymised staff responses.
         This command is used to respond to a ticket as the bot."""
