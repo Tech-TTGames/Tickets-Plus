@@ -17,7 +17,7 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
 
     @app_commands.command(name="tracked", description="Change the tracked users.")
     @app_commands.checks.has_permissions(administrator=True)
-    @commands.guild_only()
+    @app_commands.guild_only()
     async def change_tracked(self, ctx: discord.Interaction, user: discord.User):
         """This command is used to change the tracked users.
         If a user is already tracked, they will be untracked."""
