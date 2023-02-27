@@ -107,6 +107,15 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
             await rspns.send_message(f"Added {role.mention} to community support roles.", ephemeral=True)
         self._config.community_roles = comsup
 
+    @app_commands.command(name="guild", description="Change the guild.")
+    @app_commands.check(is_owner)
+    @app_commands.guild_only()
+    async def change_guild(self, ctx: discord.Interaction):
+        """This command is used to change the guild. Use in the guild you want to change to."""
+        assert isinstance(ctx.guild, discord.Guild)
+        self._config.guild = ctx.guild
+        await ctx.response.send_message(f"Guild is now {ctx.guild.name}", ephemeral=True)
+
     @app_commands.command(name="owner", description="Change the owners of the bot.")
     @app_commands.check(is_owner)
     async def change_owner(self, ctx: discord.Interaction, user: discord.User):
