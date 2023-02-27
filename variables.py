@@ -13,10 +13,10 @@ from discord.ext import commands
 
 #v[major].[minor].[release].[build]
 VERSION = "v0.0.2.4a"
-
+PROG_DIR = os.path.dirname(os.path.realpath(__file__))
 
 intents = discord.Intents.default()
-handler = RotatingFileHandler(filename='discord.log',
+handler = RotatingFileHandler(filename=os.path.join(PROG_DIR,'log','discord.log'),
                             encoding='utf-8',
                             mode='w',
                             backupCount=10,
@@ -25,8 +25,7 @@ handler = RotatingFileHandler(filename='discord.log',
 class Secret:
     '''Class for secret.json management'''
     def __init__(self) -> None:
-        path = os.path.dirname(os.path.realpath(__file__))
-        self._file = os.path.join(path,'secret.json')
+        self._file = os.path.join(PROG_DIR,'secret.json')
         with open(self._file,encoding="utf-8",mode='r') as secret_f:
             self.secret = json.load(secret_f)
         self.token = self.secret['token']
@@ -42,8 +41,7 @@ class Secret:
 class Config: #Note: Currently config is global, but I plan to make it per server.
     '''Class for convinient config access'''
     def __init__(self,bot: Union[commands.Bot,Literal["offline"]]) -> None:
-        path = os.path.dirname(os.path.realpath(__file__))
-        self._file = os.path.join(path,'config.json')
+        self._file = os.path.join(PROG_DIR,'config.json')
         with open(self._file,encoding="utf-8",mode='r') as config_f:
             self._config: dict = json.load(config_f)
         self._bot = bot

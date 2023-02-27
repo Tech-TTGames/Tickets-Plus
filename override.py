@@ -7,7 +7,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from variables import Config
+from variables import Config, PROG_DIR
 from extchecks import is_owner
 
 class Overrides(commands.GroupCog, name="override", description="Owner override commands."):
@@ -15,7 +15,6 @@ class Overrides(commands.GroupCog, name="override", description="Owner override 
     def __init__(self, bot: commands.Bot, config: Config):
         self._bt = bot
         self._config = config
-        self._path = os.path.dirname(os.path.realpath(__file__))
         super().__init__()
         logging.info("Loaded %s", self.__class__.__name__)
 
@@ -50,7 +49,7 @@ class Overrides(commands.GroupCog, name="override", description="Owner override 
         pull = await asyncio.create_subprocess_shell("git pull",
                                                     stdout=asyncio.subprocess.PIPE,
                                                     stderr=asyncio.subprocess.PIPE,
-                                                    cwd=self._path)
+                                                    cwd=PROG_DIR)
         stdo, stdr = await pull.communicate()
         if stdo:
             await ctx.followup.send(f'[stdout]\n{stdo.decode()}')
@@ -70,7 +69,7 @@ class Overrides(commands.GroupCog, name="override", description="Owner override 
         await ctx.response.defer(thinking=True)
         logging.info("Sending logs to %s...", str(ctx.user))
         filename = f"discord.log{'.'+str(id_no) if id_no else ''}"
-        file_path = os.path.join(self._path, filename)
+        file_path = os.path.join(PROG_DIR, "log", filename)
         try:
             await ctx.user.send(file=discord.File(fp=file_path))
         except FileNotFoundError:
