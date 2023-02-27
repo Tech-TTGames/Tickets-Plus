@@ -15,6 +15,7 @@ class Overrides(commands.GroupCog, name="override", description="Owner override 
     def __init__(self, bot: commands.Bot, config: Config):
         self._bt = bot
         self._config = config
+        self._path = os.path.dirname(os.path.realpath(__file__))
         super().__init__()
         logging.info("Loaded %s", self.__class__.__name__)
 
@@ -49,7 +50,7 @@ class Overrides(commands.GroupCog, name="override", description="Owner override 
         pull = await asyncio.create_subprocess_shell("git pull",
                                                     stdout=asyncio.subprocess.PIPE,
                                                     stderr=asyncio.subprocess.PIPE,
-                                                    cwd=os.path.dirname(os.path.realpath(__file__)))
+                                                    cwd=self._path)
         stdo, stdr = await pull.communicate()
         if stdo:
             await ctx.followup.send(f'[stdout]\n{stdo.decode()}')
@@ -62,6 +63,16 @@ class Overrides(commands.GroupCog, name="override", description="Owner override 
         await ctx.followup.send("Finished pulling latest changes.\n"
                                 "Restart bot or reload cogs to apply changes.")
 
+    @app_commands.command(name="logs", description="Sends the logs.")
+    @app_commands.check(is_owner)
+    async def logs(self, ctx: discord.Interaction, id_no: int = 0):
+        """Sends the logs."""
+        await ctx.response.defer(thinking=True)
+        logging.info("Sending logs to %s...", str(ctx.user))
+        filename = f"discord.log{'.'+str(id_no) if id_no else ''}"
+        file_path = os.path.join(self._path, filename)
+        await ctx.user.send(file=discord.File(fp=file_path))
+        await ctx.followup.send("Sent logs.")
 
 async def setup(bot: commands.Bot):
     """Setup function for the cog."""
