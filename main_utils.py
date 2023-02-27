@@ -1,6 +1,7 @@
 '''The main cog. Contains 'mainstream' utilities.'''
 import logging
 import re
+import asyncio
 
 import discord
 from discord import app_commands
@@ -37,6 +38,7 @@ class Utility(commands.Cog, name="Main Utilities"):
                         inv = await nts_thrd.send(" ".join([role.mention for role in cnfg.staff]))
                         await inv.delete()
                     if self._config.strip_buttons:
+                        await asyncio.sleep(1)
                         async for msg in channel.history(oldest_first=True, limit=2):
                             if msg.author.id in cnfg.ticket_users:
                                 await channel.send(embeds=msg.embeds)
@@ -91,7 +93,7 @@ class Utility(commands.Cog, name="Main Utilities"):
         """This command is used to check the bot's version."""
         await ctx.response.send_message("Bot 'Tickets Plus' version: " + \
                   VERSION + " by Tech. TTGames#8616\n" + \
-                  "This bot is open source and experimental!" + \
+                  "This bot is open source and experimental!\n" + \
                   "Check it out and report issues at https://github.com/Tech-TTGames/Tickets-Plus")
 
     @app_commands.command(name="respond", description="Respond to a ticket as the bot.")
