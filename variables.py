@@ -12,7 +12,7 @@ import discord
 from discord.ext import commands
 
 #v[major].[minor].[release].[build]
-VERSION = "v0.0.2.4a"
+VERSION = "v0.0.2.4b"
 PROG_DIR = os.path.dirname(os.path.realpath(__file__))
 
 intents = discord.Intents.default()
@@ -54,6 +54,11 @@ class Config: #Note: Currently config is global, but I plan to make it per serve
         with open(self._file,encoding="utf-8",mode='w') as config_f:
             json.dump(self._config,config_f,indent=4)
             config_f.truncate()
+
+    def dump(self) -> None:
+        '''Wipes everything but guild id from config'''
+        self._config = {'guild_id': self._config['guild_id']}
+        self.update()
 
     @property
     def guild(self) -> discord.Guild:
