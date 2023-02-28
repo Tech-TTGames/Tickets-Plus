@@ -57,6 +57,7 @@ class Config: #Note: Currently config is global, but I plan to make it per serve
 
     def dump(self) -> None:
         '''Wipes everything but guild id from config'''
+        os.remove(self._file)
         self._config = {'guild_id': self._config['guild_id']}
         self.update()
 
