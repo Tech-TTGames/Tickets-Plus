@@ -32,8 +32,8 @@ class Secret:
     def __init__(self) -> None:
         self._file = os.path.join(PROG_DIR, "secret.json")
         with open(self._file, encoding="utf-8", mode="r") as secret_f:
-            self.secretss = json.load(secret_f)
-        self.token = self.secretss["token"]
+            self.secrets = json.load(secret_f)
+        self.token = self.secrets["token"]
 
     def __repr__(self) -> str:
         return "[OBFUSCATED]"
