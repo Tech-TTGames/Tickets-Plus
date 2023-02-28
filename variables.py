@@ -11,8 +11,8 @@ from logging.handlers import RotatingFileHandler
 import discord
 from discord.ext import commands
 
-#v[major].[minor].[release].[build]
-#MAJOR and MINOR version changes can be compatibility-breaking
+# v[major].[minor].[release].[build]
+# MAJOR and MINOR version changes can be compatibility-breaking
 VERSION = "v0.1.0.0"
 PROG_DIR = os.path.dirname(os.path.realpath(__file__))
 
@@ -28,8 +28,8 @@ class Secret:
     def __init__(self) -> None:
         self._file = os.path.join(PROG_DIR,'secret.json')
         with open(self._file,encoding="utf-8",mode='r') as secret_f:
-            self.secret = json.load(secret_f)
-        self.token = self.secret['token']
+            self.secrets = json.load(secret_f)
+        self.token = self.secrets['token']
 
     def __repr__(self) -> str:
         return "[OBFUSCATED]"

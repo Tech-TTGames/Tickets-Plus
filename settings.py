@@ -112,7 +112,9 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
     @app_commands.guild_only()
     async def change_guild(self, ctx: discord.Interaction):
         """This command is used to change the guild. Use in the guild you want to change to."""
-        assert isinstance(ctx.guild, discord.Guild)
+        if ctx.guild is None:
+            await ctx.response.send_message("You must be in a guild to use this command.", ephemeral=True)
+            return
         self._config.guild = ctx.guild
         await ctx.response.send_message(f"Guild is now {ctx.guild.name}", ephemeral=True)
 
