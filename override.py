@@ -1,17 +1,21 @@
 """General owner utility commands."""
-import logging
 import asyncio
+import logging
 import os
 
 import discord
 from discord import app_commands
 from discord.ext import commands
 
-from variables import Config, PROG_DIR
 from extchecks import is_owner
+from variables import PROG_DIR, Config
 
-class Overrides(commands.GroupCog, name="override", description="Owner override commands."):
+
+class Overrides(
+    commands.GroupCog, name="override", description="Owner override commands."
+):
     """Owner override commands."""
+
     def __init__(self, bot: commands.Bot, config: Config):
         self._bt = bot
         self._config = config
@@ -27,7 +31,7 @@ class Overrides(commands.GroupCog, name="override", description="Owner override 
         await self._bt.reload_extension("main_utils")
         await self._bt.reload_extension("settings")
         await self._bt.reload_extension("override")
-        await ctx.channel.send("Reloaded cogs.") #type: ignore
+        await ctx.channel.send("Reloaded cogs.")  # type: ignore
         logging.info("Finished reloading cogs.")
         await self._bt.tree.sync()
         logging.info("Finished syncing tree.")
@@ -40,27 +44,33 @@ class Overrides(commands.GroupCog, name="override", description="Owner override 
         logging.info("Restarting...")
         await self._bt.close()
 
-    @app_commands.command(name="pull", description="Pulls the latest changes from the git repo.")
+    @app_commands.command(
+        name="pull", description="Pulls the latest changes from the git repo."
+    )
     @app_commands.check(is_owner)
     async def pull(self, ctx: discord.Interaction):
         """Pulls the latest changes from the git repo."""
         await ctx.response.send_message("Pulling latest changes...")
         logging.info("Pulling latest changes...")
-        pull = await asyncio.create_subprocess_shell("git pull",
-                                                    stdout=asyncio.subprocess.PIPE,
-                                                    stderr=asyncio.subprocess.PIPE,
-                                                    cwd=PROG_DIR)
+        pull = await asyncio.create_subprocess_shell(
+            "git pull",
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+            cwd=PROG_DIR,
+        )
         stdo, stdr = await pull.communicate()
         if stdo:
-            await ctx.followup.send(f'[stdout]\n{stdo.decode()}')
-            logging.info('[stdout]\n%s', stdo.decode())
+            await ctx.followup.send(f"[stdout]\n{stdo.decode()}")
+            logging.info("[stdout]\n%s", stdo.decode())
 
         if stdr:
-            await ctx.followup.send(f'[stderr]\n{stdr.decode()}')
-            logging.info('[stderr]\n%s', stdr.decode())
+            await ctx.followup.send(f"[stderr]\n{stdr.decode()}")
+            logging.info("[stderr]\n%s", stdr.decode())
 
-        await ctx.followup.send("Finished pulling latest changes.\n"
-                                "Restart bot or reload cogs to apply changes.")
+        await ctx.followup.send(
+            "Finished pulling latest changes.\n"
+            "Restart bot or reload cogs to apply changes."
+        )
 
     @app_commands.command(name="logs", description="Sends the logs.")
     @app_commands.check(is_owner)
@@ -101,9 +111,12 @@ class Overrides(commands.GroupCog, name="override", description="Owner override 
         """Dump config of bot"""
         if confirm:
             self._config.dump()
-            await ctx.response.send_message("Configuration dumped.\n**Prepare for unforeseen consequences.**")
+            await ctx.response.send_message(
+                "Configuration dumped.\n**Prepare for unforeseen consequences.**"
+            )
             return
         await ctx.response.send_message("Dump aborted.")
+
 
 async def setup(bot: commands.Bot):
     """Setup function for the cog."""

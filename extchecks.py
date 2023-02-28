@@ -4,7 +4,8 @@ import discord
 
 from variables import Config
 
-CONFG = Config('offline')
+CONFG = Config("offline")
+
 
 async def is_owner(interaction: discord.Interaction):
     """Checks if interaction user is owner."""
