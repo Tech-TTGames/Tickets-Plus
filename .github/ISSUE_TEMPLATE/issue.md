@@ -12,7 +12,7 @@ assignees: ''
 **Describe the bug**
 
 
-**Describe what the reason this causes issues**
+**Describe the reason this causes issues**
 
 
 **Additional context and reproduction**
