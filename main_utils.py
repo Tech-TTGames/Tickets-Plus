@@ -22,8 +22,10 @@ class Utility(commands.Cog, name="Main Utilities"):
 
     @commands.Cog.listener(name="on_guild_channel_create")
     async def on_channel_create(self, channel):
-        """EXTENSION 1 + 3: Staff notes for tickets! and button stripping.
-        Minor Extension 2: Safe Community Support"""
+        """
+        EXTENSION 1 + 3: Staff notes for tickets! and button stripping.
+        Minor Extension 2: Safe Community Support
+        """
         if isinstance(channel, discord.channel.TextChannel):
             gld = channel.guild
             cnfg = self._config
@@ -67,19 +69,22 @@ class Utility(commands.Cog, name="Main Utilities"):
                         overwrite.use_application_commands = True
                         for role in self._config.community_roles:
                             try:
-                                await channel.set_permissions(role, overwrite=overwrite)  # type: ignore
+                                await channel.set_permissions(role,
+                                                               overwrite=overwrite)  # type: ignore
                             except TypeError:
                                 pass
 
     @commands.Cog.listener(name="on_message")
     async def on_message(self, message: discord.Message) -> None:
-        """Minor Extension: Message Discovery
-        Displays the message linked to as an embed."""
+        """
+        Minor Extension: Message Discovery
+        Displays the message linked to as an embed.
+        """
         if message.author.bot:
             return
         if self._bt.intents.message_content:
             alpha = re.search(
-                r"https:\/\/(?:canary\.)?discord\.com\/channels\/(?P<srv>\d{18})\/(?P<cha>\d{18})\/(?P<msg>\d*)",
+                r"https:\/\/(?:canary\.)?discord\.com\/channels\/(?P<srv>\d{18})\/(?P<cha>\d{18})\/(?P<msg>\d*)", # skipcq: FLK-E501 # pylint: disable=line-too-long
                 message.content,
             )  # pylint: disable=line-too-long
             if alpha:
@@ -127,8 +132,10 @@ class Utility(commands.Cog, name="Main Utilities"):
     @app_commands.guild_only()
     @app_commands.checks.has_any_role(*CONFG.staff_ids)
     async def respond(self, ctx: discord.Interaction, message: str):
-        """EXTENSION 2: Anonymised staff responses.
-        This command is used to respond to a ticket as the bot."""
+        """
+        EXTENSION 2: Anonymised staff responses.
+        This command is used to respond to a ticket as the bot.
+        """
         if isinstance(ctx.channel, discord.Thread):
             if isinstance(ctx.channel.parent, discord.TextChannel):
                 await ctx.response.send_message(

@@ -22,8 +22,10 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.guild_only()
     async def change_tracked(self, ctx: discord.Interaction, user: discord.User):
-        """This command is used to change the tracked users.
-        If a user is already tracked, they will be untracked."""
+        """
+        This command is used to change the tracked users.
+        If a user is already tracked, they will be untracked.
+        """
         rspns = ctx.response
         wtchd_users = self._config.ticket_users
         if user.id in wtchd_users:
@@ -38,8 +40,10 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.guild_only()
     async def change_staff(self, ctx: discord.Interaction, role: discord.Role):
-        """This command is used to change the staff roles, Staff is added to the notes threads.
-        If a role is already here, it will be removed."""
+        """
+        This command is used to change the staff roles, Staff is added to the notes threads.
+        If a role is already here, it will be removed.
+        """
         rspns = ctx.response
         stff = self._config.staff
         if role in stff:
@@ -60,8 +64,10 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.guild_only()
     async def change_staffping(self, ctx: discord.Interaction):
-        """This command is used to change the staff ping setting.
-        If it is on, it will be turned off, and vice versa."""
+        """
+        This command is used to change the staff ping setting.
+        If it is on, it will be turned off, and vice versa.
+        """
         stf_ping = self._config.staff_ping
         self._config.staff_ping = not stf_ping
         await ctx.response.send_message(
@@ -115,11 +121,12 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.guild_only()
     async def change_community_roles(
-        self, ctx: discord.Interaction, role: discord.Role
-    ):
-        """This command is used to change the community support roles,
+        self, ctx: discord.Interaction, role: discord.Role):
+        """
+        This command is used to change the community support roles,
         COMSUP roles are added to channels side-by-side without any perms.
-        If a role is already here, it will be removed."""
+        If a role is already here, it will be removed.
+        """
         rspns = ctx.response
         comsup = self._config.community_roles
         if role in comsup:
@@ -152,8 +159,10 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
     @app_commands.command(name="owner", description="Change the owners of the bot.")
     @app_commands.check(is_owner)
     async def change_owner(self, ctx: discord.Interaction, user: discord.User):
-        """This command is used to change the owner users.
-        If a user is already owner, they will be not be removed."""
+        """
+        This command is used to change the owner users.
+        If a user is already owner, they will be not be removed.
+        """
         rspns = ctx.response
         owner_users = self._config.owner
         owner_users.append(user.id)
