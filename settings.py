@@ -121,7 +121,8 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.guild_only()
     async def change_community_roles(
-        self, ctx: discord.Interaction, role: discord.Role):
+        self, ctx: discord.Interaction, role: discord.Role
+    ):
         """
         This command is used to change the community support roles,
         COMSUP roles are added to channels side-by-side without any perms.
