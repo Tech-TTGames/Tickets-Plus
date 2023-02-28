@@ -95,8 +95,8 @@ class Overrides(commands.GroupCog, name="override", description="Owner override 
         await ctx.followup.send("Sent config.")
         logging.info("Config sent.")
 
-    @app_commands.config(name="dumpconfig", description="Deletes all data from config")
-    @app_commands.checks(is_owner)
+    @app_commands.command(name="dumpconfig", description="Deletes all data from config")
+    @app_commands.check(is_owner)
     async def dump_config(self, ctx: discord.Interaction, confirm: bool):
         """Dump config of bot"""
         if confirm:
