@@ -12,7 +12,7 @@ import discord
 from discord.ext import commands
 
 #v[major].[minor].[release].[build]
-VERSION = "v0.0.2.4a"
+VERSION = "v0.0.2.4b"
 PROG_DIR = os.path.dirname(os.path.realpath(__file__))
 
 intents = discord.Intents.default()
