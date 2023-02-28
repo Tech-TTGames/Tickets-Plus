@@ -95,6 +95,16 @@ class Overrides(commands.GroupCog, name="override", description="Owner override 
         await ctx.followup.send("Sent config.")
         logging.info("Config sent.")
 
+    @app_commands.config(name="dumpconfig", description="Deletes all data from config")
+    @app_commands.checks(is_owner)
+    async def dump_config(self, ctx: discord.Interaction, confirm: bool):
+        """Dump config of bot"""
+        if confirm:
+            self._config.dump()
+            await ctx.response.send_message("Configuration dumped.\n**Prepare for unforeseen consequences.**)
+            return
+        await ctx.response.send_message("Dump aborted.")
+
 async def setup(bot: commands.Bot):
     """Setup function for the cog."""
     await bot.add_cog(Overrides(bot, Config(bot)))
