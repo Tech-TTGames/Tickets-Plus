@@ -101,7 +101,7 @@ class Overrides(commands.GroupCog, name="override", description="Owner override 
         """Dump config of bot"""
         if confirm:
             self._config.dump()
-            await ctx.response.send_message("Configuration dumped.\n**Prepare for unforeseen consequences.**)
+            await ctx.response.send_message("Configuration dumped.\n**Prepare for unforeseen consequences.**")
             return
         await ctx.response.send_message("Dump aborted.")
 
