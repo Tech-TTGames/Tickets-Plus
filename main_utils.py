@@ -69,8 +69,9 @@ class Utility(commands.Cog, name="Main Utilities"):
                         overwrite.use_application_commands = True
                         for role in self._config.community_roles:
                             try:
-                                await channel.set_permissions(role,
-                                                               overwrite=overwrite)  # type: ignore
+                                await channel.set_permissions(
+                                    role, overwrite=overwrite
+                                )  # type: ignore
                             except TypeError:
                                 pass
 
@@ -84,7 +85,7 @@ class Utility(commands.Cog, name="Main Utilities"):
             return
         if self._bt.intents.message_content:
             alpha = re.search(
-                r"https:\/\/(?:canary\.)?discord\.com\/channels\/(?P<srv>\d{18})\/(?P<cha>\d{18})\/(?P<msg>\d*)", # skipcq: FLK-E501 # pylint: disable=line-too-long
+                r"https:\/\/(?:canary\.)?discord\.com\/channels\/(?P<srv>\d{18})\/(?P<cha>\d{18})\/(?P<msg>\d*)",  # skipcq: FLK-E501 # pylint: disable=line-too-long
                 message.content,
             )  # pylint: disable=line-too-long
             if alpha:
