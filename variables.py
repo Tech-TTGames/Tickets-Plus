@@ -55,6 +55,11 @@ class Config: #Note: Currently config is global, but I plan to make it per serve
             json.dump(self._config,config_f,indent=4)
             config_f.truncate()
 
+    def dump(self) -> None:
+        '''Wipes everything but guild id from config'''
+        self._config = {'guild_id': self._config['guild_id']}
+        self.update()
+
     @property
     def guild(self) -> discord.Guild:
         '''Returns the guild object'''
