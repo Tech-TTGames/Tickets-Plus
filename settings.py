@@ -1,15 +1,17 @@
-'''General settings cog.'''
+"""General settings cog."""
 import logging
 
 import discord
 from discord import app_commands
 from discord.ext import commands
 
-from variables import Config
 from extchecks import is_owner
+from variables import Config
+
 
 class Settings(commands.GroupCog, name="settings", description="Settings for the bot."):
-    '''Provides commands to change the bot's settings.'''
+    """Provides commands to change the bot's settings."""
+
     def __init__(self, bot: commands.Bot, config: Config):
         self._bt = bot
         self._config = config
@@ -42,13 +44,19 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
         stff = self._config.staff
         if role in stff:
             stff.remove(role)
-            await rspns.send_message(f"Removed {role.mention} from staff roles.", ephemeral=True)
+            await rspns.send_message(
+                f"Removed {role.mention} from staff roles.", ephemeral=True
+            )
         else:
             stff.append(role)
-            await rspns.send_message(f"Added {role.mention} to staff roles.", ephemeral=True)
+            await rspns.send_message(
+                f"Added {role.mention} to staff roles.", ephemeral=True
+            )
         self._config.staff = stff
 
-    @app_commands.command(name="staffping", description="Change the staff ping setting.")
+    @app_commands.command(
+        name="staffping", description="Change the staff ping setting."
+    )
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.guild_only()
     async def change_staffping(self, ctx: discord.Interaction):
@@ -56,7 +64,9 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
         If it is on, it will be turned off, and vice versa."""
         stf_ping = self._config.staff_ping
         self._config.staff_ping = not stf_ping
-        await ctx.response.send_message(f"Staff ping is now {not stf_ping}", ephemeral=True)
+        await ctx.response.send_message(
+            f"Staff ping is now {not stf_ping}", ephemeral=True
+        )
 
     @app_commands.command(name="openmsg", description="Change the open message.")
     @app_commands.checks.has_permissions(administrator=True)
@@ -64,7 +74,9 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
     async def change_openmsg(self, ctx: discord.Interaction, message: str):
         """This command is used to change the open message."""
         self._config.open_msg = message
-        await ctx.response.send_message(f"Open message is now {message}", ephemeral=True)
+        await ctx.response.send_message(
+            f"Open message is now {message}", ephemeral=True
+        )
 
     @app_commands.command(name="staffteam", description="Change the staff team's name.")
     @app_commands.checks.has_permissions(administrator=True)
@@ -74,13 +86,18 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
         self._config.staff_team = name
         await ctx.response.send_message(f"Staff team is now {name}", ephemeral=True)
 
-    @app_commands.command(name="msgdiscovery", description="Toggle message link discovery.")
+    @app_commands.command(
+        name="msgdiscovery", description="Toggle message link discovery."
+    )
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.guild_only()
     async def toggle_msg_discovery(self, ctx: discord.Interaction):
         """This command is used to toggle message link discovery."""
         self._config.msg_discovery = not self._config.msg_discovery
-        await ctx.response.send_message(f"Message link discovery is now {self._config.msg_discovery}", ephemeral=True)
+        await ctx.response.send_message(
+            f"Message link discovery is now {self._config.msg_discovery}",
+            ephemeral=True,
+        )
 
     @app_commands.command(name="stripbuttons", description="Toggle button stripping.")
     @app_commands.checks.has_permissions(administrator=True)
@@ -88,12 +105,18 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
     async def toggle_button_stripping(self, ctx: discord.Interaction):
         """This command is used to toggle button stripping."""
         self._config.strip_buttons = not self._config.strip_buttons
-        await ctx.response.send_message(f"Button stripping is now {self._config.strip_buttons}", ephemeral=True)
+        await ctx.response.send_message(
+            f"Button stripping is now {self._config.strip_buttons}", ephemeral=True
+        )
 
-    @app_commands.command(name="communitysupport", description="Change the community support roles.")
+    @app_commands.command(
+        name="communitysupport", description="Change the community support roles."
+    )
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.guild_only()
-    async def change_community_roles(self, ctx: discord.Interaction, role: discord.Role):
+    async def change_community_roles(
+        self, ctx: discord.Interaction, role: discord.Role
+    ):
         """This command is used to change the community support roles,
         COMSUP roles are added to channels side-by-side without any perms.
         If a role is already here, it will be removed."""
@@ -101,10 +124,14 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
         comsup = self._config.community_roles
         if role in comsup:
             comsup.remove(role)
-            await rspns.send_message(f"Removed {role.mention} from community support roles.", ephemeral=True)
+            await rspns.send_message(
+                f"Removed {role.mention} from community support roles.", ephemeral=True
+            )
         else:
             comsup.append(role)
-            await rspns.send_message(f"Added {role.mention} to community support roles.", ephemeral=True)
+            await rspns.send_message(
+                f"Added {role.mention} to community support roles.", ephemeral=True
+            )
         self._config.community_roles = comsup
 
     @app_commands.command(name="guild", description="Change the guild.")
@@ -114,7 +141,9 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
         """This command is used to change the guild. Use in the guild you want to change to."""
         assert isinstance(ctx.guild, discord.Guild)
         self._config.guild = ctx.guild
-        await ctx.response.send_message(f"Guild is now {ctx.guild.name}", ephemeral=True)
+        await ctx.response.send_message(
+            f"Guild is now {ctx.guild.name}", ephemeral=True
+        )
 
     @app_commands.command(name="owner", description="Change the owners of the bot.")
     @app_commands.check(is_owner)
@@ -124,9 +153,13 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
         rspns = ctx.response
         owner_users = self._config.owner
         owner_users.append(user.id)
-        await rspns.send_message(f"Added {user.mention} as admin. To remove edit config,json.", ephemeral=True)
+        await rspns.send_message(
+            f"Added {user.mention} as admin. To remove edit config,json.",
+            ephemeral=True,
+        )
         self._config.owner = owner_users
 
+
 async def setup(bot: commands.Bot):
-    '''Adds the cog to the bot.'''
+    """Adds the cog to the bot."""
     await bot.add_cog(Settings(bot, Config(bot)))
