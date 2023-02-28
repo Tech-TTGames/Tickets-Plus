@@ -79,6 +79,22 @@ class Overrides(commands.GroupCog, name="override", description="Owner override 
         await ctx.followup.send("Sent logs.")
         logging.info("Logs sent.")
 
+    @app_commands.command(name="config", description="Sends the config.")
+    @app_commands.check(is_owner)
+    async def config(self, ctx: discord.Interaction):
+        """Sends the config."""
+        await ctx.response.defer(thinking=True)
+        logging.info("Sending config to %s...", str(ctx.user))
+        file_path = os.path.join(PROG_DIR, "config.json")
+        try:
+            await ctx.user.send(file=discord.File(fp=file_path))
+        except FileNotFoundError:
+            await ctx.followup.send("Config not found.")
+            logging.info("Config not found.")
+            return
+        await ctx.followup.send("Sent config.")
+        logging.info("Config sent.")
+
 async def setup(bot: commands.Bot):
     """Setup function for the cog."""
     await bot.add_cog(Overrides(bot, Config(bot)))
