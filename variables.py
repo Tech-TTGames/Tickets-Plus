@@ -12,7 +12,8 @@ import discord
 from discord.ext import commands
 
 #v[major].[minor].[release].[build]
-VERSION = "v0.0.2.4b"
+#MAJOR and MINOR version changes can be compatibility-breaking
+VERSION = "v0.1.0.0"
 PROG_DIR = os.path.dirname(os.path.realpath(__file__))
 
 intents = discord.Intents.default()
