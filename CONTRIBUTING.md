@@ -1,4 +1,4 @@
-Some basic things to note before contributing. <br>
+# Some basic things to note before contributing. <br>
 -  Create requests in good faith. <br>
 - Make sure yout code is as *clean* as can be <br>
 - Explain your reasoning when making a PR <br>
