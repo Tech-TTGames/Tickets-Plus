@@ -5,8 +5,10 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from extchecks import is_owner
+from extchecks import is_owner_gen
 from variables import Config
+
+IS_OWNER = is_owner_gen()
 
 
 class Settings(commands.GroupCog, name="settings", description="Settings for the bot."):
@@ -21,6 +23,7 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
     @app_commands.command(name="tracked", description="Change the tracked users.")
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.guild_only()
+    @app_commands.describe(user="The user to track/untrack.")
     async def change_tracked(self, ctx: discord.Interaction, user: discord.User):
         """
         This command is used to change the tracked users.
@@ -39,9 +42,10 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
     @app_commands.command(name="staff", description="Change the staff roles.")
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.guild_only()
+    @app_commands.describe(role="The role to add/remove from staff roles.")
     async def change_staff(self, ctx: discord.Interaction, role: discord.Role):
         """
-        This command is used to change the staff roles, Staff is added to the notes threads.
+        This command is used to change the staff roles, Staff are allowed to use staff commands.
         If a role is already here, it will be removed.
         """
         rspns = ctx.response
@@ -58,25 +62,33 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
             )
         self._config.staff = stff
 
-    @app_commands.command(
-        name="staffping", description="Change the staff ping setting."
-    )
+    @app_commands.command(name="observers", description="Change the observers roles.")
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.guild_only()
-    async def change_staffping(self, ctx: discord.Interaction):
+    @app_commands.describe(role="The role to add/remove from observers roles.")
+    async def change_observers(self, ctx: discord.Interaction, role: discord.Role):
         """
-        This command is used to change the staff ping setting.
-        If it is on, it will be turned off, and vice versa.
+        This command is used to change the observers roles, which are pinged one new notes threads.
+        If a role is already here, it will be removed.
         """
-        stf_ping = self._config.staff_ping
-        self._config.staff_ping = not stf_ping
-        await ctx.response.send_message(
-            f"Staff ping is now {not stf_ping}", ephemeral=True
-        )
+        rspns = ctx.response
+        obsrvrs = self._config.observers
+        if role in obsrvrs:
+            obsrvrs.remove(role)
+            await rspns.send_message(
+                f"Removed {role.mention} from ping staff roles.", ephemeral=True
+            )
+        else:
+            obsrvrs.append(role)
+            await rspns.send_message(
+                f"Added {role.mention} to ping staff roles.", ephemeral=True
+            )
+        self._config.observers = obsrvrs
 
     @app_commands.command(name="openmsg", description="Change the open message.")
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.guild_only()
+    @app_commands.describe(message="The new open message.")
     async def change_openmsg(self, ctx: discord.Interaction, message: str):
         """This command is used to change the open message."""
         self._config.open_msg = message
@@ -87,6 +99,7 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
     @app_commands.command(name="staffteam", description="Change the staff team's name.")
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.guild_only()
+    @app_commands.describe(name="The new staff team's name.")
     async def change_staffteam(self, ctx: discord.Interaction, name: str):
         """This command is used to change the staff team's name."""
         self._config.staff_team = name
@@ -120,6 +133,7 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
     )
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.guild_only()
+    @app_commands.describe(role="The role to add/remove from community support roles.")
     async def change_community_roles(
         self, ctx: discord.Interaction, role: discord.Role
     ):
@@ -143,7 +157,7 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
         self._config.community_roles = comsup
 
     @app_commands.command(name="guild", description="Change the guild.")
-    @app_commands.check(is_owner)
+    @app_commands.check(IS_OWNER)
     @app_commands.guild_only()
     async def change_guild(self, ctx: discord.Interaction):
         """This command is used to change the guild. Use in the guild you want to change to."""
@@ -158,7 +172,10 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
         )
 
     @app_commands.command(name="owner", description="Change the owners of the bot.")
-    @app_commands.check(is_owner)
+    @app_commands.check(IS_OWNER)
+    @app_commands.describe(
+        user="The user to add to owners. WARNING: This will not remove them."
+    )
     async def change_owner(self, ctx: discord.Interaction, user: discord.User):
         """
         This command is used to change the owner users.
@@ -175,5 +192,8 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
 
 
 async def setup(bot: commands.Bot):
-    """Adds the cog to the bot."""
-    await bot.add_cog(Settings(bot, Config(bot)))
+    """Setup function for the cog."""
+    global IS_OWNER  # pylint: disable=global-statement
+    cnfg = getattr(bot, "config", Config(bot))
+    IS_OWNER = is_owner_gen(cnfg)
+    await bot.add_cog(Settings(bot, cnfg))
