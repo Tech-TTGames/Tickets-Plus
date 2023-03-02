@@ -28,4 +28,5 @@ async def on_ready():
 
 
 if __name__ == "__main__":
+    setattr(bot, "cnfg", cnfg)
     bot.run(scrt.token, log_handler=handler, root_logger=True)

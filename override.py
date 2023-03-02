@@ -120,4 +120,4 @@ class Overrides(
 
 async def setup(bot: commands.Bot):
     """Setup function for the cog."""
-    await bot.add_cog(Overrides(bot, Config(bot)))
+    await bot.add_cog(Overrides(bot, getattr(bot, "config")))

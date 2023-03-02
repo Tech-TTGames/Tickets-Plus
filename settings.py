@@ -176,4 +176,4 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
 
 async def setup(bot: commands.Bot):
     """Adds the cog to the bot."""
-    await bot.add_cog(Settings(bot, Config(bot)))
+    await bot.add_cog(Settings(bot, getattr(bot, "config")))
