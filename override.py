@@ -12,6 +12,7 @@ from variables import PROG_DIR, Config
 
 IS_OWNER = is_owner_gen()
 
+
 class Overrides(
     commands.GroupCog, name="override", description="Owner override commands."
 ):
@@ -123,6 +124,6 @@ class Overrides(
 
 async def setup(bot: commands.Bot):
     """Setup function for the cog."""
-    global IS_OWNER # pylint: disable=global-statement
+    global IS_OWNER  # pylint: disable=global-statement
     IS_OWNER = is_owner_gen(getattr(bot, "config"))
     await bot.add_cog(Overrides(bot, getattr(bot, "config")))

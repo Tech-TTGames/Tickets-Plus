@@ -10,6 +10,7 @@ from variables import Config
 
 IS_OWNER = is_owner_gen()
 
+
 class Settings(commands.GroupCog, name="settings", description="Settings for the bot."):
     """Provides commands to change the bot's settings."""
 
@@ -172,7 +173,9 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
 
     @app_commands.command(name="owner", description="Change the owners of the bot.")
     @app_commands.check(IS_OWNER)
-    @app_commands.describe(user="The user to add to owners. WARNING: This will not remove them.")
+    @app_commands.describe(
+        user="The user to add to owners. WARNING: This will not remove them."
+    )
     async def change_owner(self, ctx: discord.Interaction, user: discord.User):
         """
         This command is used to change the owner users.
@@ -190,6 +193,6 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
 
 async def setup(bot: commands.Bot):
     """Adds the cog to the bot."""
-    global IS_OWNER # pylint: disable=global-statement
+    global IS_OWNER  # pylint: disable=global-statement
     IS_OWNER = is_owner_gen(getattr(bot, "config"))
     await bot.add_cog(Settings(bot, getattr(bot, "config")))

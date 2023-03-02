@@ -182,6 +182,7 @@ class Utility(commands.Cog, name="Main Utilities"):
             "Invalid command execution space.", ephemeral=True
         )
 
+
 async def setup(bot: commands.Bot):
     """Setup function for the cog."""
     global CONFG  # pylint: disable=global-statement
