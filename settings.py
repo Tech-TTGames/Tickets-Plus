@@ -41,7 +41,7 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
     @app_commands.guild_only()
     async def change_staff(self, ctx: discord.Interaction, role: discord.Role):
         """
-        This command is used to change the staff roles, Staff is added to the notes threads.
+        This command is used to change the staff roles, Staff are allowed to use staff commands.
         If a role is already here, it will be removed.
         """
         rspns = ctx.response
@@ -58,21 +58,27 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
             )
         self._config.staff = stff
 
-    @app_commands.command(
-        name="staffping", description="Change the staff ping setting."
-    )
+    @app_commands.command(name="observers", description="Change the observers roles.")
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.guild_only()
-    async def change_staffping(self, ctx: discord.Interaction):
+    async def change_observers(self, ctx: discord.Interaction, role: discord.Role):
         """
-        This command is used to change the staff ping setting.
-        If it is on, it will be turned off, and vice versa.
+        This command is used to change the observers roles, which are pinged one new notes threads.
+        If a role is already here, it will be removed.
         """
-        stf_ping = self._config.staff_ping
-        self._config.staff_ping = not stf_ping
-        await ctx.response.send_message(
-            f"Staff ping is now {not stf_ping}", ephemeral=True
-        )
+        rspns = ctx.response
+        obsrvrs = self._config.observers
+        if role in obsrvrs:
+            obsrvrs.remove(role)
+            await rspns.send_message(
+                f"Removed {role.mention} from ping staff roles.", ephemeral=True
+            )
+        else:
+            obsrvrs.append(role)
+            await rspns.send_message(
+                f"Added {role.mention} to ping staff roles.", ephemeral=True
+            )
+        self._config.observers = obsrvrs
 
     @app_commands.command(name="openmsg", description="Change the open message.")
     @app_commands.checks.has_permissions(administrator=True)

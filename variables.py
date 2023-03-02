@@ -13,7 +13,7 @@ from discord.ext import commands
 
 # v[major].[minor].[release].[build]
 # MAJOR and MINOR version changes can be compatibility-breaking
-VERSION = "v0.0.2.5"
+VERSION = "v0.0.3.0"
 PROG_DIR = os.path.dirname(os.path.realpath(__file__))
 
 intents = discord.Intents.default()
@@ -115,14 +115,19 @@ class Config:  # Note: Currently config is global, but I plan to make it per ser
         self.update()
 
     @property
-    def staff_ping(self) -> bool:
-        """Returns if staff should be pinged on ticket creation"""
-        return self._config.get("staff_ping", True)
+    def observers(self) -> List[discord.Role]:
+        """List of roles who are pinged in staff notes"""
+        staff = []
+        for role in self._config.get("observers", []):
+            stf_role = self.guild.get_role(role)
+            if isinstance(stf_role, discord.Role):
+                staff.append(stf_role)
+        return staff
 
-    @staff_ping.setter
-    def staff_ping(self, value: bool) -> None:
-        """Sets if staff should be pinged on ticket creation"""
-        self._config["staff_ping"] = value
+    @observers.setter
+    def observers(self, value: List[discord.Role]) -> None:
+        """Sets the list of users who are pinged in staff notes"""
+        self._config["observers"] = [role.id for role in value]
         self.update()
 
     @property

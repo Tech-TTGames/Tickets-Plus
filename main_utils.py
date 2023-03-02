@@ -46,9 +46,9 @@ class Utility(commands.Cog, name="Main Utilities"):
                     logging.info(
                         "Created thread %s for %s", nts_thrd.name, channel.name
                     )
-                    if self._config.staff_ping:
+                    if self._config.observers:
                         inv = await nts_thrd.send(
-                            " ".join([role.mention for role in cnfg.staff])
+                            " ".join([role.mention for role in cnfg.observers])
                         )
                         await inv.delete()
                     if self._config.strip_buttons:
@@ -157,6 +157,29 @@ class Utility(commands.Cog, name="Main Utilities"):
             )
             await ctx.channel.send(f"**{self._config.staff_team}:** " + message)
 
+    @app_commands.command(name="join", description="Join a ticket's staff notes.")
+    @app_commands.guild_only()
+    @app_commands.checks.has_any_role(*CONFG.staff_ids)
+    async def join(self, ctx: discord.Interaction):
+        """
+        EXTENSION 3: Staff notes.
+        This command is used to join a ticket's staff notes.
+        """
+        if isinstance(ctx.channel, discord.TextChannel):
+            try:
+                await ctx.channel.threads[0].add_user(ctx.user)
+            except IndexError:
+                await ctx.response.send_message(
+                    "No staff notes thread found.", ephemeral=True
+                )
+                return
+            await ctx.response.send_message(
+                "Joined the staff notes for this ticket.", ephemeral=True
+            )
+            return
+        await ctx.response.send_message(
+            "Invalid command execution space.", ephemeral=True
+        )
 
 async def setup(bot: commands.Bot):
     """Setup function for the cog."""
