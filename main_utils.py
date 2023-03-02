@@ -27,8 +27,9 @@ class Utility(commands.Cog, name="Main Utilities"):
         Minor Extension 2: Safe Community Support
 
         This event works based on the ticket_users configuration.
+        
         Please ensure you add your Ticket bot ID or approved
-         Ticket invoking user IDs to the config file or via commands.
+        Ticket invoking user IDs to the config file or via commands.
         """
         if isinstance(channel, discord.channel.TextChannel):
             gld = channel.guild
