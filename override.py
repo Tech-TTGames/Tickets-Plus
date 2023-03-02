@@ -7,8 +7,10 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from extchecks import is_owner
+from extchecks import is_owner_gen
 from variables import PROG_DIR, Config
+
+IS_OWNER = is_owner_gen()
 
 
 class Overrides(
@@ -23,7 +25,7 @@ class Overrides(
         logging.info("Loaded %s", self.__class__.__name__)
 
     @app_commands.command(name="reload", description="Reloads the bot's cogs.")
-    @app_commands.check(is_owner)
+    @app_commands.check(IS_OWNER)
     async def reload(self, ctx: discord.Interaction):
         """Reloads the bot's cogs."""
         await ctx.response.send_message("Reloading cogs...")
@@ -37,7 +39,7 @@ class Overrides(
         logging.info("Finished syncing tree.")
 
     @app_commands.command(name="restart", description="Restarts the bot.")
-    @app_commands.check(is_owner)
+    @app_commands.check(IS_OWNER)
     async def restart(self, ctx: discord.Interaction):
         """Restarts the bot."""
         await ctx.response.send_message("Restarting...")
@@ -47,7 +49,7 @@ class Overrides(
     @app_commands.command(
         name="pull", description="Pulls the latest changes from the git repo."
     )
-    @app_commands.check(is_owner)
+    @app_commands.check(IS_OWNER)
     async def pull(self, ctx: discord.Interaction):
         """Pulls the latest changes from the git repo."""
         await ctx.response.send_message("Pulling latest changes...")
@@ -73,7 +75,8 @@ class Overrides(
         )
 
     @app_commands.command(name="logs", description="Sends the logs.")
-    @app_commands.check(is_owner)
+    @app_commands.check(IS_OWNER)
+    @app_commands.describe(id_no="Log ID (0 for latest log)")
     async def logs(self, ctx: discord.Interaction, id_no: int = 0):
         """Sends the logs."""
         await ctx.response.defer(thinking=True)
@@ -90,7 +93,7 @@ class Overrides(
         logging.info("Logs sent.")
 
     @app_commands.command(name="config", description="Sends the config.")
-    @app_commands.check(is_owner)
+    @app_commands.check(IS_OWNER)
     async def config(self, ctx: discord.Interaction):
         """Sends the config."""
         await ctx.response.defer(thinking=True)
@@ -106,7 +109,8 @@ class Overrides(
         logging.info("Config sent.")
 
     @app_commands.command(name="dumpconfig", description="Deletes all data from config")
-    @app_commands.check(is_owner)
+    @app_commands.check(IS_OWNER)
+    @app_commands.describe(confirm="Confirm dump")
     async def dump_config(self, ctx: discord.Interaction, confirm: bool):
         """Dump config of bot"""
         if confirm:
@@ -120,4 +124,7 @@ class Overrides(
 
 async def setup(bot: commands.Bot):
     """Setup function for the cog."""
-    await bot.add_cog(Overrides(bot, Config(bot)))
+    global IS_OWNER  # pylint: disable=global-statement
+    cnfg = getattr(bot, "config", Config(bot))
+    IS_OWNER = is_owner_gen(cnfg)
+    await bot.add_cog(Overrides(bot, cnfg))
