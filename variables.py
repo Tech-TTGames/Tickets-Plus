@@ -168,7 +168,7 @@ class Config:  # Note: Currently config is global, but I plan to make it per ser
     @property
     def strip_buttons(self) -> bool:
         """Returns if buttons should be stripped"""
-        return self._config.get("strip_buttons", True)
+        return self._config.get("strip_buttons", False)
 
     @strip_buttons.setter
     def strip_buttons(self, value: bool) -> None:
