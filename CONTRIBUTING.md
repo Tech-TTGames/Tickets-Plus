@@ -1,4 +1,4 @@
-# Some basic things to note before contributing.
+# Some basic things to note before contributing
 
 - Create requests in good faith.
 - Make sure yout code is as *clean* as can be
