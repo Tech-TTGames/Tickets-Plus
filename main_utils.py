@@ -26,7 +26,7 @@ class Utility(commands.Cog, name="Main Utilities"):
         EXTENSION 1 + 3: Staff notes for tickets! and button stripping.
         Minor Extension 2: Safe Community Support
 
-        This event works based on bot creation logic.
+        This event works based on the ticket_users configuration.
         Please ensure you add your ticket bot or approved
          ticket creation users to the ticket users configuration.
         """
