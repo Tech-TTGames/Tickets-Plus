@@ -75,6 +75,7 @@ class Overrides(
 
     @app_commands.command(name="logs", description="Sends the logs.")
     @app_commands.check(IS_OWNER)
+    @app_commands.describe(id_no="Log ID (0 for latest log)")
     async def logs(self, ctx: discord.Interaction, id_no: int = 0):
         """Sends the logs."""
         await ctx.response.defer(thinking=True)
@@ -108,6 +109,7 @@ class Overrides(
 
     @app_commands.command(name="dumpconfig", description="Deletes all data from config")
     @app_commands.check(IS_OWNER)
+    @app_commands.describe(confirm="Confirm dump")
     async def dump_config(self, ctx: discord.Interaction, confirm: bool):
         """Dump config of bot"""
         if confirm:

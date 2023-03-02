@@ -22,6 +22,7 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
     @app_commands.command(name="tracked", description="Change the tracked users.")
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.guild_only()
+    @app_commands.describe(user="The user to track/untrack.")
     async def change_tracked(self, ctx: discord.Interaction, user: discord.User):
         """
         This command is used to change the tracked users.
@@ -40,6 +41,7 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
     @app_commands.command(name="staff", description="Change the staff roles.")
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.guild_only()
+    @app_commands.describe(role="The role to add/remove from staff roles.")
     async def change_staff(self, ctx: discord.Interaction, role: discord.Role):
         """
         This command is used to change the staff roles, Staff are allowed to use staff commands.
@@ -62,6 +64,7 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
     @app_commands.command(name="observers", description="Change the observers roles.")
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.guild_only()
+    @app_commands.describe(role="The role to add/remove from observers roles.")
     async def change_observers(self, ctx: discord.Interaction, role: discord.Role):
         """
         This command is used to change the observers roles, which are pinged one new notes threads.
@@ -84,6 +87,7 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
     @app_commands.command(name="openmsg", description="Change the open message.")
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.guild_only()
+    @app_commands.describe(message="The new open message.")
     async def change_openmsg(self, ctx: discord.Interaction, message: str):
         """This command is used to change the open message."""
         self._config.open_msg = message
@@ -94,6 +98,7 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
     @app_commands.command(name="staffteam", description="Change the staff team's name.")
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.guild_only()
+    @app_commands.describe(name="The new staff team's name.")
     async def change_staffteam(self, ctx: discord.Interaction, name: str):
         """This command is used to change the staff team's name."""
         self._config.staff_team = name
@@ -127,6 +132,7 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
     )
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.guild_only()
+    @app_commands.describe(role="The role to add/remove from community support roles.")
     async def change_community_roles(
         self, ctx: discord.Interaction, role: discord.Role
     ):
@@ -166,6 +172,7 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
 
     @app_commands.command(name="owner", description="Change the owners of the bot.")
     @app_commands.check(IS_OWNER)
+    @app_commands.describe(user="The user to add to owners. WARNING: This will not remove them.")
     async def change_owner(self, ctx: discord.Interaction, user: discord.User):
         """
         This command is used to change the owner users.

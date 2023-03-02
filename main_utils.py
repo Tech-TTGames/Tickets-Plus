@@ -105,7 +105,7 @@ class Utility(commands.Cog, name="Main Utilities"):
     @app_commands.command(
         name="ping", description="The classic ping command. Checks the bot's latency."
     )
-    async def ping(self, ctx):
+    async def ping(self, ctx: discord.Interaction):
         """This command is used to check if the bot is online."""
         await ctx.response.send_message(
             "Pong! The bot is online.\nPing: "
@@ -132,6 +132,7 @@ class Utility(commands.Cog, name="Main Utilities"):
     @app_commands.command(name="respond", description="Respond to a ticket as the bot.")
     @app_commands.guild_only()
     @app_commands.checks.has_any_role(*CONFG.staff_ids)
+    @app_commands.describe(message="The message to send to the ticket.")
     async def respond(self, ctx: discord.Interaction, message: str):
         """
         EXTENSION 2: Anonymised staff responses.
