@@ -4,6 +4,8 @@ A Discord bot that adds extensions to the [Tickets](https://github.com/TicketsBo
 Works as a supplimentary, separate bot.
 When a feature is added to the main bot it will be removed from here.
 
+Note: This setup assumes you have the main bot added to the server and configured, Support will not be provided to those who do not assume a likewise configuraton.
+
 ## Feature 1 - Staff Notes
 
 Private threads are free!
@@ -37,12 +39,14 @@ Automatically adds roles to the channels created by the tracked users.
  Here are the steps to host your copy of this bot:
 
 1. Clone or Download the repo to your machine of choice.
-2. Run `pip install -r requirements.txt`
-3. Create the bot on [Discord Developers](https://discord.com/developers/applications).
+2. Run `python -m venv 'virt environment name'` to create an enviroment to avoid dependency conflicts.
+3. Invoke `/'venv name here'/scripts/activate` to enter into the enviroment for use.
+4. Run (Assuming pip and python are already on the machine) `pip install -r requirements.txt`
+5. Create the bot on [Discord Developers](https://discord.com/developers/applications).
     1. Create application however you want.
     2. Create a bot. No Privilaged intents are necessary (Unless you want features that use it). Probably disable 'Public Bot'.
     3. Input your bot token to secret.json. (Refer to example_secret.json)
     4. Use `https://discord.com/api/oauth2/authorize?client_id=<APP_ID>&permissions=397284478096&scope=bot%20applications.commands` to invite the bot. replace `<APP_ID>` with the numbers from your apps `https://discord.com/developers/applications/<APP_ID>/`.
-4. Fill out config.json based on the information about your server. (Refer to example_config.json)
-5. Start your bot!
+6. Fill out config.json based on the information about your server. (Refer to example_config.json)
+7. Start your bot!
     1. Probably add a background service that will restart the bot on boot. I use systemctl for my bots.
