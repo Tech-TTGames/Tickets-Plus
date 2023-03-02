@@ -5,7 +5,7 @@
     "guild_id": 111111111111111111,
     "info_guild_id": "Guild (server) ID. Bot will only work in this guild.",
     "ticket_users": [508391840525975553],
-    "info_ticket_users": "User IDs. The bot will create threads under channels created by those users. The currently inputed ID is for the main Tickets bot",
+    "info_ticket_users": "User IDs. The bot will create threads under channels created by those users. For example: Tickets bots.",
     "staff": [111111111111111111, 222222222222222222],
     "info_staff": "Role IDs. They will be added to the threads when they are created.",
     "staff_ping": true,
