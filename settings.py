@@ -5,9 +5,10 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from extchecks import is_owner
+from extchecks import is_owner_gen
 from variables import Config
 
+IS_OWNER = is_owner_gen()
 
 class Settings(commands.GroupCog, name="settings", description="Settings for the bot."):
     """Provides commands to change the bot's settings."""
@@ -149,7 +150,7 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
         self._config.community_roles = comsup
 
     @app_commands.command(name="guild", description="Change the guild.")
-    @app_commands.check(is_owner)
+    @app_commands.check(IS_OWNER)
     @app_commands.guild_only()
     async def change_guild(self, ctx: discord.Interaction):
         """This command is used to change the guild. Use in the guild you want to change to."""
@@ -164,7 +165,7 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
         )
 
     @app_commands.command(name="owner", description="Change the owners of the bot.")
-    @app_commands.check(is_owner)
+    @app_commands.check(IS_OWNER)
     async def change_owner(self, ctx: discord.Interaction, user: discord.User):
         """
         This command is used to change the owner users.
@@ -182,4 +183,6 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
 
 async def setup(bot: commands.Bot):
     """Adds the cog to the bot."""
+    global IS_OWNER # pylint: disable=global-statement
+    IS_OWNER = is_owner_gen(getattr(bot, "config"))
     await bot.add_cog(Settings(bot, getattr(bot, "config")))
