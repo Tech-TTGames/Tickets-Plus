@@ -4,6 +4,8 @@ A Discord bot that adds extensions to the [Tickets](https://github.com/TicketsBo
 Works as a supplimentary, separate bot.
 When a feature is added to the main bot it will be removed from here.
 
+Note: This setup assumes you have the main bot added to the server and configured, Support will not be provided to those who do not assume a likewise configuraton.
+
 ## Feature 1 - Staff Notes
 
 Private threads are free!
@@ -37,7 +39,7 @@ Automatically adds roles to the channels created by the tracked users.
  Here are the steps to host your copy of this bot:
 
 1. Clone or Download the repo to your machine of choice.
-2. Run `pip install -r requirements.txt`
+2. Run (Assuming pip and python are already on the machine) `pip install -r requirements.txt`
 3. Create the bot on [Discord Developers](https://discord.com/developers/applications).
     1. Create application however you want.
     2. Create a bot. No Privilaged intents are necessary (Unless you want features that use it). Probably disable 'Public Bot'.
