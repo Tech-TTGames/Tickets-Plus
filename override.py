@@ -125,5 +125,6 @@ class Overrides(
 async def setup(bot: commands.Bot):
     """Setup function for the cog."""
     global IS_OWNER  # pylint: disable=global-statement
-    IS_OWNER = is_owner_gen(getattr(bot, "config"))
-    await bot.add_cog(Overrides(bot, getattr(bot, "config")))
+    cnfg = getattr(bot, "config", Config(bot))
+    IS_OWNER = is_owner_gen(cnfg)
+    await bot.add_cog(Overrides(bot, cnfg))

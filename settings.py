@@ -192,7 +192,8 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
 
 
 async def setup(bot: commands.Bot):
-    """Adds the cog to the bot."""
+    """Setup function for the cog."""
     global IS_OWNER  # pylint: disable=global-statement
-    IS_OWNER = is_owner_gen(getattr(bot, "config"))
-    await bot.add_cog(Settings(bot, getattr(bot, "config")))
+    cnfg = getattr(bot, "config", Config(bot))
+    IS_OWNER = is_owner_gen(cnfg)
+    await bot.add_cog(Settings(bot, cnfg))

@@ -186,5 +186,5 @@ class Utility(commands.Cog, name="Main Utilities"):
 async def setup(bot: commands.Bot):
     """Setup function for the cog."""
     global CONFG  # pylint: disable=global-statement
-    CONFG = getattr(bot, "config")
+    CONFG = getattr(bot, "config", Config(bot))
     await bot.add_cog(Utility(bot, CONFG))
