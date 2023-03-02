@@ -23,12 +23,12 @@ class Utility(commands.Cog, name="Main Utilities"):
     @commands.Cog.listener(name="on_guild_channel_create")
     async def on_channel_create(self, channel):
         """
-        EXTENSION 1 + 3: Staff notes for tickets! and button stripping.
+        EXTENSION 1 + 3: Staff notes for Tickets! and button stripping.
         Minor Extension 2: Safe Community Support
 
         This event works based on the ticket_users configuration.
-        Please ensure you add your ticket bot ID or approved
-         ticket invoking user IDs to the config file or via commands.
+        Please ensure you add your Ticket bot ID or approved
+         Ticket invoking user IDs to the config file or via commands.
         """
         if isinstance(channel, discord.channel.TextChannel):
             gld = channel.guild
