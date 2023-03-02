@@ -27,7 +27,7 @@ class Utility(commands.Cog, name="Main Utilities"):
         Minor Extension 2: Safe Community Support
 
         This event works based on bot creation logic.
-        Please ensure you add your ticket bot or approved 
+        Please ensure you add your ticket bot or approved
          ticket creation users to the ticket users configuration.
         """
         if isinstance(channel, discord.channel.TextChannel):
