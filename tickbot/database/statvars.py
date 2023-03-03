@@ -154,4 +154,3 @@ class Config:
     def owner(self) -> List[int]:
         """List of user ids who are owner"""
         return self._config.get("owner_id", [414075045678284810])
-
