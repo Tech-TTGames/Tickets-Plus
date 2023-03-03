@@ -18,8 +18,8 @@ from tickbot.database.statvars import (
 def init_bot():
     """Initializes the bot"""
     bot = commands.AutoShardedBot(command_prefix="~", intents=intents)
-    cnfg = Config()
     scrt = Secret()
+    # TODO: Actually use the configdb
 
     @bot.event
     async def on_ready():
@@ -41,5 +41,4 @@ def init_bot():
         await bot.tree.sync()
         logging.info("Finished loading cogs.")
 
-    setattr(bot, "config", cnfg)
     bot.run(scrt.token, log_handler=handler, root_logger=True)
