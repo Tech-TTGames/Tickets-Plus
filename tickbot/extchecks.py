@@ -2,7 +2,7 @@
 
 import discord
 
-from variables import Config
+from tickbot.database.statvars import Config
 
 CONFG = Config("offline")
 

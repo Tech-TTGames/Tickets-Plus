@@ -3,7 +3,9 @@ Declare variables used in bot.
 This file is a based on the variables.py file from my other bot.
 """
 import json
-import os
+import pathlib
+from os import remove
+import logging
 from logging.handlers import RotatingFileHandler
 from string import Template
 from typing import List, Literal, Union
@@ -14,11 +16,11 @@ from discord.ext import commands
 # v[major].[minor].[release].[build]
 # MAJOR and MINOR version changes can be compatibility-breaking
 VERSION = "v0.1.0.0"
-PROG_DIR = os.path.dirname(os.path.realpath(__file__))
+PROG_DIR = pathlib.Path(__file__).parent.parent.parent.absolute()
 
 intents = discord.Intents.default()
 handler = RotatingFileHandler(
-    filename=os.path.join(PROG_DIR, "log", "discord.log"),
+    filename=pathlib.Path(PROG_DIR, "log", "discord.log"),
     encoding="utf-8",
     mode="w",
     backupCount=10,
@@ -30,7 +32,7 @@ class Secret:
     """Class for secret.json management"""
 
     def __init__(self) -> None:
-        self._file = os.path.join(PROG_DIR, "secret.json")
+        self._file = pathlib.Path(PROG_DIR, "secret.json")
         with open(self._file, encoding="utf-8", mode="r") as secret_f:
             self.secrets = json.load(secret_f)
         self.token = self.secrets["token"]
@@ -41,14 +43,14 @@ class Secret:
     def __str__(self) -> str:
         return "[OBFUSCATED]"
 
-
-class Config:  # Note: Currently config is global, but I plan to make it per server.
-    """Class for convinient config access"""
+class Config:
+    """DEPRECATED. Class for convinient config access"""
 
     def __init__(self, bot: Union[commands.Bot, Literal["offline"]]) -> None:
-        self._file = os.path.join(PROG_DIR, "config.json")
+        self._file = pathlib.Path(PROG_DIR, "config.json")
         with open(self._file, encoding="utf-8", mode="r") as config_f:
             self._config: dict = json.load(config_f)
+        logging.warning("Config is deprecated. Use OnlineConfig instead.")
         self._bot = bot
 
     def __dict__(self) -> dict:
@@ -62,7 +64,7 @@ class Config:  # Note: Currently config is global, but I plan to make it per ser
 
     def dump(self) -> None:
         """Wipes everything but guild id from config"""
-        os.remove(self._file)
+        remove(self._file)
         self._config = {"guild_id": self._config["guild_id"]}
         self.update()
 

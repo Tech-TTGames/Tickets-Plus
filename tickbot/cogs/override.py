@@ -7,8 +7,8 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from extchecks import is_owner_gen
-from variables import PROG_DIR, Config
+from tickbot.extchecks import is_owner_gen
+from tickbot.database.statvars import PROG_DIR, Config
 
 IS_OWNER = is_owner_gen()
 
@@ -30,9 +30,9 @@ class Overrides(
         """Reloads the bot's cogs."""
         await ctx.response.send_message("Reloading cogs...")
         logging.info("Reloading cogs...")
-        await self._bt.reload_extension("main_utils")
-        await self._bt.reload_extension("settings")
-        await self._bt.reload_extension("override")
+        await self._bt.reload_extension("tickbot.cogs.main_utils")
+        await self._bt.reload_extension("tickbot.cogs.settings")
+        await self._bt.reload_extension("tickbot.cogs.override")
         await ctx.channel.send("Reloaded cogs.")  # type: ignore
         logging.info("Finished reloading cogs.")
         await self._bt.tree.sync()
