@@ -83,3 +83,18 @@ class CommunityRole(Base):
 
     # Relationships
     guild: Mapped["Guild"] = relationship(back_populates="community_roles")
+
+class User(Base):
+    """User table"""
+    # TODO: Add more columns according to the needs
+
+    __tablename__ = "users"
+
+    # Simple columns
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column()
+
+    # Relationships
+
+    # Toggles
+    is_owner: Mapped[bool] = mapped_column()
