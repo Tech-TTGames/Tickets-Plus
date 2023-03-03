@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 
 class OnlineConfig:
-    """Class for db-session based config management"""
+    """A convinience layer for the database session."""
 
     def __init__(self, bot: commands.Bot, engine: Engine) -> None:
         self._session = Session(engine)
