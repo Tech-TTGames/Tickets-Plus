@@ -6,7 +6,6 @@ import json
 import logging
 import pathlib
 from logging.handlers import RotatingFileHandler
-from os import remove
 from string import Template
 from typing import Any, List, Literal, Union
 
@@ -67,24 +66,12 @@ class Config:
         with open(self._file, encoding="utf-8", mode="r") as config_f:
             self._config: dict = json.load(config_f)
         logging.warning(
-            "Config is deprecated. Use OnlineConfig and MiniConfig instead."
+            "Config is deprecated and read-only. Use OnlineConfig and MiniConfig instead."
         )
         self._bot = bot
 
     def __dict__(self) -> dict:
         return self._config
-
-    def update(self) -> None:
-        """Update the config.json file to reflect changes"""
-        with open(self._file, encoding="utf-8", mode="w") as config_f:
-            json.dump(self._config, config_f, indent=4)
-            config_f.truncate()
-
-    def dump(self) -> None:
-        """Wipes everything but guild id from config"""
-        remove(self._file)
-        self._config = {"guild_id": self._config["guild_id"]}
-        self.update()
 
     @property
     def guild(self) -> discord.Guild:
@@ -96,22 +83,10 @@ class Config:
             return gld
         raise ValueError("Guild Not Found")
 
-    @guild.setter
-    def guild(self, value: discord.Guild) -> None:
-        """Sets the guild object"""
-        self._config["guild_id"] = value.id
-        self.update()
-
     @property
     def ticket_users(self) -> List[int]:
         """List of users who are tracked for ticket creation"""
         return self._config.get("ticket_users", [508391840525975553])
-
-    @ticket_users.setter
-    def ticket_users(self, value: List[int]) -> None:
-        """Sets the list of users who are tracked for ticket creation"""
-        self._config["ticket_users"] = value
-        self.update()
 
     @property
     def staff(self) -> List[discord.Role]:
@@ -128,12 +103,6 @@ class Config:
         """List of role ids who are staff"""
         return self._config.get("staff", [])
 
-    @staff.setter
-    def staff(self, value: List[discord.Role]) -> None:
-        """Sets the list of users who are staff"""
-        self._config["staff"] = [role.id for role in value]
-        self.update()
-
     @property
     def observers(self) -> List[discord.Role]:
         """List of roles who are pinged in staff notes"""
@@ -144,12 +113,6 @@ class Config:
                 staff.append(stf_role)
         return staff
 
-    @observers.setter
-    def observers(self, value: List[discord.Role]) -> None:
-        """Sets the list of users who are pinged in staff notes"""
-        self._config["observers"] = [role.id for role in value]
-        self.update()
-
     @property
     def open_msg(self) -> Template:
         """Returns the message sent when a ticket is opened"""
@@ -157,44 +120,20 @@ class Config:
             self._config.get("open_msg", "Staff notes for Ticket $channel.")
         )
 
-    @open_msg.setter
-    def open_msg(self, value: str) -> None:
-        """Sets the message sent when a ticket is opened"""
-        self._config["open_msg"] = value
-        self.update()
-
     @property
     def staff_team(self) -> str:
         """Returns the staff team name"""
         return self._config.get("staff_team", "Staff Team")
-
-    @staff_team.setter
-    def staff_team(self, value: str) -> None:
-        """Sets the staff team name"""
-        self._config["staff_team"] = value
-        self.update()
 
     @property
     def msg_discovery(self) -> bool:
         """Returns if messages should be discovered"""
         return self._config.get("msg_discovery", True)
 
-    @msg_discovery.setter
-    def msg_discovery(self, value: bool) -> None:
-        """Sets if messages should be discovered"""
-        self._config["msg_discovery"] = value
-        self.update()
-
     @property
     def strip_buttons(self) -> bool:
         """Returns if buttons should be stripped"""
         return self._config.get("strip_buttons", False)
-
-    @strip_buttons.setter
-    def strip_buttons(self, value: bool) -> None:
-        """Sets if buttons should be stripped"""
-        self._config["strip_buttons"] = value
-        self.update()
 
     @property
     def community_roles(self) -> List[discord.Role]:
@@ -211,19 +150,8 @@ class Config:
         """List of role ids who are staff"""
         return self._config.get("community_roles", [])
 
-    @community_roles.setter
-    def community_roles(self, value: List[discord.Role]) -> None:
-        """Sets the list of users who are staff"""
-        self._config["community_roles"] = [role.id for role in value]
-        self.update()
-
     @property
     def owner(self) -> List[int]:
         """List of user ids who are owner"""
         return self._config.get("owner_id", [414075045678284810])
 
-    @owner.setter
-    def owner(self, value: List[int]) -> None:
-        """Sets the list of users who are owners"""
-        self._config["owner_id"] = value
-        self.update()
