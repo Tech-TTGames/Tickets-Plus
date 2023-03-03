@@ -84,8 +84,10 @@ class CommunityRole(Base):
     # Relationships
     guild: Mapped["Guild"] = relationship(back_populates="community_roles")
 
+
 class User(Base):
     """User table"""
+
     # TODO: Add more columns according to the needs
 
     __tablename__ = "users"

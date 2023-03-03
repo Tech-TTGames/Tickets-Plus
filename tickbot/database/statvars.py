@@ -43,8 +43,10 @@ class Secret:
     def __str__(self) -> str:
         return "[OBFUSCATED]"
 
+
 class MiniConfig:
     """Class for new config.json management"""
+
     def __init__(self) -> None:
         self._file = pathlib.Path(PROG_DIR, "config.json")
         with open(self._file, encoding="utf-8", mode="r") as config_f:
@@ -56,6 +58,7 @@ class MiniConfig:
     def getitem(self, key: str, opt: Any = None) -> Any:
         return self._config.get(key, opt)
 
+
 class Config:
     """DEPRECATED. Class for convinient config access"""
 
@@ -63,7 +66,9 @@ class Config:
         self._file = pathlib.Path(PROG_DIR, "config.json")
         with open(self._file, encoding="utf-8", mode="r") as config_f:
             self._config: dict = json.load(config_f)
-        logging.warning("Config is deprecated. Use OnlineConfig and MiniConfig instead.")
+        logging.warning(
+            "Config is deprecated. Use OnlineConfig and MiniConfig instead."
+        )
         self._bot = bot
 
     def __dict__(self) -> dict:
