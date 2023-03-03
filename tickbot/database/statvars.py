@@ -3,10 +3,10 @@ Declare variables used in bot.
 This file is a based on the variables.py file from my other bot.
 """
 import json
-import pathlib
-from os import remove
 import logging
+import pathlib
 from logging.handlers import RotatingFileHandler
+from os import remove
 from string import Template
 from typing import List, Literal, Union
 
@@ -42,6 +42,7 @@ class Secret:
 
     def __str__(self) -> str:
         return "[OBFUSCATED]"
+
 
 class Config:
     """DEPRECATED. Class for convinient config access"""

@@ -5,7 +5,15 @@ import os
 import discord
 from discord.ext import commands
 
-from tickbot.database.statvars import VERSION, Config, Secret, handler, intents, PROG_DIR
+from tickbot.database.statvars import (
+    PROG_DIR,
+    VERSION,
+    Config,
+    Secret,
+    handler,
+    intents,
+)
+
 
 def init_bot():
     """Initializes the bot"""
@@ -22,7 +30,11 @@ def init_bot():
         logging.info("Loading cogs...")
         for cog in os.listdir(os.path.join(PROG_DIR, "tickbot", "cogs")):
             try:
-                if cog.endswith(".py") and not cog.startswith("_") and os.path.isfile(cog):
+                if (
+                    cog.endswith(".py")
+                    and not cog.startswith("_")
+                    and os.path.isfile(cog)
+                ):
                     await bot.load_extension(f"tickbot.cogs.{cog[:-3]}")
             except commands.ExtensionError as err:
                 logging.error("Failed to load cog %s: %s", cog, err)
