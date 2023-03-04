@@ -16,17 +16,21 @@ class Guild(Base):
 
     # Simple columns
     guid: Mapped[int] = mapped_column(primary_key=True)
-    open_message: Mapped[str] = mapped_column()
-    staff_team: Mapped[str] = mapped_column()
+    open_message: Mapped[str] = mapped_column(default="Staff notes for Ticket $channel.",
+                                               nullable=False
+                                               )
+    staff_team: Mapped[str] = mapped_column(default="Staff Team", nullable=False)
 
     # Relationships
     ticket_users: Mapped[List["TicketUser"]] = relationship(back_populates="guild")
     staff_roles: Mapped[List["StaffRole"]] = relationship(back_populates="guild")
     observers: Mapped[List["ObserversRole"]] = relationship(back_populates="guild")
+    community_roles: Mapped[List["CommunityRole"]] = relationship(back_populates="guild")
+    users: Mapped[List["User"]] = relationship(back_populates="guild")
 
     # Toggles
-    msg_discovery: Mapped[bool] = mapped_column()
-    strip_buttons: Mapped[bool] = mapped_column()
+    msg_discovery: Mapped[bool] = mapped_column(default=True, nullable=False)
+    strip_buttons: Mapped[bool] = mapped_column(default=False, nullable=False)
 
 
 class TicketUser(Base):
@@ -36,8 +40,8 @@ class TicketUser(Base):
 
     # Simple columns
     id: Mapped[int] = mapped_column(primary_key=True)
-    user_id: Mapped[int] = mapped_column()
-    guild_id: Mapped[int] = mapped_column(ForeignKey("general_config.id"))
+    user_id: Mapped[int] = mapped_column(nullable=False)
+    guild_id: Mapped[int] = mapped_column(ForeignKey("general_config.guid"))
 
     # Relationships
     guild: Mapped["Guild"] = relationship(back_populates="ticket_users")
@@ -50,8 +54,8 @@ class StaffRole(Base):
 
     # Simple columns
     guid: Mapped[int] = mapped_column(primary_key=True)
-    role_id: Mapped[int] = mapped_column()
-    guild_id: Mapped[int] = mapped_column(ForeignKey("general_config.id"))
+    role_id: Mapped[int] = mapped_column(nullable=False, unique=True)
+    guild_id: Mapped[int] = mapped_column(ForeignKey("general_config.guid"))
 
     # Relationships
     guild: Mapped["Guild"] = relationship(back_populates="staff_roles")
@@ -64,8 +68,8 @@ class ObserversRole(Base):
 
     # Simple columns
     guid: Mapped[int] = mapped_column(primary_key=True)
-    role_id: Mapped[int] = mapped_column()
-    guild_id: Mapped[int] = mapped_column(ForeignKey("general_config.id"))
+    role_id: Mapped[int] = mapped_column(nullable=False, unique=True)
+    guild_id: Mapped[int] = mapped_column(ForeignKey("general_config.guid"))
 
     # Relationships
     guild: Mapped["Guild"] = relationship(back_populates="observers")
@@ -78,8 +82,8 @@ class CommunityRole(Base):
 
     # Simple columns
     guid: Mapped[int] = mapped_column(primary_key=True)
-    role_id: Mapped[int] = mapped_column()
-    guild_id: Mapped[int] = mapped_column(ForeignKey("general_config.id"))
+    role_id: Mapped[int] = mapped_column(nullable=False, unique=True)
+    guild_id: Mapped[int] = mapped_column(ForeignKey("general_config.guid"))
 
     # Relationships
     guild: Mapped["Guild"] = relationship(back_populates="community_roles")
@@ -88,15 +92,15 @@ class CommunityRole(Base):
 class User(Base):
     """User table"""
 
-    # TODO: Add more columns according to the needs
-
     __tablename__ = "users"
 
     # Simple columns
     id: Mapped[int] = mapped_column(primary_key=True)
-    user_id: Mapped[int] = mapped_column()
+    user_id: Mapped[int] = mapped_column(nullable=False)
+    guild_id: Mapped[int] = mapped_column(ForeignKey("general_config.guid"))
 
     # Relationships
+    guild: Mapped["Guild"] = relationship(back_populates="community_roles")
 
     # Toggles
-    is_owner: Mapped[bool] = mapped_column()
+    is_owner: Mapped[bool] = mapped_column(default=False)

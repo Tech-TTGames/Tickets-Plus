@@ -1,4 +1,4 @@
 """Initiates the bot"""
-from tickbot import init_bot
+from ticket_plus import init_bot
 
 init_bot()

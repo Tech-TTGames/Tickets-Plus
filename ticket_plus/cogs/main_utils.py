@@ -7,7 +7,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from tickbot.database.statvars import VERSION, Config
+from ticket_plus.database.statvars import VERSION, Config
 
 CONFG = Config("offline")
 

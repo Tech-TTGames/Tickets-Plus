@@ -5,10 +5,9 @@ import os
 import discord
 from discord.ext import commands
 
-from tickbot.database.statvars import (
+from ticket_plus.database.statvars import (
     PROG_DIR,
     VERSION,
-    Config,
     Secret,
     handler,
     intents,

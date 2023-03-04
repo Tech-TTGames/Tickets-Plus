@@ -5,8 +5,8 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from tickbot.database.statvars import Config
-from tickbot.extchecks import is_owner_gen
+from ticket_plus.database.statvars import Config
+from ticket_plus.extensions.checks import is_owner_gen
 
 IS_OWNER = is_owner_gen()
 

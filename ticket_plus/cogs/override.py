@@ -7,8 +7,8 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from tickbot.database.statvars import PROG_DIR, Config
-from tickbot.extchecks import is_owner_gen
+from ticket_plus.database.statvars import PROG_DIR, Config
+from ticket_plus.extensions.checks import is_owner_gen
 
 IS_OWNER = is_owner_gen()
 
@@ -107,19 +107,6 @@ class Overrides(
             return
         await ctx.followup.send("Sent config.")
         logging.info("Config sent.")
-
-    @app_commands.command(name="dumpconfig", description="Deletes all data from config")
-    @app_commands.check(IS_OWNER)
-    @app_commands.describe(confirm="Confirm dump")
-    async def dump_config(self, ctx: discord.Interaction, confirm: bool):
-        """Dump config of bot"""
-        if confirm:
-            self._config.dump()
-            await ctx.response.send_message(
-                "Configuration dumped.\n**Prepare for unforeseen consequences.**"
-            )
-            return
-        await ctx.response.send_message("Dump aborted.")
 
 
 async def setup(bot: commands.Bot):
