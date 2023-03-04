@@ -28,7 +28,7 @@ class Guild(Base):
     community_roles: Mapped[List["CommunityRole"]] = relationship(
         back_populates="guild"
     )
-    users: Mapped[List["User"]] = relationship(back_populates="guild")
+    members: Mapped[List["Member"]] = relationship(back_populates="guild")
 
     # Toggles
     msg_discovery: Mapped[bool] = mapped_column(default=True, nullable=False)
@@ -91,7 +91,7 @@ class CommunityRole(Base):
     guild: Mapped["Guild"] = relationship(back_populates="community_roles")
 
 
-class User(Base):
+class Member(Base):
     """User table"""
 
     __tablename__ = "users"
