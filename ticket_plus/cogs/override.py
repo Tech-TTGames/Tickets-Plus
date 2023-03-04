@@ -31,11 +31,7 @@ class Overrides(
         await ctx.response.send_message("Reloading cogs...")
         logging.info("Reloading cogs...")
         for cog in os.listdir(os.path.join(PROG_DIR, "tickets_plus", "cogs")):
-            if (
-                cog.endswith(".py")
-                and not cog.startswith("_")
-                and os.path.isfile(cog)
-            ):
+            if cog.endswith(".py") and not cog.startswith("_") and os.path.isfile(cog):
                 await self._bt.reload_extension(f"tickets_plus.cogs.{cog[:-3]}")
         await ctx.channel.send("Reloaded cogs.")  # type: ignore
         logging.info("Finished reloading cogs.")

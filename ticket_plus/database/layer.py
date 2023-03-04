@@ -37,7 +37,9 @@ class OnlineConfig:
     def get_member(self, user_id: int, guild_id: int) -> Member:
         """Get a member from the database."""
         guild = self.get_guild(guild_id)
-        member_conf = self._session.scalars(select(Member).where(Member.user_id == user_id, Member.guild == guild)).first()
+        member_conf = self._session.scalars(
+            select(Member).where(Member.user_id == user_id, Member.guild == guild)
+        ).first()
         if member_conf is None:
             member_conf = Member(user_id=user_id, guild=guild)
             self._session.add(member_conf)

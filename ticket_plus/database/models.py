@@ -24,7 +24,9 @@ class Guild(Base):
     # Relationships
     ticket_users: Mapped[List["TicketUser"]] = relationship(back_populates="guild")
     staff_roles: Mapped[List["StaffRole"]] = relationship(back_populates="guild")
-    observers_roles: Mapped[List["ObserversRole"]] = relationship(back_populates="guild")
+    observers_roles: Mapped[List["ObserversRole"]] = relationship(
+        back_populates="guild"
+    )
     community_roles: Mapped[List["CommunityRole"]] = relationship(
         back_populates="guild"
     )
