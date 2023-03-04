@@ -5,13 +5,7 @@ import os
 import discord
 from discord.ext import commands
 
-from ticket_plus.database.statvars import (
-    PROG_DIR,
-    VERSION,
-    Secret,
-    handler,
-    intents,
-)
+from ticket_plus.database.statvars import PROG_DIR, VERSION, Secret, handler, intents
 
 
 def init_bot():

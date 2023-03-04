@@ -16,16 +16,18 @@ class Guild(Base):
 
     # Simple columns
     guid: Mapped[int] = mapped_column(primary_key=True)
-    open_message: Mapped[str] = mapped_column(default="Staff notes for Ticket $channel.",
-                                               nullable=False
-                                               )
+    open_message: Mapped[str] = mapped_column(
+        default="Staff notes for Ticket $channel.", nullable=False
+    )
     staff_team: Mapped[str] = mapped_column(default="Staff Team", nullable=False)
 
     # Relationships
     ticket_users: Mapped[List["TicketUser"]] = relationship(back_populates="guild")
     staff_roles: Mapped[List["StaffRole"]] = relationship(back_populates="guild")
     observers: Mapped[List["ObserversRole"]] = relationship(back_populates="guild")
-    community_roles: Mapped[List["CommunityRole"]] = relationship(back_populates="guild")
+    community_roles: Mapped[List["CommunityRole"]] = relationship(
+        back_populates="guild"
+    )
     users: Mapped[List["User"]] = relationship(back_populates="guild")
 
     # Toggles

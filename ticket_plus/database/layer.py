@@ -3,7 +3,8 @@ from sqlalchemy import Engine
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import select
 
-from ticket_plus.database.models import User, Guild
+from ticket_plus.database.models import Guild, User
+
 
 class OnlineConfig:
     """A convinience layer for the database session."""
@@ -11,7 +12,7 @@ class OnlineConfig:
     def __init__(self, bot: commands.Bot, engine: Engine) -> None:
         self._session = Session(engine)
         self._bot = bot
-    
+
     def get_guild(self, guild_id: int):
         """Get a guild from the database."""
         guild_conf = self._session.get(User, guild_id)
