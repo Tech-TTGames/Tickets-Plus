@@ -8,7 +8,7 @@ from discord import app_commands
 from discord.ext import commands
 
 from ticket_plus.database.statvars import PROG_DIR, Config
-from ticket_plus.extensions.checks import is_owner_gen
+from ticket_plus.ext.checks import is_owner_gen
 
 IS_OWNER = is_owner_gen()
 
@@ -30,9 +30,13 @@ class Overrides(
         """Reloads the bot's cogs."""
         await ctx.response.send_message("Reloading cogs...")
         logging.info("Reloading cogs...")
-        await self._bt.reload_extension("tickbot.cogs.main_utils")
-        await self._bt.reload_extension("tickbot.cogs.settings")
-        await self._bt.reload_extension("tickbot.cogs.override")
+        for cog in os.listdir(os.path.join(PROG_DIR, "tickets_plus", "cogs")):
+            if (
+                cog.endswith(".py")
+                and not cog.startswith("_")
+                and os.path.isfile(cog)
+            ):
+                await self._bt.reload_extension(f"tickets_plus.cogs.{cog[:-3]}")
         await ctx.channel.send("Reloaded cogs.")  # type: ignore
         logging.info("Finished reloading cogs.")
         await self._bt.tree.sync()
@@ -113,5 +117,5 @@ async def setup(bot: commands.Bot):
     """Setup function for the cog."""
     global IS_OWNER  # pylint: disable=global-statement
     cnfg = getattr(bot, "config", Config(bot))
-    IS_OWNER = is_owner_gen(cnfg)
+    IS_OWNER = getattr(bot, "is_owner", is_owner_gen(cnfg))
     await bot.add_cog(Overrides(bot, cnfg))

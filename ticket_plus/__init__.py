@@ -21,14 +21,15 @@ def init_bot():
         logging.info("Bot version: %s", VERSION)
         logging.info("Discord.py version: %s", discord.__version__)
         logging.info("Loading cogs...")
-        for cog in os.listdir(os.path.join(PROG_DIR, "tickbot", "cogs")):
+        await bot.load_extension("tickets_plus.ext.checks")
+        for cog in os.listdir(os.path.join(PROG_DIR, "tickets_plus", "cogs")):
             try:
                 if (
                     cog.endswith(".py")
                     and not cog.startswith("_")
                     and os.path.isfile(cog)
                 ):
-                    await bot.load_extension(f"tickbot.cogs.{cog[:-3]}")
+                    await bot.load_extension(f"tickets_plus.cogs.{cog[:-3]}")
             except commands.ExtensionError as err:
                 logging.error("Failed to load cog %s: %s", cog, err)
         await bot.tree.sync()

@@ -6,7 +6,7 @@ from discord import app_commands
 from discord.ext import commands
 
 from ticket_plus.database.statvars import Config
-from ticket_plus.extensions.checks import is_owner_gen
+from ticket_plus.ext.checks import is_owner_gen
 
 IS_OWNER = is_owner_gen()
 
@@ -195,5 +195,5 @@ async def setup(bot: commands.Bot):
     """Setup function for the cog."""
     global IS_OWNER  # pylint: disable=global-statement
     cnfg = getattr(bot, "config", Config(bot))
-    IS_OWNER = is_owner_gen(cnfg)
+    IS_OWNER = getattr(bot, "is_owner", is_owner_gen(cnfg))
     await bot.add_cog(Settings(bot, cnfg))
