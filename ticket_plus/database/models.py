@@ -19,12 +19,12 @@ class Guild(Base):
     open_message: Mapped[str] = mapped_column(
         default="Staff notes for Ticket $channel.", nullable=False
     )
-    staff_team: Mapped[str] = mapped_column(default="Staff Team", nullable=False)
+    staff_team_name: Mapped[str] = mapped_column(default="Staff Team", nullable=False)
 
     # Relationships
     ticket_users: Mapped[List["TicketUser"]] = relationship(back_populates="guild")
     staff_roles: Mapped[List["StaffRole"]] = relationship(back_populates="guild")
-    observers: Mapped[List["ObserversRole"]] = relationship(back_populates="guild")
+    observers_roles: Mapped[List["ObserversRole"]] = relationship(back_populates="guild")
     community_roles: Mapped[List["CommunityRole"]] = relationship(
         back_populates="guild"
     )
@@ -74,7 +74,7 @@ class ObserversRole(Base):
     guild_id: Mapped[int] = mapped_column(ForeignKey("general_config.guid"))
 
     # Relationships
-    guild: Mapped["Guild"] = relationship(back_populates="observers")
+    guild: Mapped["Guild"] = relationship(back_populates="observers_roles")
 
 
 class CommunityRole(Base):
