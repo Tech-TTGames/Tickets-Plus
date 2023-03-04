@@ -94,9 +94,13 @@ class Utility(commands.Cog, name="Main Utilities"):
                     got_msg = await chan.fetch_message(int(alpha.groupdict()["msg"]))  # type: ignore # pylint: disable=line-too-long
                 except:  # pylint: disable=bare-except
                     return
-                data = discord.Embed(description=got_msg.content, color=0x0D0EB4)
+                if not got_msg.content and got_msg.embeds:
+                    data = got_msg.embeds[0]
+                    data.set_footer(text=f"[EMBED CAPTURED] Sent in {got_msg.channel.name} at {got_msg.created_at}")  # type: ignore # pylint: disable=line-too-long
+                else:
+                    data = discord.Embed(description=got_msg.content, color=0x0D0EB4)
+                    data.set_footer(text=f"Sent in {got_msg.channel.name} at {got_msg.created_at}")  # type: ignore # pylint: disable=line-too-long
                 data.set_author(name=got_msg.author.name, icon_url=got_msg.author.avatar.url)  # type: ignore # pylint: disable=line-too-long
-                data.set_footer(text=f"Sent in {got_msg.channel.name} at {got_msg.created_at}")  # type: ignore # pylint: disable=line-too-long
                 data.set_image(
                     url=got_msg.attachments[0].url if got_msg.attachments else None
                 )
