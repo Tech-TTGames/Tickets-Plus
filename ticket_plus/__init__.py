@@ -10,6 +10,7 @@ from ticket_plus.database.statvars import VERSION, Secret, handler, intents
 
 class TicketPlus(commands.AutoShardedBot):
     """The main bot class"""
+
     def __init__(self, *args, db_engine, **kwargs):
         super().__init__(*args, **kwargs)
         self.db_engine = db_engine
