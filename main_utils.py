@@ -85,26 +85,41 @@ class Utility(commands.Cog, name="Main Utilities"):
             return
         if self._bt.intents.message_content:
             alpha = re.search(
-                r"https:\/\/(?:canary\.)?discord\.com\/channels\/(?P<srv>\d{18})\/(?P<cha>\d{18})\/(?P<msg>\d*)",  # skipcq: FLK-E501 # pylint: disable=line-too-long
+                r"https:\/\/(?:canary\.)?discord\.com\/channels\/(?P<srv>\d{18})\/(?P<cha>\d{18})\/(?P<msg>\d*)",  # pylint: disable=line-too-long
                 message.content,
-            )  # pylint: disable=line-too-long
+            )
             if alpha:
                 try:
-                    chan = self._bt.get_guild(int(alpha.group("srv"))).get_channel_or_thread(int(alpha.group("cha")))  # type: ignore pylint: disable=line-too-long
-                    got_msg = await chan.fetch_message(int(alpha.groupdict()["msg"]))  # type: ignore # pylint: disable=line-too-long
-                except:  # pylint: disable=bare-except
+                    gld = self._bt.get_guild(int(alpha.group("srv")))
+                    chan = gld.get_channel_or_thread(int(alpha.group("cha")))  # type: ignore Don't waste time on checking if it's a NoneType
+                    got_msg = await chan.fetch_message(int(alpha.groupdict()["msg"]))  # type: ignore We are trying so... eh no checks
+                except (
+                    AttributeError,
+                    discord.Forbidden,
+                    discord.NotFound,
+                    discord.HTTPException,
+                ):
                     return
                 if not got_msg.content and got_msg.embeds:
-                    data = got_msg.embeds[0]
-                    data.set_footer(text=f"[EMBED CAPTURED] Sent in {got_msg.channel.name} at {got_msg.created_at}")  # type: ignore # pylint: disable=line-too-long
+                    discovered_result = got_msg.embeds[0]
+                    discovered_result.set_footer(
+                        text=f"[EMBED CAPTURED] Sent in {chan.name}"  # type: ignore
+                        f" at {got_msg.created_at}"
+                    )
                 else:
-                    data = discord.Embed(description=got_msg.content, color=0x0D0EB4)
-                    data.set_footer(text=f"Sent in {got_msg.channel.name} at {got_msg.created_at}")  # type: ignore # pylint: disable=line-too-long
-                data.set_author(name=got_msg.author.name, icon_url=got_msg.author.avatar.url)  # type: ignore # pylint: disable=line-too-long
-                data.set_image(
+                    discovered_result = discord.Embed(
+                        description=got_msg.content, color=0x0D0EB4
+                    )
+                    discovered_result.set_footer(
+                        text=f"Sent in {chan.name} at {got_msg.created_at}"  # type: ignore
+                    )
+                discovered_result.set_author(
+                    name=got_msg.author.name, icon_url=got_msg.author.display_avatar.url
+                )
+                discovered_result.set_image(
                     url=got_msg.attachments[0].url if got_msg.attachments else None
                 )
-                await message.reply(embed=data)
+                await message.reply(embed=discovered_result)
 
     @app_commands.command(
         name="ping", description="The classic ping command. Checks the bot's latency."
