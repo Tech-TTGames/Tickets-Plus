@@ -13,7 +13,7 @@ from discord.ext import commands
 
 # v[major].[minor].[release].[build]
 # MAJOR and MINOR version changes can be compatibility-breaking
-VERSION = "v0.0.3.0"
+VERSION = "v0.0.3.1"
 PROG_DIR = os.path.dirname(os.path.realpath(__file__))
 
 intents = discord.Intents.default()
