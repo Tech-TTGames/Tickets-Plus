@@ -89,14 +89,12 @@ class Utility(commands.Cog, name="Main Utilities"):
                 message.content,
             )
             if alpha:
-                try:
+                try:  # We do not check any types in this block as we are catching the error for it.
                     gld = self._bt.get_guild(int(alpha.group("srv")))
-                    chan = gld.get_channel_or_thread(int(alpha.group("cha")))  # type: ignore Don't waste time on checking if it's a NoneType
-                    got_msg = await chan.fetch_message(int(alpha.groupdict()["msg"]))  # type: ignore We are trying so... eh no checks
+                    chan = gld.get_channel_or_thread(int(alpha.group("cha")))  # type: ignore
+                    got_msg = await chan.fetch_message(int(alpha.group("msg")))  # type: ignore
                 except (
                     AttributeError,
-                    discord.Forbidden,
-                    discord.NotFound,
                     discord.HTTPException,
                 ):
                     return
