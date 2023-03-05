@@ -22,15 +22,21 @@ class Guild(Base):
     staff_team_name: Mapped[str] = mapped_column(default="Staff Team", nullable=False)
 
     # Relationships
-    ticket_users: Mapped[List["TicketUser"]] = relationship(back_populates="guild")
-    staff_roles: Mapped[List["StaffRole"]] = relationship(back_populates="guild")
+    ticket_users: Mapped[List["TicketUser"]] = relationship(
+        back_populates="guild", lazy="selectin", default=[]
+    )
+    staff_roles: Mapped[List["StaffRole"]] = relationship(
+        back_populates="guild", lazy="selectin", default=[]
+    )
     observers_roles: Mapped[List["ObserversRole"]] = relationship(
-        back_populates="guild"
+        back_populates="guild", lazy="selectin", default=[]
     )
     community_roles: Mapped[List["CommunityRole"]] = relationship(
-        back_populates="guild"
+        back_populates="guild", lazy="selectin", default=[]
     )
-    members: Mapped[List["Member"]] = relationship(back_populates="guild")
+    members: Mapped[List["Member"]] = relationship(
+        back_populates="guild", lazy="selectin", default=[]
+    )
 
     # Toggles
     msg_discovery: Mapped[bool] = mapped_column(default=True, nullable=False)
@@ -48,7 +54,9 @@ class TicketUser(Base):
     guild_id: Mapped[int] = mapped_column(ForeignKey("general_config.guid"))
 
     # Relationships
-    guild: Mapped["Guild"] = relationship(back_populates="ticket_users")
+    guild: Mapped["Guild"] = relationship(
+        back_populates="ticket_users", lazy="selectin", default=[]
+    )
 
 
 class StaffRole(Base):
@@ -62,7 +70,9 @@ class StaffRole(Base):
     guild_id: Mapped[int] = mapped_column(ForeignKey("general_config.guid"))
 
     # Relationships
-    guild: Mapped["Guild"] = relationship(back_populates="staff_roles")
+    guild: Mapped["Guild"] = relationship(
+        back_populates="staff_roles", lazy="selectin", default=[]
+    )
 
 
 class ObserversRole(Base):
@@ -76,7 +86,9 @@ class ObserversRole(Base):
     guild_id: Mapped[int] = mapped_column(ForeignKey("general_config.guid"))
 
     # Relationships
-    guild: Mapped["Guild"] = relationship(back_populates="observers_roles")
+    guild: Mapped["Guild"] = relationship(
+        back_populates="observers_roles", lazy="selectin", default=[]
+    )
 
 
 class CommunityRole(Base):
@@ -90,7 +102,9 @@ class CommunityRole(Base):
     guild_id: Mapped[int] = mapped_column(ForeignKey("general_config.guid"))
 
     # Relationships
-    guild: Mapped["Guild"] = relationship(back_populates="community_roles")
+    guild: Mapped["Guild"] = relationship(
+        back_populates="community_roles", lazy="selectin"
+    )
 
 
 class Member(Base):
@@ -104,7 +118,9 @@ class Member(Base):
     guild_id: Mapped[int] = mapped_column(ForeignKey("general_config.guid"))
 
     # Relationships
-    guild: Mapped["Guild"] = relationship(back_populates="community_roles")
+    guild: Mapped["Guild"] = relationship(
+        back_populates="community_roles", lazy="selectin"
+    )
 
     # Toggles
     is_owner: Mapped[bool] = mapped_column(default=False)
