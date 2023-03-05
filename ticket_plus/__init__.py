@@ -1,38 +1,46 @@
 """The main bot file. Start the bot."""
 import logging
-import os
 
 import discord
 from discord.ext import commands
 
-from ticket_plus.database.statvars import PROG_DIR, VERSION, Secret, handler, intents
+from ticket_plus.cogs import EXTENSIONS
+from ticket_plus.database.statvars import VERSION, Secret, handler, intents
 
 
-def init_bot():
-    """Initializes the bot"""
-    bot = commands.AutoShardedBot(command_prefix="~", intents=intents)
-    scrt = Secret()
-    # TODO: Actually use the configdb
+class TicketPlus(commands.AutoShardedBot):
+    """The main bot class"""
+    def __init__(self, *args, db_engine, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.db_engine = db_engine
 
-    @bot.event
-    async def on_ready():
-        """Logs bot readiness"""
-        logging.info("Connected to Discord as %s", bot.user)
+    async def setup_hook(self):
+        """Runs just before the bot connects to Discord"""
+
         logging.info("Bot version: %s", VERSION)
         logging.info("Discord.py version: %s", discord.__version__)
+        logging.info("Loading checks...")
+        await self.load_extension("ticket_plus.ext.checks")
         logging.info("Loading cogs...")
-        await bot.load_extension("tickets_plus.ext.checks")
-        for cog in os.listdir(os.path.join(PROG_DIR, "tickets_plus", "cogs")):
+        for extension in EXTENSIONS:
             try:
-                if (
-                    cog.endswith(".py")
-                    and not cog.startswith("_")
-                    and os.path.isfile(cog)
-                ):
-                    await bot.load_extension(f"tickets_plus.cogs.{cog[:-3]}")
+                await self.load_extension(extension)
             except commands.ExtensionError as err:
-                logging.error("Failed to load cog %s: %s", cog, err)
-        await bot.tree.sync()
-        logging.info("Finished loading cogs.")
+                logging.error("Failed to load cog %s: %s", extension, err)
 
-    bot.run(scrt.token, log_handler=handler, root_logger=True)
+
+async def start_bot():
+    """Sets up the bot and starts it"""
+
+    logger = logging.getLogger("discord")
+    logger.setLevel(logging.INFO)
+    dt_fmr = "%Y-%m-%d %H:%M:%S"
+    handler.setFormatter(
+        logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s", dt_fmr)
+    )
+    logger.addHandler(handler)
+    logging.root.setLevel(logging.INFO)
+    logging.root.addHandler(handler)
+
+    logging.info("Starting bot...")
+    # async with

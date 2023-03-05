@@ -117,11 +117,6 @@ class Utility(commands.Cog, name="Main Utilities"):
             + str(round(self._bt.latency * 1000))
             + "ms"
         )
-        await self._bt.change_presence(
-            activity=discord.Activity(
-                type=discord.ActivityType.playing, name="with tickets!"
-            )
-        )
 
     @app_commands.command(name="version", description="Get the bot's version.")
     async def version(self, ctx: discord.Interaction):
