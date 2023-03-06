@@ -10,7 +10,7 @@ assignees: ''
 `***[ Begin placeholder text! ]***`
  1. Change the title to fit your suggestion (Tool or Suggestion)
     - 1. Are you requesting a new tool? Then pick *tool!*
-    - 2. Or are you requesting an enchancement to an already there tool. Then pick *suggestion!*
+    - 2. Or are you requesting an enchancement to an pre-existing tool. Then pick *suggestion!*
 
  3. Describe what you want changed or added
  
