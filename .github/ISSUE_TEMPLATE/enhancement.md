@@ -28,7 +28,7 @@ A brief idea of what you want!
  
 **Description**
 
-A more detailed in-depth description of what you want. 
+A more detailed in-depth description of the feature you are requesting. 
 
 
 
