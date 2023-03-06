@@ -1,7 +1,7 @@
 ---
 name: Bug/Issue
 about: Report a Bug/Issue/Exploit
-title: ''
+title: '[Bug]'
 labels: bug
 assignees: ''
 

@@ -1,18 +1,35 @@
 ---
 name: Enhancement
 about: Suggest a new feature to add or change.
-title: ''
+title: '[Suggestion/Tool]'
 labels: enhancement, Feature
 assignees: ''
 
 ---
 
-**Is your feature request related to a problem? Is it additive or related to the current content?**
+`***[ Begin placeholder text! ]***`
+ 1. Change the title to fit your suggestion (Tool or Suggestion)
+    - 1. Are you requesting a new tool? Then pick *tool!*
+    - 2. Or are you requesting an enchancement to an pre-existing tool. Then pick *suggestion!*
 
-**Describe what you want changed or added**
+ 3. Describe what you want changed or added
+ 
+ 4. Describe what the reason for this change or addition would be
+ 
+ 5. Add Additonal context.
+ 
+ 6. Remember to remove placeholder text! 😉
+ 
+`***[ End placeholder text! ]***`
+ 
+**Summary**
 
+A brief idea of what you want!
+ 
+**Description**
 
-**Describe what the reason for this change or addition would be**
+A more detailed in-depth description of the feature you are requesting. 
+
 
 
 **Additional context**
