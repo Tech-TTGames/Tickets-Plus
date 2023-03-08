@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thank you for submitting a bug report for Tickets+! Please provide us with more information below so that we can better understand the issue. Kindly note that any critical bugs should be reported via the [Security](https://github.com/Tech-TTGames/Tickets-Plus/security/advisories) tab to prevent publication.
+        Thank you for submitting a bug report for Tickets+! Please provide us with more information below so that we can better understand the issue. Kindly note that any critical bugs should be reported via the [Report Vulnerability](https://github.com/Tech-TTGames/Tickets-Plus/security/advisories/new) form to prevent publication.
 
   - type: textarea
     id: summary
