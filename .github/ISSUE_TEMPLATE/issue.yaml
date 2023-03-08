@@ -1,8 +1,7 @@
 name: Bug Report
-about: Report a bug/issue/exploit with the bot.
+description: Report a bug/issue/exploit with the bot.
 title: "[Bug]: "
 labels: ["Type: Bug", "Status: Needs Triage"]
-assignees: ''
 body:
   - type: markdown
     attributes:
