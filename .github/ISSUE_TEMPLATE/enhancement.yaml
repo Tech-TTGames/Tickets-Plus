@@ -62,8 +62,8 @@ body:
     id: screenshots
     attributes:
       label: Screenshots
-      description: If you have any screenshots or mockups of the enhancement you are requesting, please upload them here.
-      placeholder: Please upload any relevant screenshots or mockups.
+      description: If you have any screenshots or mockups of the enhancement you are requesting, please attach links to them here.
+      placeholder: Please paste links to any screenshots or mockups.
   - type: textarea
     id: additional_info
     attributes:
