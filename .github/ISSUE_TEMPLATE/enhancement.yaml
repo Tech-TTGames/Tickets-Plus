@@ -8,14 +8,6 @@ body:
       value: |
         Thank you for suggesting an enhancement to Ticlets+! Please provide us with further information below so that we can better understand your request.
 
-  - type: input
-    id: title
-    attributes:
-      label: Title
-      description: A brief title for your feature.
-    validations:
-      required: true
-
   - type: textarea
     id: summary
     attributes:
