@@ -14,6 +14,8 @@ body:
       label: Summary
       description: A brief summary of the bug you are reporting.
       placeholder: Please enter a summary here.
+    validations:
+      required: true
 
   - type: textarea
     id: description
@@ -21,6 +23,8 @@ body:
       label: Description
       description: Please describe the bug you are reporting in more detail.
       placeholder: Please enter a detailed description here.
+    validations:
+      required: true
 
   - type: textarea
     id: expected_behavior
@@ -28,6 +32,8 @@ body:
       label: Expected Behavior
       description: Please describe what you expected to happen when you encountered the bug.
       placeholder: Please describe the expected behavior here.
+    validations:
+      required: true
 
   - type: textarea
     id: actual_behavior
@@ -35,6 +41,8 @@ body:
       label: Actual Behavior
       description: Please describe what actually happened when you encountered the bug.
       placeholder: Please describe the actual behavior here.
+    validations:
+      required: true
 
   - type: textarea
     id: steps_to_reproduce
@@ -42,6 +50,8 @@ body:
       label: Steps to Reproduce
       description: Please describe the steps you took to reproduce the bug.
       placeholder: Please describe the steps to reproduce the bug here.
+    validations:
+      required: true
 
   - type: textarea
     id: environment
@@ -49,6 +59,8 @@ body:
       label: Environment
       description: Please provide information about the environment in which you encountered the bug (e.g. permissions, server config, Discord app version).
       placeholder: Please provide environment information here.
+    validations:
+      required: true
 
   - type: input
     id: screenshots
