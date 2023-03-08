@@ -1,26 +1,43 @@
 """Additional checks for bot."""
 
 import discord
-from discord.ext import commands
+from discord import app_commands
+from sqlalchemy.orm import selectinload
 
-from ticket_plus.database.statvars import Config
+from ticket_plus.database.models import Guild
 
 
-def is_owner_gen(confg: Config = Config("offline")):
+def is_owner_check():
     """An actually acceptabe way to work around the lack of owner check in slash commands."""
 
     async def is_owner(interaction: discord.Interaction):
         """Checks if interaction user is owner."""
-        if interaction.user.id in confg.owner:
+        if interaction.user.id in interaction.client.owner_ids:  # type: ignore
             return True
         await interaction.response.send_message("Error 403: Forbidden", ephemeral=True)
-        return False
+        raise app_commands.CheckFailure("User is not owner")
 
-    return is_owner
+    return app_commands.check(is_owner)
 
 
-def setup(bot: commands.Bot):
-    """Set up the extension."""
-    cnfg = getattr(bot, "config", Config("offline"))
-    check = is_owner_gen(cnfg)
-    setattr(bot, "is_owner", check)
+def is_staff_check():
+    """An actually normal check for staff."""
+
+    async def is_staff(interaction: discord.Interaction):
+        """Checks if interaction user is staff."""
+        if interaction.guild is None:
+            raise app_commands.CheckFailure("User is not in a guild")
+        if interaction.user.id in interaction.client.owner_ids:  # type: ignore
+            return True
+        async with interaction.client.get_connection() as conn:  # type: ignore
+            guild: Guild = await conn.get_guild(
+                interaction.guild.id, (selectinload(Guild.staff_roles),)
+            )
+            staff_roles = guild.get_id_list("staff_roles", "role_id")
+            for role in interaction.user.roles:  # type: ignore # already checked for guild
+                if role.id in staff_roles:
+                    return True
+        await interaction.response.send_message("Error 403: Forbidden", ephemeral=True)
+        raise app_commands.CheckFailure("User is not staff")
+
+    return app_commands.check(is_staff)
