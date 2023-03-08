@@ -1,14 +1,13 @@
 name: Enhancement
 description: Request a change or improvement to an already existing feature.
 title: "[Enhancement]: "
-labels: [Type: Enhancement, Status: New]
+labels: ["Type: Enhancement", "Status: New"]
 body:
   - type: markdown
     attributes:
       value: |
         Thank you for suggesting an enhancement to our product! Please provide us with further information below so that we can better understand your request.
-
-  - type: textarea
+  - type: input
     id: title
     attributes:
       label: Title
@@ -16,14 +15,12 @@ body:
       placeholder: Please enter the brief summary here.
     validations:
       required: true
-
   - type: textarea
     id: summary
     attributes:
       label: Summary
       description: A brief summary of the enhancement you are requesting.
       placeholder: Please enter a summary here.
-
   - type: textarea
     id: description
     attributes:
@@ -32,7 +29,6 @@ body:
       placeholder: Please enter a detailed description here.
     validations:
       required: true
-      
   - type: textarea
     id: base
     attributes:
@@ -41,7 +37,6 @@ body:
       placeholder: Please enter the feature you are basing your enhancement on and why it should be an enhancement instead of a separate new feature.
     validations:
       required: true
-
   - type: textarea
     id: use_case
     attributes:
@@ -50,7 +45,6 @@ body:
       placeholder: Please describe a specific use case or scenario where this enhancement would be useful.
     validations:
       required: true
-
   - type: textarea
     id: impact
     attributes:
@@ -59,28 +53,24 @@ body:
       placeholder: Please describe the potential impact of this enhancement.
     validations:
       required: true
-
   - type: textarea
     id: alternatives
     attributes:
       label: Alternatives
       description: Have you considered any alternatives to this enhancement? If so, please describe them.
       placeholder: Please describe any alternatives you have considered.
-
   - type: textarea
     id: screenshots
     attributes:
       label: Screenshots
       description: If you have any screenshots or mockups of the enhancement you are requesting, please upload them here.
       placeholder: Please upload any relevant screenshots or mockups.
-
   - type: textarea
     id: additional_info
     attributes:
       label: Additional Information
       description: Is there any other information you would like to provide that hasn't been covered in the previous prompts?
       placeholder: Please enter any additional information here.
-
   - type: checkboxes
     id: codeofconduct
     attributes:
@@ -89,7 +79,6 @@ body:
       options:
         - label: I agree to follow this project's Code of Conduct
           required: true
-
   - type: markdown
     attributes:
       value: |
