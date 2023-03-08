@@ -5,18 +5,15 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from ticket_plus.database.statvars import Config
-from ticket_plus.ext.checks import is_owner_gen
-
-IS_OWNER = is_owner_gen()
+from ticket_plus import TicketPlus
+from ticket_plus.ext.checks import is_owner_check
 
 
 class Settings(commands.GroupCog, name="settings", description="Settings for the bot."):
     """Provides commands to change the bot's settings."""
 
-    def __init__(self, bot: commands.Bot, config: Config):
+    def __init__(self, bot: TicketPlus):
         self._bt = bot
-        self._config = config
         super().__init__()
         logging.info("Loaded %s", self.__class__.__name__)
 
@@ -29,15 +26,19 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
         This command is used to change the tracked users.
         If a user is already tracked, they will be untracked.
         """
-        rspns = ctx.response
-        wtchd_users = self._config.ticket_users
-        if user.id in wtchd_users:
-            wtchd_users.remove(user.id)
-            await rspns.send_message(f"Untracked {user.mention}", ephemeral=True)
-        else:
-            wtchd_users.append(user.id)
-            await rspns.send_message(f"Tracked {user.mention}", ephemeral=True)
-        self._config.ticket_users = wtchd_users
+        if ctx.guild is None:
+            await ctx.response.send_message("This command can only be used in a guild.")
+            return
+        async with self._bt.get_connection() as conn:
+            rspns = ctx.response
+            new, ticket_user = await conn.get_ticket_user(user.id, ctx.guild.id)
+            if not new:
+                await conn.delete(ticket_user)
+                await rspns.send_message(f"Untracked {user.mention}", ephemeral=True)
+            else:
+                await rspns.send_message(f"Tracked {user.mention}", ephemeral=True)
+            await conn.commit()
+            await conn.close()
 
     @app_commands.command(name="staff", description="Change the staff roles.")
     @app_commands.checks.has_permissions(administrator=True)
@@ -157,7 +158,7 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
         self._config.community_roles = comsup
 
     @app_commands.command(name="guild", description="Change the guild.")
-    @app_commands.check(IS_OWNER)
+    @is_owner_check()
     @app_commands.guild_only()
     async def change_guild(self, ctx: discord.Interaction):
         """This command is used to change the guild. Use in the guild you want to change to."""
@@ -172,7 +173,7 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
         )
 
     @app_commands.command(name="owner", description="Change the owners of the bot.")
-    @app_commands.check(IS_OWNER)
+    @is_owner_check()
     @app_commands.describe(
         user="The user to add to owners. WARNING: This will not remove them."
     )
@@ -191,9 +192,6 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
         self._config.owner = owner_users
 
 
-async def setup(bot: commands.Bot):
+async def setup(bot: TicketPlus):
     """Setup function for the cog."""
-    global IS_OWNER  # pylint: disable=global-statement
-    cnfg = getattr(bot, "config", Config(bot))
-    IS_OWNER = getattr(bot, "is_owner", is_owner_gen(cnfg))
-    await bot.add_cog(Settings(bot, cnfg))
+    await bot.add_cog(Settings(bot))
