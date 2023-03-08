@@ -5,12 +5,12 @@ import discord
 from discord.ext import commands
 from sqlalchemy.ext.asyncio import AsyncEngine, async_sessionmaker
 
-from ticket_plus.cogs import EXTENSIONS
-from ticket_plus.database.layer import OnlineConfig
-from ticket_plus.database.statvars import VERSION, Secret, handler, intents
+from tickets_plus.cogs import EXTENSIONS
+from tickets_plus.database.layer import OnlineConfig
+from tickets_plus.database.statvars import VERSION, Secret, handler, intents
 
 
-class TicketPlus(commands.AutoShardedBot):
+class TicketsPlus(commands.AutoShardedBot):
     """The main bot class"""
 
     def __init__(self, *args, db_engine: AsyncEngine, **kwargs):

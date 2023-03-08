@@ -7,10 +7,10 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from ticket_plus import TicketPlus
-from ticket_plus.cogs import EXTENSIONS
-from ticket_plus.database.statvars import PROG_DIR
-from ticket_plus.ext.checks import is_owner_check
+from tickets_plus import TicketsPlus
+from tickets_plus.cogs import EXTENSIONS
+from tickets_plus.database.statvars import PROG_DIR
+from tickets_plus.ext.checks import is_owner_check
 
 
 class Overrides(
@@ -18,7 +18,7 @@ class Overrides(
 ):
     """Owner override commands."""
 
-    def __init__(self, bot: TicketPlus):
+    def __init__(self, bot: TicketsPlus):
         self._bt = bot
         super().__init__()
         logging.info("Loaded %s", self.__class__.__name__)
@@ -104,6 +104,6 @@ class Overrides(
         await ctx.followup.send("Sent config.")
 
 
-async def setup(bot: TicketPlus):
+async def setup(bot: TicketsPlus):
     """Setup function for the cog."""
     await bot.add_cog(Overrides(bot))

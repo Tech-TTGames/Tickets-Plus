@@ -9,10 +9,10 @@ from discord import app_commands
 from discord.ext import commands
 from sqlalchemy.orm import selectinload
 
-from ticket_plus import TicketPlus
-from ticket_plus.database.models import Guild
-from ticket_plus.database.statvars import VERSION, Config
-from ticket_plus.ext.checks import is_staff_check
+from tickets_plus import TicketsPlus
+from tickets_plus.database.models import Guild
+from tickets_plus.database.statvars import VERSION, Config
+from tickets_plus.ext.checks import is_staff_check
 
 CONFG = Config("offline")
 
@@ -20,7 +20,7 @@ CONFG = Config("offline")
 class Utility(commands.Cog, name="Main Utilities"):
     """Main bot utilities"""
 
-    def __init__(self, bot: TicketPlus):
+    def __init__(self, bot: TicketsPlus):
         self._bt = bot
         logging.info("Loaded %s", self.__class__.__name__)
 
@@ -212,6 +212,6 @@ class Utility(commands.Cog, name="Main Utilities"):
         )
 
 
-async def setup(bot: TicketPlus):
+async def setup(bot: TicketsPlus):
     """Setup function for the cog."""
     await bot.add_cog(Utility(bot))

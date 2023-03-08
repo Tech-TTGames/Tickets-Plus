@@ -4,7 +4,7 @@ import discord
 from discord import app_commands
 from sqlalchemy.orm import selectinload
 
-from ticket_plus.database.models import Guild
+from tickets_plus.database.models import Guild
 
 
 def is_owner_check():

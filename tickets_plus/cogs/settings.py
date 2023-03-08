@@ -5,14 +5,14 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from ticket_plus import TicketPlus
-from ticket_plus.ext.checks import is_owner_check
+from tickets_plus import TicketsPlus
+from tickets_plus.ext.checks import is_owner_check
 
 
 class Settings(commands.GroupCog, name="settings", description="Settings for the bot."):
     """Provides commands to change the bot's settings."""
 
-    def __init__(self, bot: TicketPlus):
+    def __init__(self, bot: TicketsPlus):
         self._bt = bot
         super().__init__()
         logging.info("Loaded %s", self.__class__.__name__)
@@ -192,6 +192,6 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
         self._config.owner = owner_users
 
 
-async def setup(bot: TicketPlus):
+async def setup(bot: TicketsPlus):
     """Setup function for the cog."""
     await bot.add_cog(Settings(bot))

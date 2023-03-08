@@ -1,4 +1,4 @@
 """Initiates the bot"""
-from ticket_plus import init_bot
+from tickets_plus import init_bot
 
 init_bot()
