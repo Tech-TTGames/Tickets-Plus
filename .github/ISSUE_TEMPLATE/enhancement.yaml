@@ -20,6 +20,8 @@ body:
       label: Summary
       description: A brief summary of the enhancement you are requesting.
       placeholder: Please enter a summary here.
+    validations:
+      required: true
   - type: textarea
     id: description
     attributes:
