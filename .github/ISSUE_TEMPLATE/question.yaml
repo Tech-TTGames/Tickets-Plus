@@ -1,8 +1,7 @@
 name: Question
-about: Ask a question about our product or service.
+description: Ask a question about our product or service.
 title: "[Question]: "
 labels: ["Type: Question", "Status: New"]
-assignees: ''
 body:
   - type: markdown
     attributes:
