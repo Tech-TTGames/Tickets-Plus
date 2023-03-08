@@ -1,0 +1,58 @@
+name: Feature Request
+description: Suggest a new feature for our bot.
+title: "[Feature]: "
+labels: ["Type: Feature", "Status: New"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for submitting a feature request for Tickets+! Please provide us with further information below so that we can better understand your request.
+
+  - type: input
+    id: summary
+    attributes:
+      label: Summary
+      description: Please provide a brief summary of your feature request.
+      placeholder: Please enter a summary here.
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Feature Description
+      description: Please describe your feature request in detail.
+      placeholder: Please enter a description here.
+    validations:
+      required: true
+
+  - type: textarea
+    id: justification
+    attributes:
+      label: Justification
+      description: Please explain why you think this feature should be added.
+      placeholder: Please enter a justification here.
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: Additional Context
+      description: Is there any additional context you would like to provide that may help us understand your feature request?
+      placeholder: Please enter any additional context here.
+
+  - type: checkboxes
+    id: codeofconduct
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/Tech-TTGames/Tickets-Plus/blob/main/CODE_OF_CONDUCT.md)
+      options:
+        - label: I agree to follow this project's Code of Conduct
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for taking the time to submit a feature request. Our team will review your submission and get back to you as soon as possible.

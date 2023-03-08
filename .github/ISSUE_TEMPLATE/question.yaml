@@ -1,0 +1,51 @@
+name: Question
+description: Ask a question about our product or service.
+title: "[Question]: "
+labels: ["Type: Question", "Status: New"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reaching out with a question about Tickets+! Please provide us with additional information below so that we can better understand your inquiry.
+
+  - type: input
+    id: summary
+    attributes:
+      label: Summary
+      description: Please provide a brief summary of your question.
+      placeholder: Please enter a summary here.
+    validations:
+      required: true
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Your Question
+      description: Please provide us with your question.
+      placeholder: Please enter your question here.
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: Additional Context (optional)
+      description: Is there any additional context you would like to provide that may help us answer your question?
+      placeholder: Please enter any additional context here.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: codeofconduct
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/Tech-TTGames/Tickets-Plus/blob/main/CODE_OF_CONDUCT.md)
+      options:
+         - label: I agree to follow this project's Code of Conduct
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for taking the time to ask a question about our product or service. Our team will review your submission and get back to you as soon as possible.

@@ -1,0 +1,92 @@
+name: Bug Report
+description: Report a bug/issue/exploit with the bot.
+title: "[Bug]: "
+labels: ["Type: Bug", "Status: Needs Triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for submitting a bug report for Tickets+! Please provide us with more information below so that we can better understand the issue. Kindly note that any critical bugs should be reported via the [Report Vulnerability](https://github.com/Tech-TTGames/Tickets-Plus/security/advisories/new) form to prevent publication.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: A brief summary of the bug you are reporting.
+      placeholder: Please enter a summary here.
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Please describe the bug you are reporting in more detail.
+      placeholder: Please enter a detailed description here.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected_behavior
+    attributes:
+      label: Expected Behavior
+      description: Please describe what you expected to happen when you encountered the bug.
+      placeholder: Please describe the expected behavior here.
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual_behavior
+    attributes:
+      label: Actual Behavior
+      description: Please describe what actually happened when you encountered the bug.
+      placeholder: Please describe the actual behavior here.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps_to_reproduce
+    attributes:
+      label: Steps to Reproduce
+      description: Please describe the steps you took to reproduce the bug.
+      placeholder: Please describe the steps to reproduce the bug here.
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Please provide information about the environment in which you encountered the bug (e.g. permissions, server config, Discord app version).
+      placeholder: Please provide environment information here.
+    validations:
+      required: true
+
+  - type: input
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: If you have any screenshots or error messages related to the bug, please upload them here.
+      placeholder: Please upload any relevant screenshots or error messages.
+
+  - type: textarea
+    id: additional_info
+    attributes:
+      label: Additional Information
+      description: Is there any other information you would like to provide that hasn't been covered in the previous prompts?
+      placeholder: Please enter any additional information here.
+
+  - type: checkboxes
+    id: codeofconduct
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/Tech-TTGames/Tickets-Plus/blob/main/CODE_OF_CONDUCT.md)
+      options:
+         - label: I agree to follow this project's Code of Conduct
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for taking the time to submit a bug report for Tickets+. Our team will review your submission and may follow up with additional questions or updates as needed.
