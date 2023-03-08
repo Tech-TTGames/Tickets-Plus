@@ -1,8 +1,7 @@
 name: Feature Request
-about: Suggest a new feature for our bot.
+description: Suggest a new feature for our bot.
 title: "[Feature]: "
 labels: ["Type: Feature", "Status: New"]
-assignees: ''
 body:
   - type: markdown
     attributes:
@@ -15,8 +14,8 @@ body:
       label: Summary
       description: Please provide a brief summary of your feature request.
       placeholder: Please enter a summary here.
-      validations:
-        required: true
+    validations:
+      required: true
 
   - type: textarea
     id: description
@@ -24,8 +23,8 @@ body:
       label: Feature Description
       description: Please describe your feature request in detail.
       placeholder: Please enter a description here.
-      validations:
-        required: true
+    validations:
+      required: true
 
   - type: textarea
     id: justification
@@ -33,8 +32,8 @@ body:
       label: Justification
       description: Please explain why you think this feature should be added.
       placeholder: Please enter a justification here.
-      validations:
-        required: true
+    validations:
+      required: true
 
   - type: textarea
     id: additional_context
@@ -50,8 +49,8 @@ body:
       description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/Tech-TTGames/Tickets-Plus/blob/main/CODE_OF_CONDUCT.md)
       options:
         - label: I agree to follow this project's Code of Conduct
-      validations:
-        required: true
+    validations:
+      required: true
 
   - type: markdown
     attributes:
