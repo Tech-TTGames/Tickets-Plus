@@ -6,7 +6,8 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thank you for suggesting an enhancement to our product! Please provide us with further information below so that we can better understand your request.
+        Thank you for suggesting an enhancement to Ticlets+! Please provide us with further information below so that we can better understand your request.
+
   - type: input
     id: title
     attributes:
@@ -14,6 +15,7 @@ body:
       description: A brief title for your feature.
     validations:
       required: true
+
   - type: textarea
     id: summary
     attributes:
@@ -22,6 +24,7 @@ body:
       placeholder: Please enter a summary here.
     validations:
       required: true
+
   - type: textarea
     id: description
     attributes:
@@ -30,6 +33,7 @@ body:
       placeholder: Please enter a detailed description here.
     validations:
       required: true
+
   - type: textarea
     id: base
     attributes:
@@ -38,6 +42,7 @@ body:
       placeholder: Please enter the feature you are basing your enhancement on and why it should be an enhancement instead of a separate new feature.
     validations:
       required: true
+
   - type: textarea
     id: use_case
     attributes:
@@ -46,6 +51,7 @@ body:
       placeholder: Please describe a specific use case or scenario where this enhancement would be useful.
     validations:
       required: true
+
   - type: textarea
     id: impact
     attributes:
@@ -54,32 +60,38 @@ body:
       placeholder: Please describe the potential impact of this enhancement.
     validations:
       required: true
+
   - type: textarea
     id: alternatives
     attributes:
       label: Alternatives
       description: Have you considered any alternatives to this enhancement? If so, please describe them.
       placeholder: Please describe any alternatives you have considered.
+
   - type: textarea
     id: screenshots
     attributes:
       label: Screenshots
       description: If you have any screenshots or mockups of the enhancement you are requesting, please attach links to them here.
       placeholder: Please paste links to any screenshots or mockups.
+
   - type: textarea
     id: additional_info
     attributes:
       label: Additional Information
       description: Is there any other information you would like to provide that hasn't been covered in the previous prompts?
       placeholder: Please enter any additional information here.
+
   - type: checkboxes
     id: codeofconduct
     attributes:
       label: Code of Conduct
       description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/Tech-TTGames/Tickets-Plus/blob/main/CODE_OF_CONDUCT.md)
       options:
-        - label: I agree to follow this project's Code of Conduct
-          required: true
+        label: I agree to follow this project's Code of Conduct
+    validations:
+      required: true
+
   - type: markdown
     attributes:
       value: |
