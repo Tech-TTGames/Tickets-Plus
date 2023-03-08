@@ -33,8 +33,8 @@ body:
   - type: textarea
     id: base
     attributes:
-      label: The base Feature
-      description: What is the feature you would like to improve with the server in contrast to making it a new feature?
+      label: The base\
+      description: What is the feature you would like to improve with the request in contrast to making it a new feature?
       placeholder: Please enter the feature you are basing your enhancement on and why it should be an enhancement instead of a separate new feature.
     validations:
       required: true
