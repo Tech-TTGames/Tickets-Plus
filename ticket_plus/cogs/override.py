@@ -7,11 +7,10 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
+from ticket_plus import TicketPlus
 from ticket_plus.cogs import EXTENSIONS
-from ticket_plus.database.statvars import PROG_DIR, Config
-from ticket_plus.ext.checks import is_owner_gen
-
-IS_OWNER = is_owner_gen()
+from ticket_plus.database.statvars import PROG_DIR
+from ticket_plus.ext.checks import is_owner_check
 
 
 class Overrides(
@@ -19,14 +18,13 @@ class Overrides(
 ):
     """Owner override commands."""
 
-    def __init__(self, bot: commands.Bot, config: Config):
+    def __init__(self, bot: TicketPlus):
         self._bt = bot
-        self._config = config
         super().__init__()
         logging.info("Loaded %s", self.__class__.__name__)
 
     @app_commands.command(name="reload", description="Reloads the bot's cogs.")
-    @app_commands.check(IS_OWNER)
+    @is_owner_check()
     async def reload(self, ctx: discord.Interaction):
         """Reloads the bot's cogs."""
         await ctx.response.send_message("Reloading cogs...")
@@ -39,7 +37,7 @@ class Overrides(
         logging.info("Finished syncing tree.")
 
     @app_commands.command(name="restart", description="Restarts the bot.")
-    @app_commands.check(IS_OWNER)
+    @is_owner_check()
     async def restart(self, ctx: discord.Interaction):
         """Restarts the bot."""
         await ctx.response.send_message("Restarting...")
@@ -49,7 +47,7 @@ class Overrides(
     @app_commands.command(
         name="pull", description="Pulls the latest changes from the git repo."
     )
-    @app_commands.check(IS_OWNER)
+    @is_owner_check()
     async def pull(self, ctx: discord.Interaction):
         """Pulls the latest changes from the git repo."""
         await ctx.response.send_message("Pulling latest changes...")
@@ -75,7 +73,7 @@ class Overrides(
         )
 
     @app_commands.command(name="logs", description="Sends the logs.")
-    @app_commands.check(IS_OWNER)
+    @is_owner_check()
     @app_commands.describe(id_no="Log ID (0 for latest log)")
     async def logs(self, ctx: discord.Interaction, id_no: int = 0):
         """Sends the logs."""
@@ -92,26 +90,20 @@ class Overrides(
         await ctx.followup.send("Sent logs.")
         logging.info("Logs sent.")
 
-    @app_commands.command(name="config", description="Sends the config.")
-    @app_commands.check(IS_OWNER)
-    async def config(self, ctx: discord.Interaction):
+    @app_commands.command(name="config", description="Sends the guild config.")
+    @is_owner_check()
+    @app_commands.describe(id="Guild ID")
+    async def config(self, ctx: discord.Interaction, guid: int):
         """Sends the config."""
         await ctx.response.defer(thinking=True)
         logging.info("Sending config to %s...", str(ctx.user))
-        file_path = os.path.join(PROG_DIR, "config.json")
-        try:
-            await ctx.user.send(file=discord.File(fp=file_path))
-        except FileNotFoundError:
-            await ctx.followup.send("Config not found.")
-            logging.info("Config not found.")
-            return
+        async with self._bt.get_connection() as conn:
+            guild_confg = await conn.get_guild(guid)
+            await ctx.user.send(str(guild_confg))  # Eh. This is a bit of a test.
+            await conn.close()
         await ctx.followup.send("Sent config.")
-        logging.info("Config sent.")
 
 
-async def setup(bot: commands.Bot):
+async def setup(bot: TicketPlus):
     """Setup function for the cog."""
-    global IS_OWNER  # pylint: disable=global-statement
-    cnfg = getattr(bot, "config", Config(bot))
-    IS_OWNER = getattr(bot, "is_owner", is_owner_gen(cnfg))
-    await bot.add_cog(Overrides(bot, cnfg))
+    await bot.add_cog(Overrides(bot))
