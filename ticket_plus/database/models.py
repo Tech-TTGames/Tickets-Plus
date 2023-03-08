@@ -23,24 +23,30 @@ class Guild(Base):
 
     # Relationships
     ticket_users: Mapped[List["TicketUser"]] = relationship(
-        back_populates="guild", lazy="selectin", default=[]
+        back_populates="guild", lazy="raise", default=[]
     )
     staff_roles: Mapped[List["StaffRole"]] = relationship(
-        back_populates="guild", lazy="selectin", default=[]
+        back_populates="guild", lazy="raise", default=[]
     )
     observers_roles: Mapped[List["ObserversRole"]] = relationship(
-        back_populates="guild", lazy="selectin", default=[]
+        back_populates="guild", lazy="raise", default=[]
     )
     community_roles: Mapped[List["CommunityRole"]] = relationship(
-        back_populates="guild", lazy="selectin", default=[]
+        back_populates="guild", lazy="raise", default=[]
     )
     members: Mapped[List["Member"]] = relationship(
-        back_populates="guild", lazy="selectin", default=[]
+        back_populates="guild", lazy="raise", default=[]
     )
 
     # Toggles
     msg_discovery: Mapped[bool] = mapped_column(default=True, nullable=False)
     strip_buttons: Mapped[bool] = mapped_column(default=False, nullable=False)
+
+    def get_id_list(self, obj: str, attr: str) -> List[int]:
+        """Get a list of IDs from a relationship"""
+        if obj == "members":
+            raise ValueError("Do not use this method for big lists!")
+        return [getattr(item, attr) for item in getattr(self, obj)]
 
 
 class TicketUser(Base):
@@ -119,7 +125,7 @@ class Member(Base):
 
     # Relationships
     guild: Mapped["Guild"] = relationship(
-        back_populates="community_roles", lazy="selectin"
+        back_populates="community_roles", lazy="raise"
     )
 
     # Toggles
