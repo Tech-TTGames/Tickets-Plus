@@ -3,17 +3,20 @@ import logging
 
 import discord
 from discord.ext import commands
+from sqlalchemy.ext.asyncio import AsyncEngine, async_sessionmaker
 
 from ticket_plus.cogs import EXTENSIONS
+from ticket_plus.database.layer import OnlineConfig
 from ticket_plus.database.statvars import VERSION, Secret, handler, intents
 
 
 class TicketPlus(commands.AutoShardedBot):
     """The main bot class"""
 
-    def __init__(self, *args, db_engine, **kwargs):
+    def __init__(self, *args, db_engine: AsyncEngine, **kwargs):
         super().__init__(*args, **kwargs)
-        self.db_engine = db_engine
+        self.db_engine: AsyncEngine = db_engine
+        self.sessions = async_sessionmaker(self.db_engine, expire_on_commit=False)
 
     async def setup_hook(self):
         """Runs just before the bot connects to Discord"""
@@ -28,6 +31,16 @@ class TicketPlus(commands.AutoShardedBot):
                 await self.load_extension(extension)
             except commands.ExtensionError as err:
                 logging.error("Failed to load cog %s: %s", extension, err)
+
+    def get_connection(self):
+        """Gets a connection from the database pool"""
+        return OnlineConfig(self, self.sessions())
+
+    async def close(self):
+        """Closes the bot"""
+        logging.info("Closing bot...")
+        await self.db_engine.dispose()
+        return await super().close()
 
 
 async def start_bot():
