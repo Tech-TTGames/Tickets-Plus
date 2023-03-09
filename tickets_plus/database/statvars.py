@@ -56,9 +56,11 @@ class MiniConfig:
         return self._config
 
     def getitem(self, key: str, opt: Any = None) -> Any:
+        """Returns the value of a key in the config.json file"""
         return self._config.get(key, opt)
 
     def get_url(self) -> URL:
+        """Returns the database URL"""
         return URL.create(
             drivername=self._config["dbtype"],
             host=self._config["dbhost"],

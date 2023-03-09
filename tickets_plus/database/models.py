@@ -5,6 +5,7 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
+# pylint: disable=too-few-public-methods
 class Base(DeclarativeBase):
     """Base of SQLAlchemy models"""
 
