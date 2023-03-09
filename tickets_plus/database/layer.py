@@ -1,5 +1,5 @@
 """A layer for the database session."""
-from typing import Optional, Sequence, Tuple
+from typing import Optional, Sequence, Tuple, Literal, overload
 
 from discord.ext import commands
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -67,9 +67,21 @@ class OnlineConfig:
             self._session.add(member_conf)
         return member_conf
 
+    @overload
     async def get_ticket_user(
-        self, user_id: int, guild_id: int
+        self, user_id: int, guild_id: int, check_only: Literal[True]
+    ) -> bool:
+        ...
+
+    @overload
+    async def get_ticket_user(
+        self, user_id: int, guild_id: int, check_only: Literal[False]
     ) -> Tuple[bool, TicketUser]:
+        ...
+
+    async def get_ticket_user(
+        self, user_id: int, guild_id: int, check_only: bool
+    ) -> Tuple[bool, TicketUser] | bool:
         """Get a ticket user from the database."""
         guild = await self.get_guild(guild_id)
         ticket_user = await self._session.scalar(
@@ -79,7 +91,11 @@ class OnlineConfig:
         )
         new = False
         if ticket_user is None:
+            if check_only:
+                return False
             new = True
             ticket_user = TicketUser(user_id=user_id, guild=guild)
             self._session.add(ticket_user)
-        return (new, ticket_user)
+        if check_only:
+            return True
+        return new, ticket_user

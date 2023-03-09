@@ -31,7 +31,7 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
             return
         async with self._bt.get_connection() as conn:
             rspns = ctx.response
-            new, ticket_user = await conn.get_ticket_user(user.id, ctx.guild.id)
+            new, ticket_user = await conn.get_ticket_user(user.id, ctx.guild.id, False)
             if not new:
                 await conn.delete(ticket_user)
                 await rspns.send_message(f"Untracked {user.mention}", ephemeral=True)

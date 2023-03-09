@@ -44,15 +44,12 @@ class Utility(commands.Cog, name="Main Utilities"):
                     if entry.user is None:
                         continue
                     guild = await confg.get_guild(
-                        gld.id,
-                        (
-                            selectinload(Guild.ticket_users),
-                            selectinload(Guild.observers_roles),
-                        ),
+                        gld.id, (selectinload(Guild.observers_roles),)
                     )
                     guild_bt = self._bt.get_guild(gld.id)
-                    ticket_user_ids = guild.get_id_list("ticket_users", "user_id")
-                    if entry.target == channel and entry.user.id in ticket_user_ids:
+                    if entry.target == channel and await confg.get_ticket_user(
+                        entry.user.id, entry.guild.id, True
+                    ):
                         nts_thrd: discord.Thread = await channel.create_thread(
                             name="Staff Notes",
                             reason=f"Staff notes for Ticket {channel.name}",
@@ -79,7 +76,9 @@ class Utility(commands.Cog, name="Main Utilities"):
                             async for msg in channel.history(
                                 oldest_first=True, limit=2
                             ):
-                                if msg.author.id in ticket_user_ids:
+                                if await confg.get_ticket_user(
+                                    msg.author.id, msg.guild.id, True # type: ignore
+                                ):
                                     await channel.send(embeds=msg.embeds)
                                     await msg.delete()
                         if guild.community_roles:
@@ -165,7 +164,7 @@ class Utility(commands.Cog, name="Main Utilities"):
         This command is used to respond to a ticket as the bot.
         """
         async with self._bt.get_connection() as confg:
-            guild = await confg.get_guild(ctx.guild.id)  # type: ignore # Already checked in is_staff_check
+            guild = await confg.get_guild(ctx.guild.id)  # type: ignore # checked in decorator
             if isinstance(ctx.channel, discord.Thread):
                 if isinstance(ctx.channel.parent, discord.TextChannel):
                     await ctx.response.send_message(
