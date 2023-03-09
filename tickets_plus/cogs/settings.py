@@ -6,9 +6,10 @@ from discord import app_commands
 from discord.ext import commands
 
 from tickets_plus import TicketsPlus
-from tickets_plus.ext.checks import is_owner_check
 
 
+@app_commands.guild_only()
+@app_commands.default_permissions(administrator=True)
 class Settings(commands.GroupCog, name="settings", description="Settings for the bot."):
     """Provides commands to change the bot's settings."""
 
@@ -18,8 +19,6 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
         logging.info("Loaded %s", self.__class__.__name__)
 
     @app_commands.command(name="tracked", description="Change the tracked users.")
-    @app_commands.checks.has_permissions(administrator=True)
-    @app_commands.guild_only()
     @app_commands.describe(user="The user to track/untrack.")
     async def change_tracked(self, ctx: discord.Interaction, user: discord.User):
         """
@@ -41,8 +40,6 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
             await conn.close()
 
     @app_commands.command(name="staff", description="Change the staff roles.")
-    @app_commands.checks.has_permissions(administrator=True)
-    @app_commands.guild_only()
     @app_commands.describe(role="The role to add/remove from staff roles.")
     async def change_staff(self, ctx: discord.Interaction, role: discord.Role):
         """
@@ -64,8 +61,6 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
         self._config.staff = stff
 
     @app_commands.command(name="observers", description="Change the observers roles.")
-    @app_commands.checks.has_permissions(administrator=True)
-    @app_commands.guild_only()
     @app_commands.describe(role="The role to add/remove from observers roles.")
     async def change_observers(self, ctx: discord.Interaction, role: discord.Role):
         """
@@ -87,8 +82,6 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
         self._config.observers = obsrvrs
 
     @app_commands.command(name="openmsg", description="Change the open message.")
-    @app_commands.checks.has_permissions(administrator=True)
-    @app_commands.guild_only()
     @app_commands.describe(message="The new open message.")
     async def change_openmsg(self, ctx: discord.Interaction, message: str):
         """This command is used to change the open message."""
@@ -98,8 +91,6 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
         )
 
     @app_commands.command(name="staffteam", description="Change the staff team's name.")
-    @app_commands.checks.has_permissions(administrator=True)
-    @app_commands.guild_only()
     @app_commands.describe(name="The new staff team's name.")
     async def change_staffteam(self, ctx: discord.Interaction, name: str):
         """This command is used to change the staff team's name."""
@@ -109,8 +100,6 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
     @app_commands.command(
         name="msgdiscovery", description="Toggle message link discovery."
     )
-    @app_commands.checks.has_permissions(administrator=True)
-    @app_commands.guild_only()
     async def toggle_msg_discovery(self, ctx: discord.Interaction):
         """This command is used to toggle message link discovery."""
         self._config.msg_discovery = not self._config.msg_discovery
@@ -120,8 +109,6 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
         )
 
     @app_commands.command(name="stripbuttons", description="Toggle button stripping.")
-    @app_commands.checks.has_permissions(administrator=True)
-    @app_commands.guild_only()
     async def toggle_button_stripping(self, ctx: discord.Interaction):
         """This command is used to toggle button stripping."""
         self._config.strip_buttons = not self._config.strip_buttons
@@ -132,8 +119,6 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
     @app_commands.command(
         name="communitysupport", description="Change the community support roles."
     )
-    @app_commands.checks.has_permissions(administrator=True)
-    @app_commands.guild_only()
     @app_commands.describe(role="The role to add/remove from community support roles.")
     async def change_community_roles(
         self, ctx: discord.Interaction, role: discord.Role
@@ -156,40 +141,6 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
                 f"Added {role.mention} to community support roles.", ephemeral=True
             )
         self._config.community_roles = comsup
-
-    @app_commands.command(name="guild", description="Change the guild.")
-    @is_owner_check()
-    @app_commands.guild_only()
-    async def change_guild(self, ctx: discord.Interaction):
-        """This command is used to change the guild. Use in the guild you want to change to."""
-        if ctx.guild is None:
-            await ctx.response.send_message(
-                "You must be in a guild to use this command.", ephemeral=True
-            )
-            return
-        self._config.guild = ctx.guild
-        await ctx.response.send_message(
-            f"Guild is now {ctx.guild.name}", ephemeral=True
-        )
-
-    @app_commands.command(name="owner", description="Change the owners of the bot.")
-    @is_owner_check()
-    @app_commands.describe(
-        user="The user to add to owners. WARNING: This will not remove them."
-    )
-    async def change_owner(self, ctx: discord.Interaction, user: discord.User):
-        """
-        This command is used to change the owner users.
-        If a user is already owner, they will be not be removed.
-        """
-        rspns = ctx.response
-        owner_users = self._config.owner
-        owner_users.append(user.id)
-        await rspns.send_message(
-            f"Added {user.mention} as admin. To remove edit config,json.",
-            ephemeral=True,
-        )
-        self._config.owner = owner_users
 
 
 async def setup(bot: TicketsPlus):
