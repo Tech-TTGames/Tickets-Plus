@@ -13,7 +13,7 @@ class Base(DeclarativeBase):
 class Guild(Base):
     """General configuration table"""
 
-    __tablename__ = "general_config"
+    __tablename__ = "general_configs"
 
     # Simple columns
     guild_id: Mapped[int] = mapped_column(primary_key=True)
@@ -57,7 +57,7 @@ class TicketUser(Base):
 
     # Simple columns
     user_id: Mapped[int] = mapped_column(primary_key=False)
-    guild_id: Mapped[int] = mapped_column(ForeignKey("general_config.guild_id"))
+    guild_id: Mapped[int] = mapped_column(ForeignKey("general_configs.guild_id"))
 
     # Relationships
     guild: Mapped["Guild"] = relationship(
@@ -72,7 +72,7 @@ class StaffRole(Base):
 
     # Simple columns
     role_id: Mapped[int] = mapped_column(primary_key=False)
-    guild_id: Mapped[int] = mapped_column(ForeignKey("general_config.guild_id"))
+    guild_id: Mapped[int] = mapped_column(ForeignKey("general_configs.guild_id"))
 
     # Relationships
     guild: Mapped["Guild"] = relationship(
@@ -87,7 +87,7 @@ class ObserversRole(Base):
 
     # Simple columns
     role_id: Mapped[int] = mapped_column(primary_key=False)
-    guild_id: Mapped[int] = mapped_column(ForeignKey("general_config.guild_id"))
+    guild_id: Mapped[int] = mapped_column(ForeignKey("general_configs.guild_id"))
 
     # Relationships
     guild: Mapped["Guild"] = relationship(
@@ -102,7 +102,7 @@ class CommunityRole(Base):
 
     # Simple columns
     role_id: Mapped[int] = mapped_column(primary_key=True)
-    guild_id: Mapped[int] = mapped_column(ForeignKey("general_config.guild_id"))
+    guild_id: Mapped[int] = mapped_column(ForeignKey("general_configs.guild_id"))
 
     # Relationships
     guild: Mapped["Guild"] = relationship(
@@ -118,11 +118,11 @@ class Member(Base):
     # Simple columns
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(nullable=False)
-    guild_id: Mapped[int] = mapped_column(ForeignKey("general_config.guild_id"))
+    guild_id: Mapped[int] = mapped_column(ForeignKey("general_configs.guild_id"))
 
     # Relationships
     guild: Mapped["Guild"] = relationship(
-        back_populates="community_roles", lazy="raise"
+        back_populates="community_roles", lazy="selectin"
     )
 
     # Toggles
