@@ -11,6 +11,7 @@ from typing import Any, List, Literal, Union
 
 import discord
 from discord.ext import commands
+from sqlalchemy import URL
 
 # v[major].[minor].[release].[build]
 # MAJOR and MINOR version changes can be compatibility-breaking
@@ -56,6 +57,16 @@ class MiniConfig:
 
     def getitem(self, key: str, opt: Any = None) -> Any:
         return self._config.get(key, opt)
+
+    def get_url(self) -> URL:
+        return URL.create(
+            drivername=self._config["dbtype"],
+            host=self._config["dbhost"],
+            port=self._config["dbport"],
+            username=self._config["dbuser"],
+            password=self._config["dbpass"],
+            database=self._config["dbname"],
+        )
 
 
 class Config:
