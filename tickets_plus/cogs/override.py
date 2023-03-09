@@ -28,7 +28,8 @@ class Overrides(
 
     @app_commands.command(name="reload", description="Reloads the bot's cogs.")
     @is_owner_check()
-    async def reload(self, ctx: discord.Interaction):
+    @app_commands.describe(sync="Syncs the tree after reloading cogs.")
+    async def reload(self, ctx: discord.Interaction, sync: bool = False):
         """Reloads the bot's cogs."""
         await ctx.response.send_message("Reloading cogs...")
         logging.info("Reloading cogs...")
@@ -36,8 +37,9 @@ class Overrides(
             await self._bt.reload_extension(extension)
         await ctx.channel.send("Reloaded cogs.")  # type: ignore
         logging.info("Finished reloading cogs.")
-        await self._bt.tree.sync()
-        logging.info("Finished syncing tree.")
+        if sync:
+            await self._bt.tree.sync()
+            logging.info("Finished syncing tree.")
 
     @app_commands.command(name="restart", description="Restarts the bot.")
     @is_owner_check()
@@ -105,6 +107,17 @@ class Overrides(
             await ctx.user.send(str(guild_confg))  # Eh. This is a bit of a test.
             await conn.close()
         await ctx.followup.send("Sent config.")
+        logging.info("Config sent.")
+
+    @commands.command(name="sync", description="Syncs the tree.")
+    @is_owner_check()
+    async def sync(self, ctx: commands.Context):
+        """Syncs the tree."""
+        await ctx.send("Syncing...")
+        logging.info("Syncing...")
+        await self._bt.tree.sync()
+        await ctx.send("Synced.")
+        logging.info("Synced.")
 
 
 async def setup(bot: TicketsPlus):
