@@ -9,10 +9,13 @@ from discord.ext import commands
 
 from tickets_plus import TicketsPlus
 from tickets_plus.cogs import EXTENSIONS
-from tickets_plus.database.statvars import PROG_DIR
+from tickets_plus.database.statvars import PROG_DIR, MiniConfig
 from tickets_plus.ext.checks import is_owner_check
 
+CNFG = MiniConfig()
 
+
+@app_commands.guilds(CNFG.getitem("dev_guild_id"))
 class Overrides(
     commands.GroupCog, name="override", description="Owner override commands."
 ):
