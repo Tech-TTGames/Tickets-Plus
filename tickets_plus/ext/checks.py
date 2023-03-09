@@ -8,7 +8,7 @@ from tickets_plus.database.models import Guild
 
 
 def is_owner_check():
-    """An actually acceptabe way to work around the lack of owner check in slash commands."""
+    """Now a normal check for owner."""
 
     async def is_owner(interaction: discord.Interaction):
         """Checks if interaction user is owner."""

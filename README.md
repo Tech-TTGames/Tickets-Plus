@@ -20,19 +20,19 @@ You can now respond as the staff team using /respond.
 The command is limited to users with roles added to staff.
 The 'name' of the team is adjustable via /settings staffname.
 
-## Feature 3 - Strip Buttons
+## Feature 3 - Community Support
 
-Due to the main Tickets bot not facilitating permissions check withthe 'Close' and 'Close with Reason' buttons this bot will strip the buttons enabling the use of / command perms to limit access.
-Toggle with /setting stripbuttons.
+Adds selected roles to all tickets to allow for safe community support! This makes using volounteers as a help system without the discord forums even easier and safer!
 
 ### Minor Feature 1 - Message Discovery
 
 The bot will display previews of discord message links.
 Requires message content intent.
 
-### Minor Feature 2 - Community Support
+### Minor Feature 2 - Button Stripping
 
-Automatically adds roles to the channels created by the tracked users.
+Due to the main Tickets bot not facilitating permissions check withthe 'Close' and 'Close with Reason' buttons this bot will strip the buttons enabling the use of / command perms to limit access.
+Toggle with /setting stripbuttons.
 
 ## Setup
 
@@ -44,7 +44,7 @@ Automatically adds roles to the channels created by the tracked users.
 4. Run (Assuming pip and python are already on the machine) `pip install -r requirements.txt`
 5. Create the bot on [Discord Developers](https://discord.com/developers/applications).
     1. Create application however you want.
-    2. Create a bot. No Privilaged intents are necessary (Unless you want features that use it). Probably disable 'Public Bot'.
+    2. Create a bot. Turn on the 'Message Content' privileged intent. Probably disable 'Public Bot'.
     3. Input your bot token to secret.json. (Refer to example_secret.json)
     4. Use `https://discord.com/api/oauth2/authorize?client_id=<APP_ID>&permissions=397284478096&scope=bot%20applications.commands` to invite the bot. replace `<APP_ID>` with the numbers from your apps `https://discord.com/developers/applications/<APP_ID>/`.
 6. Fill out config.json based on the information about your server. (Refer to example_config.json)
