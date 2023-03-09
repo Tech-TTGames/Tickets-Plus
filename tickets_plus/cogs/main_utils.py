@@ -77,7 +77,7 @@ class Utility(commands.Cog, name="Main Utilities"):
                                 oldest_first=True, limit=2
                             ):
                                 if await confg.get_ticket_user(
-                                    msg.author.id, msg.guild.id, True # type: ignore
+                                    msg.author.id, msg.guild.id, True  # type: ignore
                                 ):
                                     await channel.send(embeds=msg.embeds)
                                     await msg.delete()

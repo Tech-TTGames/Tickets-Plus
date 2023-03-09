@@ -1,5 +1,5 @@
 """A layer for the database session."""
-from typing import Optional, Sequence, Tuple, Literal, overload
+from typing import Literal, Optional, Sequence, Tuple, overload
 
 from discord.ext import commands
 from sqlalchemy.ext.asyncio import AsyncSession
