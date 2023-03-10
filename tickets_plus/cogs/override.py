@@ -97,7 +97,7 @@ class Overrides(
 
     @app_commands.command(name="config", description="Sends the guild config.")
     @is_owner_check()
-    @app_commands.describe(id="Guild ID")
+    @app_commands.describe(guid="Guild ID")
     async def config(self, ctx: discord.Interaction, guid: int):
         """Sends the config."""
         await ctx.response.defer(thinking=True)
