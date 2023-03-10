@@ -12,8 +12,8 @@ from tickets_plus.bot import TicketsPlus
 from tickets_plus.database.models import Guild
 
 
-class Events(commands.Cog, name="General Random Commands"):
-    """General commands that don't fit anywhere else"""
+class Events(commands.Cog, name="Events"):
+    """All events for Tickets+."""
 
     def __init__(self, bot: TicketsPlus):
         self._bt = bot
