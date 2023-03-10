@@ -157,6 +157,7 @@ cython_debug/
 # Files that should not be synced. They have corresponding example_* files in the repo.
 config.json*
 secret.json*
+alembic.ini
 
 # Logs
 *.log*
