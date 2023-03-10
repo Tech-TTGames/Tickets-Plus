@@ -1,13 +1,18 @@
 """File for database models"""
 from typing import List
 
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, MetaData
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+
+
+metadata_obj = MetaData(schema="tickets_plus")
 
 
 # pylint: disable=too-few-public-methods
 class Base(DeclarativeBase):
     """Base of SQLAlchemy models"""
+
+    metadata = metadata_obj
 
 
 class Guild(Base):
