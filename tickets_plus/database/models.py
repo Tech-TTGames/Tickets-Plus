@@ -4,7 +4,6 @@ from typing import List
 from sqlalchemy import ForeignKey, MetaData
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
-
 metadata_obj = MetaData(schema="tickets_plus")
 
 

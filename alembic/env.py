@@ -7,7 +7,6 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
-
 from tickets_plus.database.models import Base
 
 # this is the Alembic Config object, which provides
@@ -84,6 +83,7 @@ def run_migrations_online() -> None:
     """Run migrations in 'online' mode."""
 
     asyncio.run(run_async_migrations())
+
 
 if sys.platform == "win32":
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
