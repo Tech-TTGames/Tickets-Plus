@@ -5,6 +5,7 @@ from discord.ext import commands
 from sqlalchemy.ext.asyncio import create_async_engine
 
 from tickets_plus.bot import TicketsPlus
+from tickets_plus.database.models import Base
 from tickets_plus.database.statvars import MiniConfig, Secret, handler, intents
 
 
@@ -12,13 +13,23 @@ async def start_bot():
     """Sets up the bot and starts it"""
     stat_data = MiniConfig()
 
-    logger = logging.getLogger("discord")
-    logger.setLevel(logging.INFO)
+    # Set up logging
     dt_fmr = "%Y-%m-%d %H:%M:%S"
     handler.setFormatter(
         logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s", dt_fmr)
     )
-    logger.addHandler(handler)
+
+    # Set up discord.py logging
+    dscrd_logger = logging.getLogger("discord")
+    dscrd_logger.setLevel(logging.INFO)
+    dscrd_logger.addHandler(handler)
+
+    # Set up sqlalchemy logging
+    sql_logger = logging.getLogger("sqlalchemy.engine")
+    sql_logger.setLevel(logging.INFO)
+    sql_logger.addHandler(handler)
+
+    # Set up bot logging
     logging.root.setLevel(logging.INFO)
     logging.root.addHandler(handler)
 
@@ -26,6 +37,9 @@ async def start_bot():
     bot = TicketsPlus(
         db_engine=engine, intents=intents, command_prefix=commands.when_mentioned
     )
+    logging.info("Engine created. Ensuring tables...")
+    Base.metadata.create_all(engine.sync_engine, checkfirst=True)
+    logging.info("Tables ensured. Starting bot...")
     try:
         await bot.start(Secret().token)
     except KeyboardInterrupt:
