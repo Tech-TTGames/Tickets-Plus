@@ -59,8 +59,8 @@ class Events(commands.Cog, name="Events"):
                             "Created thread %s for %s", nts_thrd.name, channel.name
                         )
                         if guild.observers_roles:
-                            observer_ids = guild.get_id_list(
-                                "observers_roles", "role_id"
+                            observer_ids = await asyncio.to_thread(
+                                guild.get_id_list, "observers_roles", "role_id"
                             )
                             inv = await nts_thrd.send(
                                 " ".join([f"<@&{role_id}>" for role_id in observer_ids])
@@ -75,7 +75,9 @@ class Events(commands.Cog, name="Events"):
                                     await channel.send(embeds=msg.embeds)
                                     await msg.delete()
                         if guild.community_roles:
-                            comm_roles = guild.get_id_list("community_roles", "role_id")
+                            comm_roles = await asyncio.to_thread(
+                                guild.get_id_list, "community_roles", "role_id"
+                            )
                             overwrite = discord.PermissionOverwrite()
                             overwrite.view_channel = True
                             overwrite.add_reactions = True
