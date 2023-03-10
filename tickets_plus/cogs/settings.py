@@ -5,7 +5,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from tickets_plus import TicketsPlus
+from tickets_plus.bot import TicketsPlus
 
 
 @app_commands.guild_only()

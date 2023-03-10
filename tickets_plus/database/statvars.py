@@ -20,7 +20,7 @@ PROG_DIR = pathlib.Path(__file__).parent.parent.parent.absolute()
 
 intents = discord.Intents.default()
 handler = RotatingFileHandler(
-    filename=pathlib.Path(PROG_DIR, "log", "discord.log"),
+    filename=pathlib.Path(PROG_DIR, "log", "bot.log"),
     encoding="utf-8",
     mode="w",
     backupCount=10,

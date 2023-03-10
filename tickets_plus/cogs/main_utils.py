@@ -5,7 +5,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from tickets_plus import TicketsPlus
+from tickets_plus.bot import TicketsPlus
 from tickets_plus.database.statvars import VERSION
 from tickets_plus.ext.checks import is_staff_check
 
