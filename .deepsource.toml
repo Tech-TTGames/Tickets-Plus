@@ -1,5 +1,7 @@
 version = 1
 
+exclude_patterns = ["alembic/**"]
+
 [[analyzers]]
 name = "python"
 
