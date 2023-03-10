@@ -66,14 +66,6 @@ class Events(commands.Cog, name="Events"):
                                 " ".join([f"<@&{role_id}>" for role_id in observer_ids])
                             )
                             await inv.delete()
-                        if guild.strip_buttons:
-                            await asyncio.sleep(1)
-                            async for msg in channel.history(
-                                oldest_first=True, limit=2
-                            ):
-                                if await confg.check_ticket_user(msg.author.id):
-                                    await channel.send(embeds=msg.embeds)
-                                    await msg.delete()
                         if guild.community_roles:
                             comm_roles = await asyncio.to_thread(
                                 guild.get_id_list, "community_roles", "role_id"
@@ -95,6 +87,14 @@ class Events(commands.Cog, name="Events"):
                                     )
                                 except (TypeError, discord.NotFound):
                                     pass
+                        if guild.strip_buttons:
+                            await asyncio.sleep(1)
+                            async for msg in channel.history(
+                                oldest_first=True, limit=2
+                            ):
+                                if await confg.check_ticket_user(msg.author.id):
+                                    await channel.send(embeds=msg.embeds)
+                                    await msg.delete()
             await confg.close()
 
     @commands.Cog.listener(name="on_message")
