@@ -136,13 +136,13 @@ The `users` table is used to store information about users. It includes the foll
 | Column Name | Data Type | Primary Key | Nullable | Description |
 | ----------- | --------- | -----------| -------- | ----------- |
 | user_id | Integer | Yes | No | The unique ID of the user. |
+| is_owner | Boolean | No | No | A boolean column that indicates whether the user is an owner |
 
-The table also includes the following relationships and toggles:
+The table also includes the following relationships:
 
 | Relationship | Description |
 | ------------ | ----------- |
 | members | A one-to-many relationship with the `Member` table. |
-| is_owner | A boolean column that indicates whether the user is an owner. |
 
 Note that the `members` relationship is lazy-loaded using the `raise` strategy.
 
