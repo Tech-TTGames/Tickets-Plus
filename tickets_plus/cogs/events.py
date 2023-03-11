@@ -63,7 +63,9 @@ class Events(commands.Cog, name="Events"):
                                 channel.guild.id
                             )
                             inv = await nts_thrd.send(
-                                " ".join([f"<@&{role.role_id}>" for role in observer_ids])
+                                " ".join(
+                                    [f"<@&{role.role_id}>" for role in observer_ids]
+                                )
                             )
                             await inv.delete()
                         if guild.community_roles:
@@ -81,7 +83,7 @@ class Events(commands.Cog, name="Events"):
                             overwrite.use_application_commands = True
                             for role in comm_roles:
                                 try:
-                                    rle: discord.Role = guild_bt.get_role(role.role_id) # type: ignore
+                                    rle: discord.Role = guild_bt.get_role(role.role_id)  # type: ignore
                                     await channel.set_permissions(
                                         rle, overwrite=overwrite
                                     )
