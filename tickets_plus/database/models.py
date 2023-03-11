@@ -8,6 +8,7 @@ metadata_obj = MetaData(schema="tickets_plus")
 
 
 # pylint: disable=too-few-public-methods
+# pylint: disable=line-too-long
 class Base(DeclarativeBase):
     """Base of SQLAlchemy models"""
 
