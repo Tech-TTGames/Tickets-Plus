@@ -38,7 +38,8 @@ async def start_bot():
         db_engine=engine, intents=intents, command_prefix=commands.when_mentioned
     )
     logging.info("Engine created. Ensuring tables...")
-    Base.metadata.create_all(engine.sync_engine, checkfirst=True)
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
     logging.info("Tables ensured. Starting bot...")
     try:
         await bot.start(Secret().token)
