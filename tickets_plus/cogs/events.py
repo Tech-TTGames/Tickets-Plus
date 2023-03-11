@@ -59,16 +59,16 @@ class Events(commands.Cog, name="Events"):
                             "Created thread %s for %s", nts_thrd.name, channel.name
                         )
                         if guild.observers_roles:
-                            observer_ids = await asyncio.to_thread(
-                                guild.get_id_list, "observers_roles", "role_id"
+                            observer_ids = await confg.get_all_observers_roles(
+                                channel.guild.id
                             )
                             inv = await nts_thrd.send(
-                                " ".join([f"<@&{role_id}>" for role_id in observer_ids])
+                                " ".join([f"<@&{role.role_id}>" for role in observer_ids])
                             )
                             await inv.delete()
                         if guild.community_roles:
-                            comm_roles = await asyncio.to_thread(
-                                guild.get_id_list, "community_roles", "role_id"
+                            comm_roles = await confg.get_all_community_roles(
+                                channel.guild.id
                             )
                             overwrite = discord.PermissionOverwrite()
                             overwrite.view_channel = True
@@ -81,7 +81,7 @@ class Events(commands.Cog, name="Events"):
                             overwrite.use_application_commands = True
                             for role in comm_roles:
                                 try:
-                                    rle: discord.Role = guild_bt.get_role(role)  # type: ignore
+                                    rle: discord.Role = guild_bt.get_role(role.role_id) # type: ignore
                                     await channel.set_permissions(
                                         rle, overwrite=overwrite
                                     )
