@@ -11,8 +11,8 @@ The `general_configs` table is used to store general configuration information f
 | guild_id | Integer | Yes | No | The unique ID of the guild |
 | open_message | String | No | No | The message displayed to users when a new ticket is opened. Default value is "Staff notes for Ticket $channel." |
 | staff_team_name | String | No | No | The name of the staff team. Default value is "Staff Team." |
-| msg_discovery | Boolean | No | No | A boolean value that indicates whether or not the bot should announce new tickets in the guild. |
-| strip_buttons | Boolean | No | No | A boolean value that indicates whether or not the bot should remove the reaction buttons from messages in tickets. |
+| msg_discovery | Boolean | No | No | A boolean value that indicates whether or not the bot should discover endpoints of discord message links. |
+| strip_buttons | Boolean | No | No | A boolean value that indicates whether or not the bot should remove the 'close' and 'close with reason' buttons from tickets. |
 
 The table also includes the following relationships:
 
@@ -27,12 +27,12 @@ The table also includes the following relationships:
 
 ## TicketUser Table
 
-The `ticket_users` table is used to store information about users who have opened tickets. It includes the following columns:
+The `ticket_users` table is used to store information about users who have perms to open tickets. It includes the following columns:
 
 | Column Name | Data Type | Primary Key | Nullable | Description |
 | ----------- | --------- | -----------| -------- | ----------- |
-| user_id | Integer | Yes | No | The unique ID of the user who opened the ticket. |
-| guild_id | Integer | No | No | The ID of the guild in which the ticket was opened. Foreign key to the `general_configs.guild_id` column. |
+| user_id | Integer | Yes | No | The unique ID of the ticket bot. |
+| guild_id | Integer | No | No | The ID of the guild to wich the ticekt user belongs. Foreign key to the `general_configs.guild_id` column. |
 
 The table also includes the following relationship:
 
@@ -133,3 +133,5 @@ In addition, the table includes the following toggle column:
 | Column Name | Data Type | Default | Nullable | Description |
 | ----------- | --------- | ------- | -------- | ----------- |
 | is_owner | Boolean | False | No | Indicates whether the user is an owner of the bot. |
+
+Currently, the is_owner toggle isn't used.
