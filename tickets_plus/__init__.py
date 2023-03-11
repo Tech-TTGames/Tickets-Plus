@@ -12,6 +12,7 @@ from tickets_plus.database.statvars import MiniConfig, Secret, handler, intents
 
 async def start_bot():
     """Sets up the bot and starts it"""
+    # Set up statvars
     stat_data = MiniConfig()
 
     # Set up logging
@@ -33,7 +34,10 @@ async def start_bot():
     # Set up bot logging
     logging.root.setLevel(logging.INFO)
     logging.root.addHandler(handler)
+    logging.info("Logging set up.")
 
+    # Set up bot
+    logging.info("Creating engine...")
     engine = create_async_engine(stat_data.get_url())
     bot = TicketsPlus(
         db_engine=engine, intents=intents, command_prefix=commands.when_mentioned
