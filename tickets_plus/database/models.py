@@ -25,7 +25,7 @@ class Guild(Base):
 
     # Simple columns
     guild_id: Mapped[int] = mapped_column(
-        primary_key=True, comment="Unique discord-provided guild ID", default=None
+        primary_key=True, comment="Unique discord-provided guild ID"
     )
     open_message: Mapped[str] = mapped_column(
         default="Staff notes for Ticket $channel.",
