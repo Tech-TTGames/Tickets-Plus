@@ -39,6 +39,9 @@ class Guild(Base):
     community_roles: Mapped[List["CommunityRole"]] = relationship(
         back_populates="guild", lazy="raise"
     )
+    community_pings: Mapped[List["CommunityPing"]] = relationship(
+        back_populates="guild", lazy="raise"
+    )
     members: Mapped[List["Member"]] = relationship(back_populates="guild", lazy="raise")
 
     # Toggles
@@ -99,6 +102,21 @@ class CommunityRole(Base):
     """Community roles table"""
 
     __tablename__ = "community_roles"
+
+    # Simple columns
+    role_id: Mapped[int] = mapped_column(primary_key=True)
+    guild_id: Mapped[int] = mapped_column(ForeignKey("general_configs.guild_id"))
+
+    # Relationships
+    guild: Mapped["Guild"] = relationship(
+        back_populates="community_roles", lazy="selectin"
+    )
+
+
+class CommunityPing(Base):
+    """Community pings table"""
+
+    __tablename__ = "community_pings"
 
     # Simple columns
     role_id: Mapped[int] = mapped_column(primary_key=True)
