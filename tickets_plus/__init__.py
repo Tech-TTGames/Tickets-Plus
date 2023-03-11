@@ -27,7 +27,7 @@ async def start_bot():
 
     # Set up sqlalchemy logging
     sql_logger = logging.getLogger("sqlalchemy.engine")
-    sql_logger.setLevel(logging.INFO)
+    sql_logger.setLevel(logging.WARNING)
     sql_logger.addHandler(handler)
 
     # Set up bot logging
