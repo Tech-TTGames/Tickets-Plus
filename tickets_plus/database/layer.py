@@ -7,6 +7,7 @@ from sqlalchemy.sql import select
 from sqlalchemy.sql.base import ExecutableOption
 
 from tickets_plus.database.models import (
+    CommunityPing,
     CommunityRole,
     Guild,
     Member,
@@ -105,6 +106,14 @@ class OnlineConfig:
             self._session.add(staff_role)
         return new, staff_role
 
+    async def get_all_staff_roles(self, guild_id: int) -> Sequence[StaffRole]:
+        """Get all staff roles from the database."""
+        guild = await self.get_guild(guild_id)
+        staff_roles = await self._session.scalars(
+            select(StaffRole).where(StaffRole.guild == guild)
+        )
+        return staff_roles.all()
+
     async def check_staff_role(self, role_id: int) -> bool:
         """Check if the staff role exists."""
         staff_role = await self._session.get(StaffRole, role_id)
@@ -122,6 +131,14 @@ class OnlineConfig:
             observers_role = ObserversRole(role_id=role_id, guild=guild)
             self._session.add(observers_role)
         return new, observers_role
+
+    async def get_all_observers_roles(self, guild_id: int) -> Sequence[ObserversRole]:
+        """Get all observers roles from the database."""
+        guild = await self.get_guild(guild_id)
+        observers_roles = await self._session.scalars(
+            select(ObserversRole).where(ObserversRole.guild == guild)
+        )
+        return observers_roles.all()
 
     async def check_observers_role(self, role_id: int) -> bool:
         """Check if the observers role exists."""
@@ -141,7 +158,41 @@ class OnlineConfig:
             self._session.add(community_role)
         return new, community_role
 
+    async def get_all_community_roles(self, guild_id: int) -> Sequence[CommunityRole]:
+        """Get all community roles from the database."""
+        guild = await self.get_guild(guild_id)
+        community_roles = await self._session.scalars(
+            select(CommunityRole).where(CommunityRole.guild == guild)
+        )
+        return community_roles.all()
+
     async def check_community_role(self, role_id: int) -> bool:
         """Check if the community role exists."""
         community_role = await self._session.get(CommunityRole, role_id)
         return community_role is not None
+
+    async def get_community_ping(
+        self, role_id: int, guild_id: int
+    ) -> Tuple[bool, CommunityPing]:
+        """Get the community ping from the database."""
+        guild = await self.get_guild(guild_id)
+        community_ping = await self._session.get(CommunityPing, role_id)
+        new = False
+        if community_ping is None:
+            new = True
+            community_ping = CommunityPing(role_id=role_id, guild=guild)
+            self._session.add(community_ping)
+        return new, community_ping
+
+    async def get_all_community_pings(self, guild_id: int) -> Sequence[CommunityPing]:
+        """Get all community pings from the database."""
+        guild = await self.get_guild(guild_id)
+        community_pings = await self._session.scalars(
+            select(CommunityPing).where(CommunityPing.guild == guild)
+        )
+        return community_pings.all()
+
+    async def check_community_ping(self, role_id: int) -> bool:
+        """Check if the community ping exists."""
+        community_ping = await self._session.get(CommunityPing, role_id)
+        return community_ping is not None
