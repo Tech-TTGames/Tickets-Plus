@@ -1,5 +1,6 @@
 """The main bot file. Start the bot."""
 import logging
+import discord
 
 import sqlalchemy
 from discord.ext import commands
@@ -40,7 +41,13 @@ async def start_bot():
     logging.info("Creating engine...")
     engine = create_async_engine(stat_data.get_url())
     bot = TicketsPlus(
-        db_engine=engine, intents=intents, command_prefix=commands.when_mentioned
+        db_engine=engine,
+        intents=intents,
+        command_prefix=commands.when_mentioned,
+        status=discord.Status.online,
+        activity=discord.Activity(
+            type=discord.ActivityType.playing, name="with tickets"
+        ),
     )
     logging.info("Engine created. Ensuring tables...")
     async with engine.begin() as conn:
