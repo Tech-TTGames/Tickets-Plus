@@ -154,10 +154,11 @@ cython_debug/
 # Vscode
 .vscode/
 
-# Files that should not be synced. They have corresponding example_* files in the repo.
+# Files that should not be synced. They can have corresponding example_* files in the repo.
 config.json*
 secret.json*
 alembic.ini
+tplus.dbs*
 
 # Logs
 *.log*
