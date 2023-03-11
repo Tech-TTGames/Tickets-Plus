@@ -19,6 +19,7 @@ VERSION = "v0.1.0.0"
 PROG_DIR = pathlib.Path(__file__).parent.parent.parent.absolute()
 
 intents = discord.Intents.default()
+intents.message_content = True
 handler = RotatingFileHandler(
     filename=pathlib.Path(PROG_DIR, "log", "bot.log"),
     encoding="utf-8",
