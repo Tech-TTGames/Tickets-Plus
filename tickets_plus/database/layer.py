@@ -14,6 +14,7 @@ from tickets_plus.database.models import (
     ObserversRole,
     StaffRole,
     TicketUser,
+    User,
 )
 
 
@@ -64,14 +65,29 @@ class OnlineConfig:
             self._session.add(guild_conf)
         return guild_conf
 
+    async def get_user(
+        self, user_id: int, options: Optional[Sequence[ExecutableOption]] = None
+    ) -> User:
+        """Get or create a user from the database."""
+        if options:
+            user = await self._session.scalar(
+                select(User).where(User.user_id == user_id).options(*options)
+            )
+        user = await self._session.scalar(select(User).where(User.user_id == user_id))
+        if user is None:
+            user = User(user_id=user_id)
+            self._session.add(user)
+        return user
+
     async def get_member(self, user_id: int, guild_id: int) -> Member:
         """Get or create a member from the database."""
         guild = self.get_guild(guild_id)
+        user = await self.get_user(user_id)
         member_conf = await self._session.scalar(
-            select(Member).where(Member.user_id == user_id, Member.guild == guild)
+            select(Member).where(Member.user == user, Member.guild == guild)
         )
         if member_conf is None:
-            member_conf = Member(user_id=user_id, guild=guild)
+            member_conf = Member(user=user, guild=guild)
             self._session.add(member_conf)
         return member_conf
 

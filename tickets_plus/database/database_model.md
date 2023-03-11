@@ -112,26 +112,38 @@ Note that the `guild` relationship is lazy-loaded using the `selectin` strategy.
 
 ## Member Table
 
-The `members` table is used to store information about users in the guild. It includes the following columns:
+The `members` table is used to store information about the members in the guild. It includes the following columns:
 
 | Column Name | Data Type | Primary Key | Nullable | Description |
 | ----------- | --------- | -----------| -------- | ----------- |
-| id | Integer | Yes | No | The unique ID of the member. |
-| user_id | Integer | No | No | The ID of the Discord user. |
-| guild_id | Integer | No | No | The ID of the guild to which the user belongs. Foreign key to the `general_configs.guild_id` column. |
+| id | Integer | Yes | No | A unique reference ID for the member. |
+| user_id | Integer | No | No | The unique ID of the user associated with the member. Foreign key to the `users.user_id` column. |
+| guild_id | Integer | No | No | The ID of the guild to which the member belongs. Foreign key to the `general_configs.guild_id` column. |
 
-The table also includes the following relationship:
+The table includes the following relationships:
 
 | Relationship | Description |
 | ------------ | ----------- |
 | guild | A many-to-one relationship with the `Guild` table. |
+| user | A many-to-one relationship with the `User` table. |
 
-Note that the `guild` relationship is lazy-loaded using the `selectin` strategy.
+Note that both relationships are lazy-loaded using the `selectin` strategy.
 
-In addition, the table includes the following toggle column:
+## Users Table
 
-| Column Name | Data Type | Default | Nullable | Description |
-| ----------- | --------- | ------- | -------- | ----------- |
-| is_owner | Boolean | False | No | Indicates whether the user is an owner of the bot. |
+The `users` table is used to store information about users. It includes the following columns:
+
+| Column Name | Data Type | Primary Key | Nullable | Description |
+| ----------- | --------- | -----------| -------- | ----------- |
+| user_id | Integer | Yes | No | The unique ID of the user. |
+
+The table also includes the following relationships and toggles:
+
+| Relationship | Description |
+| ------------ | ----------- |
+| members | A one-to-many relationship with the `Member` table. |
+| is_owner | A boolean column that indicates whether the user is an owner. |
+
+Note that the `members` relationship is lazy-loaded using the `raise` strategy.
 
 Currently, the is_owner toggle isn't used.

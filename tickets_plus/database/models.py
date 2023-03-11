@@ -123,19 +123,32 @@ class CommunityPing(Base):
 
 
 class Member(Base):
-    """User table"""
+    """Members table"""
 
     __tablename__ = "members"
 
     # Simple columns
-    id: Mapped[int] = mapped_column(primary_key=True)
-    user_id: Mapped[int] = mapped_column(nullable=False)
+    id: Mapped[int] = mapped_column(primary_key=True, comment="User reference ID")
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.user_id"))
     guild_id: Mapped[int] = mapped_column(ForeignKey("general_configs.guild_id"))
 
     # Relationships
     guild: Mapped["Guild"] = relationship(
         back_populates="community_roles", lazy="selectin"
     )
+    user: Mapped["User"] = relationship(back_populates="members", lazy="selectin")
+
+
+class User(Base):
+    """Users table"""
+
+    __tablename__ = "users"
+
+    # Simple columns
+    user_id: Mapped[int] = mapped_column(primary_key=True)
+
+    # Relationships
+    members: Mapped[List["Member"]] = relationship(back_populates="user", lazy="raise")
 
     # Toggles
     is_owner: Mapped[bool] = mapped_column(default=False)
