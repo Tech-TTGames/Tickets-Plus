@@ -2,6 +2,7 @@
 import logging
 
 from discord.ext import commands
+import sqlalchemy
 from sqlalchemy.ext.asyncio import create_async_engine
 
 from tickets_plus.bot import TicketsPlus
@@ -39,6 +40,7 @@ async def start_bot():
     )
     logging.info("Engine created. Ensuring tables...")
     async with engine.begin() as conn:
+        await conn.execute(sqlalchemy.schema.CreateSchema("tickets_plus", if_not_exists=True))
         await conn.run_sync(Base.metadata.create_all)
     logging.info("Tables ensured. Starting bot...")
     try:
