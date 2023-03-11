@@ -41,7 +41,6 @@ class Events(commands.Cog, name="Events"):
                     guild = await confg.get_guild(
                         gld.id, (selectinload(Guild.observers_roles),)
                     )
-                    guild_bt = self._bt.get_guild(gld.id)
                     if entry.target == channel and await confg.check_ticket_user(
                         entry.user.id
                     ):
@@ -59,17 +58,15 @@ class Events(commands.Cog, name="Events"):
                             "Created thread %s for %s", nts_thrd.name, channel.name
                         )
                         if guild.observers_roles:
-                            observer_ids = await confg.get_all_observers_roles(
-                                channel.guild.id
-                            )
+                            observer_ids = await confg.get_all_observers_roles(gld.id)
                             inv = await nts_thrd.send(
-                                " ".join([f"<@&{role.role_id}>" for role in observer_ids])
+                                " ".join(
+                                    [f"<@&{role.role_id}>" for role in observer_ids]
+                                )
                             )
                             await inv.delete()
                         if guild.community_roles:
-                            comm_roles = await confg.get_all_community_roles(
-                                channel.guild.id
-                            )
+                            comm_roles = await confg.get_all_community_roles(gld.id)
                             overwrite = discord.PermissionOverwrite()
                             overwrite.view_channel = True
                             overwrite.add_reactions = True
@@ -81,7 +78,9 @@ class Events(commands.Cog, name="Events"):
                             overwrite.use_application_commands = True
                             for role in comm_roles:
                                 try:
-                                    rle: discord.Role = guild_bt.get_role(role.role_id) # type: ignore
+                                    rle = gld.get_role(role.role_id)
+                                    if rle is None:
+                                        continue
                                     await channel.set_permissions(
                                         rle, overwrite=overwrite
                                     )
