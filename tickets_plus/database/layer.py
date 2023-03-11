@@ -96,7 +96,11 @@ class OnlineConfig:
     ) -> Tuple[bool, TicketBot]:
         """Get or create a ticket bot from the database."""
         guild = await self.get_guild(guild_id)
-        ticket_user = await self._session.get(TicketBot, user_id)
+        ticket_user = await self._session.scalar(
+            select(TicketBot).where(
+                TicketBot.user_id == user_id, TicketBot.guild == guild
+            )
+        )
         new = False
         if ticket_user is None:
             new = True
@@ -104,9 +108,13 @@ class OnlineConfig:
             self._session.add(ticket_user)
         return new, ticket_user
 
-    async def check_ticket_bot(self, user_id: int) -> bool:
+    async def check_ticket_bot(self, user_id: int, guild_id: int) -> bool:
         """Check if the ticket user exists."""
-        ticket_user = await self._session.get(TicketBot, user_id)
+        ticket_user = await self._session.scalar(
+            select(TicketBot).where(
+                TicketBot.user_id == user_id, TicketBot.guild_id == guild_id
+            )
+        )
         return ticket_user is not None
 
     async def get_staff_role(

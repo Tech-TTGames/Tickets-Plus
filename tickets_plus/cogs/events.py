@@ -42,7 +42,7 @@ class Events(commands.Cog, name="Events"):
                         gld.id, (selectinload(Guild.observers_roles),)
                     )
                     if entry.target == channel and await confg.check_ticket_bot(
-                        entry.user.id
+                        entry.user.id, gld.id
                     ):
                         nts_thrd: discord.Thread = await channel.create_thread(
                             name="Staff Notes",
@@ -91,7 +91,7 @@ class Events(commands.Cog, name="Events"):
                             async for msg in channel.history(
                                 oldest_first=True, limit=2
                             ):
-                                if await confg.check_ticket_bot(msg.author.id):
+                                if await confg.check_ticket_bot(msg.author.id, gld.id):
                                     await channel.send(embeds=msg.embeds)
                                     await msg.delete()
             await confg.close()

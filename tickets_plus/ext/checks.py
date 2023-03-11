@@ -2,9 +2,6 @@
 
 import discord
 from discord import app_commands
-from sqlalchemy.orm import selectinload
-
-from tickets_plus.database.models import Guild
 
 
 def is_owner_check():
@@ -30,12 +27,11 @@ def is_staff_check():
         if interaction.user.id in interaction.client.owner_ids:  # type: ignore
             return True
         async with interaction.client.get_connection() as conn:  # type: ignore
-            guild: Guild = await conn.get_guild(
-                interaction.guild.id, (selectinload(Guild.staff_roles),)
-            )
-            staff_roles = guild.get_id_list("staff_roles", "role_id")
-            for role in interaction.user.roles:  # type: ignore # already checked for guild
-                if role.id in staff_roles:
+            staff_roles = await conn.get_all_staff_roles(interaction.guild.id)
+            for role in staff_roles:
+                parsed_role = interaction.guild.get_role(role.role_id)
+                if parsed_role in interaction.user.roles: # type: ignore
+                    # Alredy checked for member
                     return True
         await interaction.response.send_message("Error 403: Forbidden", ephemeral=True)
         raise app_commands.CheckFailure("User is not staff")
