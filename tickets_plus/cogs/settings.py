@@ -18,15 +18,17 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
         super().__init__()
         logging.info("Loaded %s", self.__class__.__name__)
 
-    @app_commands.command(name="tracked", description="Change the tracked users.")
-    @app_commands.describe(user="The user to track/untrack.")
+    @app_commands.command(
+        name="ticketbot", description="Change the ticket bots for your server."
+    )
+    @app_commands.describe(user="The user to add to ticket bots.")
     async def change_tracked(self, ctx: discord.Interaction, user: discord.User):
         """
-        This command is used to change the tracked users.
-        If a user is already tracked, they will be untracked.
+        This command is used to change the ticket bots.
+        If a user is already a ticket bot, they will be removed.
         """
         async with self._bt.get_connection() as conn:
-            new, ticket_user = await conn.get_ticket_user(user.id, ctx.guild.id)  # type: ignore
+            new, ticket_user = await conn.get_ticket_bot(user.id, ctx.guild.id)  # type: ignore
             if not new:
                 await conn.delete(ticket_user)
                 text = f"Untracked {user.mention}"

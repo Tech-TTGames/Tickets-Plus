@@ -44,7 +44,7 @@ class Guild(Base):
     )
 
     # Relationships
-    ticket_users: Mapped[List["TicketUser"]] = relationship(
+    ticket_bots: Mapped[List["TicketBot"]] = relationship(
         back_populates="guild", lazy="raise"
     )
     staff_roles: Mapped[List["StaffRole"]] = relationship(
@@ -62,10 +62,10 @@ class Guild(Base):
     members: Mapped[List["Member"]] = relationship(back_populates="guild", lazy="raise")
 
 
-class TicketUser(Base):
-    """Ticket users table"""
+class TicketBot(Base):
+    """Ticketing bots table"""
 
-    __tablename__ = "ticket_users"
+    __tablename__ = "ticket_bots"
     __table_args__ = {
         "comment": "Users that open the ticket channels, mostly the Tickets bot, but can be other users due to whitelabel options."
     }
