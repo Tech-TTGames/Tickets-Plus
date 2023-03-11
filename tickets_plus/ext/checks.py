@@ -30,7 +30,7 @@ def is_staff_check():
             staff_roles = await conn.get_all_staff_roles(interaction.guild.id)
             for role in staff_roles:
                 parsed_role = interaction.guild.get_role(role.role_id)
-                if parsed_role in interaction.user.roles: # type: ignore
+                if parsed_role in interaction.user.roles:  # type: ignore
                     # Alredy checked for member
                     return True
         await interaction.response.send_message("Error 403: Forbidden", ephemeral=True)
