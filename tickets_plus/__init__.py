@@ -1,7 +1,7 @@
 """The main bot file. Start the bot."""
 import logging
-import discord
 
+import discord
 import sqlalchemy
 from discord.ext import commands
 from sqlalchemy.ext.asyncio import create_async_engine
