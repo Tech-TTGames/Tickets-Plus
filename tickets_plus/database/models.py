@@ -118,7 +118,7 @@ class CommunityPing(Base):
 
     # Relationships
     guild: Mapped["Guild"] = relationship(
-        back_populates="community_roles", lazy="selectin"
+        back_populates="community_pings", lazy="selectin"
     )
 
 
