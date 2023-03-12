@@ -13,6 +13,7 @@ from tickets_plus.database.models import (
     Member,
     ObserversRole,
     StaffRole,
+    Ticket,
     TicketBot,
     User,
 )
@@ -116,6 +117,24 @@ class OnlineConfig:
             )
         )
         return ticket_user is not None
+
+    async def fetch_ticket(self, channel_id: int) -> Optional[Ticket]:
+        """Get a ticket from the database."""
+        ticket = await self._session.get(Ticket, channel_id)
+        return ticket
+
+    async def get_ticket(
+        self, channel_id: int, guild_id: int, staff_note: Optional[int]
+    ) -> Tuple[bool, Ticket]:
+        """Get a or create ticket from the database."""
+        guild = await self.get_guild(guild_id)
+        ticket = await self._session.get(Ticket, channel_id)
+        new = False
+        if ticket is None:
+            new = True
+            ticket = Ticket(channel_id=channel_id, guild=guild, staff_note=staff_note)
+            self._session.add(ticket)
+        return new, ticket
 
     async def get_staff_role(
         self, role_id: int, guild_id: int

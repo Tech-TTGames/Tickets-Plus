@@ -1,14 +1,31 @@
 """File for database models"""
 from typing import List
 
-from sqlalchemy import ForeignKey, MetaData, String
+from sqlalchemy import ForeignKey, MetaData, String, DateTime
+from sqlalchemy.sql import expression
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy.ext.compiler import compiles
 
 metadata_obj = MetaData(schema="tickets_plus")
 
 
 # pylint: disable=too-few-public-methods
 # pylint: disable=line-too-long
+
+
+class utcnow(expression.FunctionElement):
+    """Function to get current UTC time"""
+
+    type = DateTime()
+    inherit_cache = True
+
+
+@compiles(utcnow, "postgresql")
+def pg_utcnow(element, compiler, **kw):  # pylint: disable=unused-argument
+    """Compile the utcnow function"""
+    return "TIMEZONE('utc', CURRENT_TIMESTAMP)"
+
+
 class Base(DeclarativeBase):
     """Base of SQLAlchemy models"""
 
@@ -52,6 +69,7 @@ class Guild(Base):
     ticket_bots: Mapped[List["TicketBot"]] = relationship(
         back_populates="guild", lazy="raise"
     )
+    tickets: Mapped[List["Ticket"]] = relationship(back_populates="guild", lazy="raise")
     staff_roles: Mapped[List["StaffRole"]] = relationship(
         back_populates="guild", lazy="raise"
     )
@@ -93,6 +111,46 @@ class TicketBot(Base):
 
     # Relationships
     guild: Mapped["Guild"] = relationship(back_populates="ticket_bots", lazy="selectin")
+
+
+class Ticket(Base):
+    """Ticket channels table"""
+
+    __tablename__ = "tickets"
+    __table_args__ = {"comment": "Channels that are tickets are stored here."}
+
+    # Simple columns
+    channel_id: Mapped[int] = mapped_column(
+        primary_key=True, comment="Unique discord-provided channel ID"
+    )
+    guild_id: Mapped[int] = mapped_column(
+        ForeignKey("general_configs.guild_id"),
+        nullable=False,
+        comment="Unique Guild ID of parent guild",
+    )
+    date_created: Mapped[DateTime] = mapped_column(
+        DateTime(),
+        nullable=False,
+        comment="Date the ticket was created",
+        server_default=utcnow(),
+    )
+    last_response: Mapped[DateTime] = mapped_column(
+        DateTime(),
+        nullable=False,
+        comment="Date the ticket was last responded to",
+        server_default=utcnow(),
+    )
+    staff_note_thread: Mapped[int] = mapped_column(
+        nullable=True,
+        comment="Unique discord-provided channel ID of the staff note thread",
+        unique=True,
+    )
+    anonymous: Mapped[bool] = mapped_column(
+        default=False, nullable=False, comment="Whether the ticket is in anonymous mode"
+    )
+
+    # Relationships
+    guild: Mapped["Guild"] = relationship(back_populates="tickets", lazy="selectin")
 
 
 class StaffRole(Base):
