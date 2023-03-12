@@ -82,7 +82,7 @@ class OnlineConfig:
 
     async def get_member(self, user_id: int, guild_id: int) -> Member:
         """Get or create a member from the database."""
-        guild = self.get_guild(guild_id)
+        guild = await self.get_guild(guild_id)
         user = await self.get_user(user_id)
         member_conf = await self._session.scalar(
             select(Member).where(Member.user == user, Member.guild == guild)
