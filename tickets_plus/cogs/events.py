@@ -40,7 +40,12 @@ class Events(commands.Cog, name="Events"):
                     if entry.user is None:
                         continue
                     guild = await confg.get_guild(
-                        gld.id, (selectinload(Guild.observers_roles),)
+                        gld.id,
+                        (
+                            selectinload(Guild.observers_roles),
+                            selectinload(Guild.community_roles),
+                            selectinload(Guild.community_pings),
+                        ),
                     )
                     if entry.target == channel and await confg.check_ticket_bot(
                         entry.user.id, gld.id
@@ -84,10 +89,19 @@ class Events(commands.Cog, name="Events"):
                                     if rle is None:
                                         continue
                                     await channel.set_permissions(
-                                        rle, overwrite=overwrite
+                                        rle,
+                                        overwrite=overwrite,
+                                        reason="Community Support",
                                     )
                                 except (TypeError, discord.NotFound):
                                     pass
+                        if guild.community_pings:
+                            comm_pings = await confg.get_all_community_pings(gld.id)
+                            inv = await channel.send(
+                                " ".join([f"<@&{role.role_id}>" for role in comm_pings])
+                            )
+                            await asyncio.sleep(0.25)
+                            await inv.delete()
                         if guild.strip_buttons:
                             await asyncio.sleep(1)
                             async for msg in channel.history(
