@@ -101,6 +101,11 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
     @app_commands.describe(message="The new open message.")
     async def change_openmsg(self, ctx: discord.Interaction, message: str):
         """This command is used to change the open message."""
+        if len(message) > 200:
+            await ctx.response.send_message(
+                "The message must be less than 200 characters.", ephemeral=True
+            )
+            raise app_commands.AppCommandError("Message too long")
         async with self._bt.get_connection() as conn:
             guild = await conn.get_guild(ctx.guild.id)  # type: ignore
             guild.open_message = message
@@ -116,6 +121,11 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
     @app_commands.describe(name="The new staff team's name.")
     async def change_staffteamname(self, ctx: discord.Interaction, name: str):
         """This command is used to change the staff team's name."""
+        if len(name) > 40:
+            await ctx.response.send_message(
+                "The name must be less than 40 characters.", ephemeral=True
+            )
+            raise app_commands.AppCommandError("Name too long")
         async with self._bt.get_connection() as conn:
             guild = await conn.get_guild(ctx.guild.id)  # type: ignore
             guild.staff_team_name = name

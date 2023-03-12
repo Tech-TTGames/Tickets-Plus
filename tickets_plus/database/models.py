@@ -1,7 +1,7 @@
 """File for database models"""
 from typing import List
 
-from sqlalchemy import ForeignKey, MetaData
+from sqlalchemy import ForeignKey, MetaData, String
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 metadata_obj = MetaData(schema="tickets_plus")
@@ -28,12 +28,16 @@ class Guild(Base):
         primary_key=True, comment="Unique discord-provided guild ID"
     )
     open_message: Mapped[str] = mapped_column(
+        String(200),
         default="Staff notes for Ticket $channel.",
         nullable=False,
         comment="Message to send when a staff thread is opened",
     )
     staff_team_name: Mapped[str] = mapped_column(
-        default="Staff Team", nullable=False, comment="Name of the staff team"
+        String(40),
+        default="Staff Team",
+        nullable=False,
+        comment="Name of the staff team",
     )
 
     # Toggles
