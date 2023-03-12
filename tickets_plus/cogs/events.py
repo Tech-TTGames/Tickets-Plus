@@ -110,7 +110,7 @@ class Events(commands.Cog, name="Events"):
                 alpha = re.search(
                     r"https:\/\/(?:canary\.)?discord\.com\/channels\/(?P<srv>\d{18})\/(?P<cha>\d{18})\/(?P<msg>\d*)",  # skipcq: FLK-E501 # pylint: disable=line-too-long
                     message.content,
-                )  # pylint: disable=line-too-long
+                )
                 if alpha:
                     try:  # We do not check any types in this block as we are catching the errors.
                         gld = self._bt.get_guild(int(alpha.group("srv")))
