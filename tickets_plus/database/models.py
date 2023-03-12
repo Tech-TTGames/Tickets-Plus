@@ -64,6 +64,9 @@ class Guild(Base):
     community_pings: Mapped[List["CommunityPing"]] = relationship(
         back_populates="guild", lazy="raise"
     )
+    users: Mapped[List["User"]] = relationship(
+        back_populates="guilds", lazy="raise", secondary="members", viewonly=True
+    )
     members: Mapped[List["Member"]] = relationship(back_populates="guild", lazy="raise")
 
 
@@ -89,9 +92,7 @@ class TicketBot(Base):
     )
 
     # Relationships
-    guild: Mapped["Guild"] = relationship(
-        back_populates="ticket_users", lazy="selectin"
-    )
+    guild: Mapped["Guild"] = relationship(back_populates="ticket_bots", lazy="selectin")
 
 
 class StaffRole(Base):
@@ -213,10 +214,8 @@ class Member(Base):
     )
 
     # Relationships
-    guild: Mapped["Guild"] = relationship(
-        back_populates="community_roles", lazy="selectin"
-    )
-    user: Mapped["User"] = relationship(back_populates="members", lazy="selectin")
+    guild: Mapped["Guild"] = relationship(back_populates="members", lazy="selectin")
+    user: Mapped["User"] = relationship(back_populates="memberships", lazy="selectin")
 
 
 class User(Base):
@@ -239,4 +238,9 @@ class User(Base):
     )
 
     # Relationships
-    members: Mapped[List["Member"]] = relationship(back_populates="user", lazy="raise")
+    memberships: Mapped[List["Member"]] = relationship(
+        back_populates="user", lazy="raise"
+    )
+    guilds: Mapped[List["Guild"]] = relationship(
+        back_populates="users", lazy="raise", secondary="members", viewonly=True
+    )
