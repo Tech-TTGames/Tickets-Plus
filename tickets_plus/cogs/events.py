@@ -6,6 +6,7 @@ from string import Template
 
 import discord
 from discord.ext import commands
+from discord.utils import escape_mentions
 from sqlalchemy.orm import selectinload
 
 from tickets_plus.bot import TicketsPlus
@@ -54,6 +55,7 @@ class Events(commands.Cog, name="Events"):
                                 channel=channel.mention
                             )
                         )
+                        await confg.get_ticket(channel.id, gld.id, nts_thrd.id)
                         logging.info(
                             "Created thread %s for %s", nts_thrd.name, channel.name
                         )
@@ -94,7 +96,20 @@ class Events(commands.Cog, name="Events"):
                                 if await confg.check_ticket_bot(msg.author.id, gld.id):
                                     await channel.send(embeds=msg.embeds)
                                     await msg.delete()
+                        await confg.commit()
             await confg.close()
+
+    @commands.Cog.listener(name="on_guild_channel_delete")
+    async def on_channel_delete(self, channel):
+        """Cleanups for when a ticket is deleted."""
+        if isinstance(channel, discord.channel.TextChannel):
+            async with self._bt.get_connection() as confg:
+                ticket = await confg.fetch_ticket(channel.id)
+                if ticket:
+                    await confg.delete(ticket)
+                    logging.info("Deleted ticket %s", channel.name)
+                    await confg.commit()
+                await confg.close()
 
     @commands.Cog.listener(name="on_message")
     async def on_message(self, message: discord.Message) -> None:
@@ -120,30 +135,53 @@ class Events(commands.Cog, name="Events"):
                         AttributeError,
                         discord.HTTPException,
                     ):
-                        return
-                    time = got_msg.created_at.strftime("%d/%m/%Y %H:%M:%S")
-                    if not got_msg.content and got_msg.embeds:
-                        discovered_result = got_msg.embeds[0]
-                        discovered_result.set_footer(
-                            text=f"[EMBED CAPTURED] Sent in {chan.name}"  # type: ignore
-                            f" at {time}"
-                        )
+                        logging.warning("Message discovery failed.")
                     else:
-                        discovered_result = discord.Embed(
-                            description=got_msg.content, color=0x0D0EB4
+                        time = got_msg.created_at.strftime("%d/%m/%Y %H:%M:%S")
+                        if not got_msg.content and got_msg.embeds:
+                            discovered_result = got_msg.embeds[0]
+                            discovered_result.set_footer(
+                                text=f"[EMBED CAPTURED] Sent in {chan.name}"  # type: ignore
+                                f" at {time}"
+                            )
+                        else:
+                            discovered_result = discord.Embed(
+                                description=got_msg.content, color=0x0D0EB4
+                            )
+                            discovered_result.set_footer(
+                                text=f"Sent in {chan.name} at {time}"  # type: ignore
+                            )
+                        discovered_result.set_author(
+                            name=got_msg.author.name,
+                            icon_url=got_msg.author.display_avatar.url,
                         )
-                        discovered_result.set_footer(
-                            text=f"Sent in {chan.name} at {time}"  # type: ignore
+                        discovered_result.set_image(
+                            url=got_msg.attachments[0].url
+                            if got_msg.attachments
+                            else None
                         )
-                    discovered_result.set_author(
-                        name=got_msg.author.name,
-                        icon_url=got_msg.author.display_avatar.url,
+                        await message.reply(embed=discovered_result)
+            ticket = await confg.fetch_ticket(message.channel.id)
+            if ticket:
+                # Make sure the ticket exists
+                if ticket.anonymous:
+                    staff = False
+                    staff_roles = await confg.get_all_staff_roles(guild.guild_id)
+                    for role in staff_roles:
+                        parsed_role = message.guild.get_role(role.role_id)
+                        if parsed_role in message.author.roles:  # type: ignore
+                            # Alredy checked for member
+                            staff = True
+                            break
+                    if not staff:
+                        return
+                    await message.channel.send(
+                        f"**{guild.staff_team_name}:** "
+                        + escape_mentions(message.content),
+                        embeds=message.embeds,
                     )
-                    discovered_result.set_image(
-                        url=got_msg.attachments[0].url if got_msg.attachments else None
-                    )
-                    await message.reply(embed=discovered_result)
-                await confg.close()
+                    await message.delete()
+            await confg.close()
 
 
 async def setup(bot: TicketsPlus):
