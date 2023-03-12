@@ -178,7 +178,7 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
                             channel=channel.mention
                         )
                     )
-                new, ticket = await confg.get_ticket( # pylint: disable=unused-variable
+                new, ticket = await confg.get_ticket(  # pylint: disable=unused-variable
                     ctx.channel.id, ctx.guild.id, thread.id  # type: ignore
                 )
                 if not new:
