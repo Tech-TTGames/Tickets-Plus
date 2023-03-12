@@ -3,9 +3,10 @@ This script will drop all tables in the database.
 This is a destructive operation and should only be used in development.
 It will also drop the schema if it exists.
 """
-from database.models import Base
-from database.statvars import MiniConfig
 from sqlalchemy import create_engine, schema
+
+from tickets_plus.database.models import Base
+from tickets_plus.database.statvars import MiniConfig
 
 SAFETY_TOGGLE = False
 

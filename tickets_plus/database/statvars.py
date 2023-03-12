@@ -75,16 +75,17 @@ class MiniConfig:
 class Config:
     """DEPRECATED. Class for convinient config access"""
 
-    def __init__(self, bot: Union[commands.Bot, Literal["offline"]]) -> None:
+    def __init__(self, bot: Union[commands.Bot, Literal["offline"]], legacy: bool = False) -> None:
         self._file = pathlib.Path(PROG_DIR, "config.json")
         with open(self._file, encoding="utf-8", mode="r") as config_f:
             self._config: dict = json.load(config_f)
-        logging.warning(
-            "Config is deprecated and read-only. Use OnlineConfig and MiniConfig instead."
-        )
+        if not legacy:
+            logging.warning(
+                "Config is deprecated and read-only. Use OnlineConfig and MiniConfig instead."
+            )
         self._bot = bot
 
-    def __dict__(self) -> dict:
+    def cnfg(self) -> dict:
         return self._config
 
     @property
