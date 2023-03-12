@@ -1,7 +1,7 @@
 {
     "info": "This is the example config file for the bot. All the <name>_info are not used and just comments. The bot will use the info in the <name> field of the config.json. Feel free to remove all the _info values.",
     "dbtype": "postgresql+psycopg",
-    "info_dbtype": "The type of database to use. Active support for: sqlite or postgresql",
+    "info_dbtype": "The type of database to use. Active support for postgresql",
     "dbhost": "localhost",
     "info_dbhost": "The host of the database",
     "dbport": 5432,
