@@ -9,8 +9,14 @@ import pathlib
 from sqlalchemy import URL, create_engine, schema
 from sqlalchemy.orm import create_session
 
-from tickets_plus.database.models import (Base, CommunityRole, Guild,
-                                          ObserversRole, StaffRole, TicketBot)
+from tickets_plus.database.models import (
+    Base,
+    CommunityRole,
+    Guild,
+    ObserversRole,
+    StaffRole,
+    TicketBot,
+)
 from tickets_plus.database.statvars import PROG_DIR, Config, MiniConfig
 
 if __name__ == "__main__":

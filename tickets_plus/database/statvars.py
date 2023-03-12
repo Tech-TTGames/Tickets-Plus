@@ -75,7 +75,9 @@ class MiniConfig:
 class Config:
     """DEPRECATED. Class for convinient config access"""
 
-    def __init__(self, bot: Union[commands.Bot, Literal["offline"]], legacy: bool = False) -> None:
+    def __init__(
+        self, bot: Union[commands.Bot, Literal["offline"]], legacy: bool = False
+    ) -> None:
         self._file = pathlib.Path(PROG_DIR, "config.json")
         with open(self._file, encoding="utf-8", mode="r") as config_f:
             self._config: dict = json.load(config_f)
