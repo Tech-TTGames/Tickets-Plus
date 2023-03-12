@@ -1,8 +1,8 @@
 """Events cog for Tickets+."""
 import asyncio
+import datetime
 import logging
 import re
-import datetime
 from string import Template
 
 import discord
