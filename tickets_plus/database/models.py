@@ -81,13 +81,13 @@ class TicketBot(Base):
     # Simple columns
     user_id: Mapped[int] = mapped_column(
         nullable=False,
-        comment="Unique discord-provided user ID, however this is not the primary key as it is not unique across guilds",
+        comment="Unique discord-provided user ID. Used in conjunction with guild_id to make a unique primary key",
         primary_key=True,
     )
     guild_id: Mapped[int] = mapped_column(
         ForeignKey("general_configs.guild_id"),
         nullable=False,
-        comment="Unique Guild ID of parent guild",
+        comment="Unique Guild ID of parent guild. Used in conjunction with user_id to make a unique primary key",
         primary_key=True,
     )
 
@@ -203,13 +203,13 @@ class Member(Base):
     user_id: Mapped[int] = mapped_column(
         ForeignKey("users.user_id"),
         nullable=False,
-        comment="Unique discord-provided user ID, however this is not the primary key as it is not unique across guilds",
+        comment="Unique discord-provided user ID. Used in conjunction with guild_id to make a unique primary key",
         primary_key=True,
     )
     guild_id: Mapped[int] = mapped_column(
         ForeignKey("general_configs.guild_id"),
         nullable=False,
-        comment="Unique Guild ID of parent guild",
+        comment="Unique Guild ID of parent guild. Used in conjunction with user_id to make a unique primary key",
         primary_key=True,
     )
 
