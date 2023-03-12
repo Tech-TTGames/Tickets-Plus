@@ -112,7 +112,7 @@ class Events(commands.Cog, name="Events"):
                     message.content,
                 )  # pylint: disable=line-too-long
                 if alpha:
-                    try:  # We do not check any types in this block as we are catching the error for it.
+                    try:  # We do not check any types in this block as we are catching the errors.
                         gld = self._bt.get_guild(int(alpha.group("srv")))
                         chan = gld.get_channel_or_thread(int(alpha.group("cha")))  # type: ignore
                         got_msg = await chan.fetch_message(int(alpha.group("msg")))  # type: ignore
