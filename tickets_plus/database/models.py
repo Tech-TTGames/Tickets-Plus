@@ -1,10 +1,10 @@
 """File for database models"""
 from typing import List
 
-from sqlalchemy import ForeignKey, MetaData, String, DateTime
-from sqlalchemy.sql import expression
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy import DateTime, ForeignKey, MetaData, String
 from sqlalchemy.ext.compiler import compiles
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy.sql import expression
 
 metadata_obj = MetaData(schema="tickets_plus")
 
