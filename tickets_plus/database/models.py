@@ -1,10 +1,11 @@
 """File for database models"""
+from datetime import datetime
 from typing import List
 
-from sqlalchemy import DateTime, ForeignKey, MetaData, String
-from sqlalchemy.ext.compiler import compiles
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy import DateTime, ForeignKey, MetaData, String, BigInteger
 from sqlalchemy.sql import expression
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy.ext.compiler import compiles
 
 metadata_obj = MetaData(schema="tickets_plus")
 
@@ -42,7 +43,7 @@ class Guild(Base):
 
     # Simple columns
     guild_id: Mapped[int] = mapped_column(
-        primary_key=True, comment="Unique discord-provided guild ID"
+        BigInteger(), primary_key=True, comment="Unique discord-provided guild ID"
     )
     open_message: Mapped[str] = mapped_column(
         String(200),
@@ -82,10 +83,11 @@ class Guild(Base):
     community_pings: Mapped[List["CommunityPing"]] = relationship(
         back_populates="guild", lazy="raise"
     )
-    users: Mapped[List["User"]] = relationship(
-        back_populates="guilds", lazy="raise", secondary="members", viewonly=True
-    )
     members: Mapped[List["Member"]] = relationship(back_populates="guild", lazy="raise")
+    # Disabled for now gets sqlalchemy confused
+    # users: Mapped[List["User"]] = relationship(
+    #    secondary="members", back_populates="guilds", lazy="raise", viewonly=True
+    # )
 
 
 class TicketBot(Base):
@@ -98,11 +100,13 @@ class TicketBot(Base):
 
     # Simple columns
     user_id: Mapped[int] = mapped_column(
+        BigInteger(),
         nullable=False,
         comment="Unique discord-provided user ID. Used in conjunction with guild_id to make a unique primary key",
         primary_key=True,
     )
     guild_id: Mapped[int] = mapped_column(
+        BigInteger(),
         ForeignKey("general_configs.guild_id"),
         nullable=False,
         comment="Unique Guild ID of parent guild. Used in conjunction with user_id to make a unique primary key",
@@ -121,9 +125,10 @@ class Ticket(Base):
 
     # Simple columns
     channel_id: Mapped[int] = mapped_column(
-        primary_key=True, comment="Unique discord-provided channel ID"
+        BigInteger(), primary_key=True, comment="Unique discord-provided channel ID"
     )
     guild_id: Mapped[int] = mapped_column(
+        BigInteger(),
         ForeignKey("general_configs.guild_id"),
         nullable=False,
         comment="Unique Guild ID of parent guild",
@@ -134,13 +139,14 @@ class Ticket(Base):
         comment="Date the ticket was created",
         server_default=utcnow(),
     )
-    last_response: Mapped[DateTime] = mapped_column(
+    last_response: Mapped[datetime] = mapped_column(
         DateTime(),
         nullable=False,
         comment="Date the ticket was last responded to",
         server_default=utcnow(),
     )
     staff_note_thread: Mapped[int] = mapped_column(
+        BigInteger(),
         nullable=True,
         comment="Unique discord-provided channel ID of the staff note thread",
         unique=True,
@@ -163,10 +169,12 @@ class StaffRole(Base):
 
     # Simple columns
     role_id: Mapped[int] = mapped_column(
+        BigInteger(),
         primary_key=True,
         comment="Unique discord-provided role ID, this is the primary key as it is unique across guilds",
     )
     guild_id: Mapped[int] = mapped_column(
+        BigInteger(),
         ForeignKey("general_configs.guild_id"),
         nullable=False,
         comment="Unique Guild ID of parent guild",
@@ -184,10 +192,12 @@ class ObserversRole(Base):
 
     # Simple columns
     role_id: Mapped[int] = mapped_column(
+        BigInteger(),
         primary_key=True,
         comment="Unique discord-provided role ID, this is the primary key as it is unique across guilds",
     )
     guild_id: Mapped[int] = mapped_column(
+        BigInteger(),
         ForeignKey("general_configs.guild_id"),
         nullable=False,
         comment="Unique Guild ID of parent guild",
@@ -209,10 +219,12 @@ class CommunityRole(Base):
 
     # Simple columns
     role_id: Mapped[int] = mapped_column(
+        BigInteger(),
         primary_key=True,
         comment="Unique discord-provided role ID, this is the primary key as it is unique across guilds",
     )
     guild_id: Mapped[int] = mapped_column(
+        BigInteger(),
         ForeignKey("general_configs.guild_id"),
         nullable=False,
         comment="Unique Guild ID of parent guild",
@@ -234,10 +246,12 @@ class CommunityPing(Base):
 
     # Simple columns
     role_id: Mapped[int] = mapped_column(
+        BigInteger(),
         primary_key=True,
         comment="Unique discord-provided role ID, this is the primary key as it is unique across guilds",
     )
     guild_id: Mapped[int] = mapped_column(
+        BigInteger(),
         ForeignKey("general_configs.guild_id"),
         nullable=False,
         comment="Unique Guild ID of parent guild",
@@ -259,12 +273,14 @@ class Member(Base):
 
     # Simple columns
     user_id: Mapped[int] = mapped_column(
+        BigInteger(),
         ForeignKey("users.user_id"),
         nullable=False,
         comment="Unique discord-provided user ID. Used in conjunction with guild_id to make a unique primary key",
         primary_key=True,
     )
     guild_id: Mapped[int] = mapped_column(
+        BigInteger(),
         ForeignKey("general_configs.guild_id"),
         nullable=False,
         comment="Unique Guild ID of parent guild. Used in conjunction with user_id to make a unique primary key",
@@ -286,6 +302,7 @@ class User(Base):
 
     # Simple columns
     user_id: Mapped[int] = mapped_column(
+        BigInteger(),
         primary_key=True,
         comment="Unique discord-provided user ID, this is the primary key as it is unique across guilds",
     )
@@ -299,6 +316,7 @@ class User(Base):
     memberships: Mapped[List["Member"]] = relationship(
         back_populates="user", lazy="raise"
     )
-    guilds: Mapped[List["Guild"]] = relationship(
-        back_populates="users", lazy="raise", secondary="members", viewonly=True
-    )
+    # Disabled for now gets sqlalchemy confused
+    # guilds: Mapped[List["Guild"]] = relationship(
+    #    secondary="members", back_populates="users", lazy="raise", viewonly=True
+    # )
