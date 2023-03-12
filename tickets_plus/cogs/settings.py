@@ -94,7 +94,28 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
             else:
                 text = f"Added {role.mention} to community support roles."
             await conn.commit()
-            await conn.close()
+        await ctx.response.send_message(text, ephemeral=True)
+
+    @app_commands.command(
+        name="communityping", description="Change the community ping roles."
+    )
+    @app_commands.describe(role="The role to add/remove from community ping roles.")
+    async def change_community_ping_roles(
+        self, ctx: discord.Interaction, role: discord.Role
+    ):
+        """
+        This command is used to change the community ping roles,
+        which are pinged one new support tickets after the addition of the COMSUP role.
+        If a role is already here, it will be removed.
+        """
+        async with self._bt.get_connection() as conn:
+            new, comsup = await conn.get_community_ping(role.id, ctx.guild.id)  # type: ignore
+            if not new:
+                await conn.delete(comsup)
+                text = f"Removed {role.mention} from community ping roles."
+            else:
+                text = f"Added {role.mention} to community ping roles."
+            await conn.commit()
         await ctx.response.send_message(text, ephemeral=True)
 
     @app_commands.command(name="openmsg", description="Change the open message.")
