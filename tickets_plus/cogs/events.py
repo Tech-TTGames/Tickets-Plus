@@ -97,7 +97,6 @@ class Events(commands.Cog, name="Events"):
                                     await channel.send(embeds=msg.embeds)
                                     await msg.delete()
                         await confg.commit()
-            await confg.close()
 
     @commands.Cog.listener(name="on_guild_channel_delete")
     async def on_channel_delete(self, channel):
@@ -109,7 +108,6 @@ class Events(commands.Cog, name="Events"):
                     await confg.delete(ticket)
                     logging.info("Deleted ticket %s", channel.name)
                     await confg.commit()
-                await confg.close()
 
     @commands.Cog.listener(name="on_message")
     async def on_message(self, message: discord.Message) -> None:
@@ -181,7 +179,6 @@ class Events(commands.Cog, name="Events"):
                         embeds=message.embeds,
                     )
                     await message.delete()
-            await confg.close()
 
 
 async def setup(bot: TicketsPlus):

@@ -35,7 +35,6 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
             else:
                 text = f"Tracked {user.mention}"
             await conn.commit()
-            await conn.close()
         await ctx.response.send_message(text, ephemeral=True)
 
     @app_commands.command(name="staff", description="Change the staff roles.")
@@ -53,7 +52,6 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
             else:
                 text = f"Added {role.mention} to staff roles."
             await conn.commit()
-            await conn.close()
         await ctx.response.send_message(text, ephemeral=True)
 
     @app_commands.command(name="observers", description="Change the observers roles.")
@@ -64,14 +62,13 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
         If a role is already here, it will be removed.
         """
         async with self._bt.get_connection() as conn:
-            new, obsrvrs = await conn.get_staff_role(role.id, ctx.guild.id)  # type: ignore
+            new, obsrvrs = await conn.get_observers_role(role.id, ctx.guild.id)  # type: ignore
             if not new:
                 await conn.delete(obsrvrs)
                 text = f"Removed {role.mention} from ping staff roles."
             else:
                 text = f"Added {role.mention} to ping staff roles."
             await conn.commit()
-            await conn.close()
         await ctx.response.send_message(text, ephemeral=True)
 
     @app_commands.command(
@@ -131,7 +128,6 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
             guild = await conn.get_guild(ctx.guild.id)  # type: ignore
             guild.open_message = message
             await conn.commit()
-            await conn.close()
         await ctx.response.send_message(
             f"Open message is now {message}", ephemeral=True
         )
@@ -151,7 +147,6 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
             guild = await conn.get_guild(ctx.guild.id)  # type: ignore
             guild.staff_team_name = name
             await conn.commit()
-            await conn.close()
         await ctx.response.send_message(f"Staff team is now {name}", ephemeral=True)
 
     @app_commands.command(
@@ -164,7 +159,6 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
             new_status = not guild.msg_discovery
             guild.msg_discovery = new_status
             await conn.commit()
-            await conn.close()
         await ctx.response.send_message(
             f"Message link discovery is now {new_status}",
             ephemeral=True,
@@ -178,7 +172,6 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
             new_status = not guild.strip_buttons
             guild.strip_buttons = new_status
             await conn.commit()
-            await conn.close()
         await ctx.response.send_message(
             f"Button stripping is now {new_status}",
             ephemeral=True,

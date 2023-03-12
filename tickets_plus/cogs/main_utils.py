@@ -150,7 +150,6 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
                     raise app_commands.AppCommandError("This channel is not a ticket.")
                 ticket.anonymous = not ticket.anonymous
                 await confg.commit()
-                await confg.close()
             await ctx.response.send_message(
                 f"Anonymous staff responses are now {ticket.anonymous}.", ephemeral=True
             )
@@ -179,10 +178,10 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
                             channel=channel.mention
                         )
                     )
-                ticket = await confg.get_ticket(
+                new, ticket = await confg.get_ticket( # pylint: disable=unused-variable
                     ctx.channel.id, ctx.guild.id, thread.id  # type: ignore
                 )
-                if ticket is not None:
+                if not new:
                     await ctx.response.send_message(
                         "This channel is already a ticket.", ephemeral=True
                     )
@@ -190,7 +189,6 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
                         "This channel is already a ticket."
                     )
                 await confg.commit()
-                await confg.close()
             await ctx.response.send_message(
                 "Registered channel as a ticket.", ephemeral=True
             )

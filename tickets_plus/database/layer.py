@@ -32,7 +32,7 @@ class OnlineConfig:
     async def __aexit__(self, exc_type, exc_value, traceback) -> None:
         if exc_type:
             await self.rollback()
-            await self.close()
+        await self.close()
 
     async def close(self) -> None:
         """Close the database session."""
@@ -132,7 +132,9 @@ class OnlineConfig:
         new = False
         if ticket is None:
             new = True
-            ticket = Ticket(channel_id=channel_id, guild=guild, staff_note=staff_note)
+            ticket = Ticket(
+                channel_id=channel_id, guild=guild, staff_note_thread=staff_note
+            )
             self._session.add(ticket)
         return new, ticket
 

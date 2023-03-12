@@ -105,7 +105,6 @@ class Overrides(
         async with self._bt.get_connection() as conn:
             guild_confg = await conn.get_guild(guid)
             await ctx.user.send(str(guild_confg))  # Eh. This is a bit of a test.
-            await conn.close()
         await ctx.followup.send("Sent config.")
         logging.info("Config sent.")
 
