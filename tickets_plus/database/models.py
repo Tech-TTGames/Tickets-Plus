@@ -104,6 +104,7 @@ class TicketBot(Base):
         nullable=False,
         comment="Unique discord-provided user ID. Used in conjunction with guild_id to make a unique primary key",
         primary_key=True,
+        unique=False,
     )
     guild_id: Mapped[int] = mapped_column(
         BigInteger(),
@@ -111,6 +112,7 @@ class TicketBot(Base):
         nullable=False,
         comment="Unique Guild ID of parent guild. Used in conjunction with user_id to make a unique primary key",
         primary_key=True,
+        unique=False,
     )
 
     # Relationships
@@ -278,6 +280,7 @@ class Member(Base):
         nullable=False,
         comment="Unique discord-provided user ID. Used in conjunction with guild_id to make a unique primary key",
         primary_key=True,
+        unique=False,
     )
     guild_id: Mapped[int] = mapped_column(
         BigInteger(),
@@ -285,6 +288,7 @@ class Member(Base):
         nullable=False,
         comment="Unique Guild ID of parent guild. Used in conjunction with user_id to make a unique primary key",
         primary_key=True,
+        unique=False,
     )
 
     # Relationships
