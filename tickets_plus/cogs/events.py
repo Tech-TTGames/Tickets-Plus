@@ -2,6 +2,7 @@
 import asyncio
 import logging
 import re
+import datetime
 from string import Template
 
 import discord
@@ -110,6 +111,16 @@ class Events(commands.Cog, name="Events"):
                                 if await confg.check_ticket_bot(msg.author.id, gld.id):
                                     await channel.send(embeds=msg.embeds)
                                     await msg.delete()
+                        descr = (
+                            f"Ticket {channel.name}\n"
+                            + f"Opened at <t:{int(channel.created_at.timestamp())}:f>"
+                        )
+                        if guild.first_autoclose:
+                            descr += f"\nCloses at <t:{int((channel.created_at + datetime.timedelta(minutes=guild.first_autoclose)).timestamp())}:R>"  # skipcq: FLK-E501 # pylint: disable=line-too-long
+                            descr += "If no one responds, the ticket will be closed automatically. Thank you for your patience!"  # skipcq: FLK-E501 # pylint: disable=line-too-long
+                        await channel.edit(
+                            topic=descr, reason="More information for the ticket."
+                        )
                         await confg.commit()
 
     @commands.Cog.listener(name="on_guild_channel_delete")

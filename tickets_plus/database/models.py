@@ -1,6 +1,6 @@
 """File for database models"""
 from datetime import datetime
-from typing import List
+from typing import List, Optional
 
 from sqlalchemy import BigInteger, DateTime, ForeignKey, MetaData, String
 from sqlalchemy.ext.compiler import compiles
@@ -56,6 +56,10 @@ class Guild(Base):
         default="Staff Team",
         nullable=False,
         comment="Name of the staff team",
+    )
+    first_autoclose: Mapped[Optional[int]] = mapped_column(
+        nullable=True,
+        comment="Number of minutes since open with no response to autoclose the ticket",
     )
 
     # Toggles

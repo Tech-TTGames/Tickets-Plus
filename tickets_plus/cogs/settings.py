@@ -1,5 +1,6 @@
 """General settings cog."""
 import logging
+from datetime import timedelta
 
 import discord
 from discord import app_commands
@@ -148,6 +149,30 @@ class Settings(commands.GroupCog, name="settings", description="Settings for the
             guild.staff_team_name = name
             await conn.commit()
         await ctx.response.send_message(f"Staff team is now {name}", ephemeral=True)
+
+    @app_commands.command(name="autoclose", description="Change the autoclose time.")
+    @app_commands.describe(
+        days="The new autoclose time days.",
+        hours="The new autoclose time hours.",
+        minutes="The new autoclose time minutes.",
+    )
+    async def change_autoclose(
+        self, ctx: discord.Interaction, days: int = 0, hours: int = 0, minutes: int = 0
+    ):
+        """Set the guild-wide autoclose time."""
+        async with self._bt.get_connection() as conn:
+            guild = await conn.get_guild(ctx.guild.id)  # type: ignore
+            if days + hours + minutes == 0:
+                guild.first_autoclose = None
+                text = "Autoclose disabled."
+            else:
+                guild.first_autoclose = int(
+                    timedelta(days=days, hours=hours, minutes=minutes).total_seconds()
+                    / 60
+                )
+                text = f"Autoclose set to {guild.first_autoclose} minutes."
+            await conn.commit()
+        await ctx.response.send_message(text, ephemeral=True)
 
     @app_commands.command(
         name="msgdiscovery", description="Toggle message link discovery."
