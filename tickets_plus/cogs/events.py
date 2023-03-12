@@ -136,7 +136,8 @@ class Events(commands.Cog, name="Events"):
                             text=f"Sent in {chan.name} at {time}"  # type: ignore
                         )
                     discovered_result.set_author(
-                        name=got_msg.author.name, icon_url=got_msg.author.display_avatar.url
+                        name=got_msg.author.name,
+                        icon_url=got_msg.author.display_avatar.url,
                     )
                     discovered_result.set_image(
                         url=got_msg.attachments[0].url if got_msg.attachments else None
