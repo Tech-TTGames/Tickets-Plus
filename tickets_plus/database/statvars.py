@@ -88,6 +88,7 @@ class Config:
         self._bot = bot
 
     def cnfg(self) -> dict:
+        """A legacy function to support easier migration to OnlineConfig"""
         return self._config
 
     @property

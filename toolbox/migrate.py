@@ -5,11 +5,19 @@ An interactive prompt will guide you through the creation of the config file.
 """
 import json
 import pathlib
+import sys
 
 from sqlalchemy import URL, create_engine, schema
 from sqlalchemy.orm import create_session
 
-from tickets_plus.database.models import (
+PROG_DIR = pathlib.Path(__file__).parent.parent.absolute()
+print(PROG_DIR)
+sys.path.append(str(PROG_DIR))
+
+
+# pylint: disable=wrong-import-position
+# pylint: disable=import-error # It works, I promise.
+from tickets_plus.database.models import (  # isort:skip
     Base,
     CommunityRole,
     Guild,
@@ -17,8 +25,10 @@ from tickets_plus.database.models import (
     StaffRole,
     TicketBot,
 )
-from tickets_plus.database.statvars import PROG_DIR, Config, MiniConfig
+from tickets_plus.database.statvars import Config, MiniConfig  # isort:skip
 
+
+# pylint: disable=invalid-name
 if __name__ == "__main__":
     print("Starting migration script...")
     new = 0
@@ -43,18 +53,20 @@ if __name__ == "__main__":
                 print("Config is not a valid template.")
             else:
                 print("Config is a v0.1 template.")
-                new = 2
+                new = 1
     print("Entering interactive prompt...")
     match new:
         case 0:
             print(
-                "This is a migration script to help you migrate from the old config file to the new database."
+                "This is a migration script to help you"
+                " migrate from the old config file to the new database."
             )
             print(
                 "The new config file contains information about the database connection."
             )
             print(
-                "The new database contains all the information about the tickets and the guilds and the data previously stored in config."
+                "The new database contains all the information about the tickets and"
+                " the guilds and the data previously stored in config."
             )
             print(
                 "This script will create the database schema and tables if they do not exist."
@@ -119,7 +131,9 @@ if __name__ == "__main__":
                             "Would you like to overwrite the existing config file? (Y/N)\n"
                         )
                     if write == "Y":
-                        with open(pathlib.Path(PROG_DIR, "config.json"), "w") as f:
+                        with open(
+                            pathlib.Path(PROG_DIR, "config.json"), "w", encoding="utf-8"
+                        ) as f:
                             f.write(configjson)
                         print("Config file saved.")
                 print(
@@ -197,7 +211,7 @@ if __name__ == "__main__":
                 code = input(">>> ")
                 if code == "exit":
                     break
-                exec(code)
-            except Exception as e:
+                exec(code)  # pylint: disable=exec-used # skipcq: PYL-W0122
+            except Exception as e:  # pylint: disable=broad-except # skipcq: PYL-W0703
                 print(e)
     print("Goodbye!")

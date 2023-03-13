@@ -3,10 +3,19 @@ This script will drop all tables in the database.
 This is a destructive operation and should only be used in development.
 It will also drop the schema if it exists.
 """
+import pathlib
+import sys
+
 from sqlalchemy import create_engine, schema
 
-from tickets_plus.database.models import Base
-from tickets_plus.database.statvars import MiniConfig
+PROG_DIR = pathlib.Path(__file__).parent.parent.absolute()
+print(PROG_DIR)
+sys.path.append(str(PROG_DIR))
+
+# pylint: disable=wrong-import-position
+# pylint: disable=import-error # It works, I promise.
+from tickets_plus.database.models import Base # isort:skip
+from tickets_plus.database.statvars import MiniConfig # isort:skip
 
 SAFETY_TOGGLE = False
 
