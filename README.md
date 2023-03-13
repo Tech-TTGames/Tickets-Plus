@@ -5,30 +5,30 @@ Feel free to check out the full project on [GitHub](https://github.com/Tech-TTGa
 * [Database Information](docs/database_info.html)
 
 ## Info
-A Discord bot that adds extensions to the [Tickets](https://github.com/TicketsBot) discord bot*<sup>[1]</sup>.
-Which works as a supplimentary, separate bot*<sup>[2]</sup>.
+A Discord bot that adds extensions to the [Tickets](https://github.com/TicketsBot) discord bot<sup>[1]</sup>.
+Which works as a supplimentary, separate bot<sup>[2]</sup>.
 
-<sub>[1]*When a feature is added to the main bot it will be removed from here.<sub>
+<sub>[1] - When a feature is added to the main bot it will be removed from here.<sub>
 
-<sub>[2]*Note: This setup assumes you have the main bot added to the server and configured, Support will not be provided to those who do not assume a likewise configuraton.</sub>
+<sub>[2] - Note: This setup assumes you have the main bot added to the server and configured, Support will not be provided to those who do not assume a likewise configuraton.</sub>
 
 ## Feature 1 - Staff Notes
 
 Private threads are *(now)* free!
 
-This creates a private thread in a channel and adds the staff roles to it*.
+This creates a private thread in a channel and adds the staff roles to it<sup>[1]</sup>.
 You can now disable pings, just use /settings staffpings to toggle.
 The 'open message' is adjustable via /settings openmsg. $channels is replaced with the channel mention.
   
-  <sub>*Staff role defined in settings.</sub>
+  <sub>[1] - Staff role defined in settings.</sub>
 
 ## Feature 2 - Staff Response
 
 You can now respond as the staff team* using /respond.
-The command is limited to users with roles added to staff*.
+The command is limited to users with roles added to staff<sup>[1]</sup>.
 The 'name' of the team* is adjustable via /settings staffname.
   
-  <sub>*Staff role defined in settings.</sub>
+  <sub>[1] - Staff role defined in settings.</sub>
 
 ## Feature 3 - Strip Buttons
 
@@ -42,9 +42,9 @@ Requires message content intent.
 
 ### Minor Feature 2 - Community Support
 
-Automatically adds roles* to the channels created by the tracked users.
+Automatically adds roles<sup>[1]</sup> to the channels created by the tracked users.
   
-  <sub>*Community support roles defined in settings</sub>
+  <sub>[1] - Community support roles defined in settings</sub>
 
 ## Setup
 
