@@ -1,30 +1,36 @@
 """Random commands that don't fit anywhere else."""
 import logging
-from string import Template
+import string
 from typing import Optional
 
 import discord
-from discord import app_commands
+from discord import app_commands, utils
 from discord.ext import commands
-from discord.utils import escape_mentions
 
-from tickets_plus.bot import TicketsPlus
-from tickets_plus.database.statvars import VERSION
-from tickets_plus.ext.checks import is_staff_check
+from tickets_plus import bot
+from tickets_plus.database import statvars
+from tickets_plus.ext import checks
 
 
 class FreeCommands(commands.Cog, name="General Random Commands"):
     """General commands that don't fit anywhere else"""
 
-    def __init__(self, bot: TicketsPlus):
-        self._bt = bot
+    def __init__(self, bot_instance: bot.TicketsPlus):
+        self._bt = bot_instance
         logging.info("Loaded %s", self.__class__.__name__)
 
     @app_commands.command(
         name="ping", description="The classic ping command. Checks the bot's latency."
     )
     async def ping(self, ctx: discord.Interaction):
-        """This command is used to check if the bot is online."""
+        """The classic ping command. Checks the bot's latency.
+
+        This command is used to check the bot's latency.
+        Nothing more, nothing less.
+
+        Args:
+            ctx (:obj:`discord.Interaction`): The interaction context.
+        """
         await ctx.response.send_message(
             "Pong! The bot is online.\nPing: "
             + str(round(self._bt.latency * 1000))
@@ -36,7 +42,7 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
         """This command is used to check the bot's version."""
         await ctx.response.send_message(
             "Bot 'Tickets Plus' version: "
-            + VERSION
+            + statvars.VERSION
             + " by Tech. TTGames#8616\n"
             + "This bot is open source and experimental!\n"
             + "Check it out and report issues at https://github.com/Tech-TTGames/Tickets-Plus"
@@ -44,7 +50,7 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
 
     @app_commands.command(name="respond", description="Respond to a ticket as the bot.")
     @app_commands.guild_only()
-    @is_staff_check()
+    @checks.is_staff_check()
     @app_commands.describe(message="The message to send to the ticket.")
     async def respond(self, ctx: discord.Interaction, message: str):
         """
@@ -53,7 +59,7 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
         """
         async with self._bt.get_connection() as confg:
             guild = await confg.get_guild(ctx.guild.id)  # type: ignore # checked in decorator
-            sanitized_message = escape_mentions(message)
+            sanitized_message = utils.escape_mentions(message)
             if isinstance(ctx.channel, discord.Thread):
                 ticket = await confg.fetch_ticket(ctx.channel.parent.id)  # type: ignore
                 if ticket is None:
@@ -94,7 +100,7 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
 
     @app_commands.command(name="join", description="Join a ticket's staff notes.")
     @app_commands.guild_only()
-    @is_staff_check()
+    @checks.is_staff_check()
     async def join(self, ctx: discord.Interaction):
         """
         EXTENSION 3: Staff notes.
@@ -137,7 +143,7 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
         name="anonymize", description="Toggle anonymous staff responses."
     )
     @app_commands.guild_only()
-    @is_staff_check()
+    @checks.is_staff_check()
     async def anonymize(self, ctx: discord.Interaction):
         """As requested by a user, this command is used to toggle anonymous staff responses."""
         if isinstance(ctx.channel, discord.TextChannel):
@@ -158,7 +164,7 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
         name="register", description="Register an existing channel as a ticket."
     )
     @app_commands.guild_only()
-    @is_staff_check()
+    @checks.is_staff_check()
     async def register(
         self, ctx: discord.Interaction, thread: Optional[discord.Thread]
     ):
@@ -174,7 +180,7 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
                         auto_archive_duration=10080,
                     )
                     await thread.send(
-                        Template(guild.open_message).safe_substitute(
+                        string.Template(guild.open_message).safe_substitute(
                             channel=channel.mention
                         )
                     )
@@ -194,6 +200,6 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
             )
 
 
-async def setup(bot: TicketsPlus):
+async def setup(bot: bot.TicketsPlus):
     """Setup function for the cog."""
     await bot.add_cog(FreeCommands(bot))

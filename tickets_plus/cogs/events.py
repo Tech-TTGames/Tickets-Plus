@@ -1,36 +1,52 @@
-"""Events cog for Tickets+."""
+"""This is a event handling extension for Tickets+.
+
+This extension handles all events for Tickets+.
+This is used to handle events from Discord.
+
+Typical usage example:
+    ```py
+    from tickets_plus import bot
+    bot = bot.TicketsPlus(...)
+    await bot.load_extension("tickets_plus.cogs.events")
+    ```
+"""
+# License: EPL 2.0
 import asyncio
 import datetime
 import logging
 import re
-from string import Template
+import string
 
 import discord
 from discord.ext import commands
-from discord.utils import escape_mentions
-from sqlalchemy.orm import selectinload
+from discord import utils
+from sqlalchemy import orm
 
-from tickets_plus.bot import TicketsPlus
-from tickets_plus.database.models import Guild
+from tickets_plus import bot
+from tickets_plus.database import models
 
 
 class Events(commands.Cog, name="Events"):
-    """All events for Tickets+."""
+    """All cog for handling events.
 
-    def __init__(self, bot: TicketsPlus):
-        self._bt = bot
+    This cog handles all events for Tickets+.
+    This is used to handle events from Discord.
+    """
+
+    def __init__(self, bot_instance: bot.TicketsPlus) -> None:
+        self._bt = bot_instance
         logging.info("Loaded %s", self.__class__.__name__)
 
     @commands.Cog.listener(name="on_guild_channel_create")
-    async def on_channel_create(self, channel):
-        """
-        EXTENSION 1 + 3: Staff notes for Tickets! and button stripping.
-        Minor Extension 2: Safe Community Support
+    async def on_channel_create(self, channel: discord.abc.GuildChannel) -> None:
+        """Runs when a channel is created.
 
-        This event works based on the ticket_users configuration.
+        Handles the checking and facilitating of ticket creation.
+        This is the main event that handles the creation of tickets.
 
-        Please ensure you add your Ticket bot ID or approved
-        Ticket invoking user IDs to the config file or via commands.
+        Args:
+            channel: The channel that was created.
+              This is a `discord.abc.GuildChannel` object.
         """
         async with self._bt.get_connection() as confg:
             if isinstance(channel, discord.channel.TextChannel):
@@ -38,14 +54,14 @@ class Events(commands.Cog, name="Events"):
                 async for entry in gld.audit_logs(
                     limit=3, action=discord.AuditLogAction.channel_create
                 ):
-                    if entry.user is None:
+                    if not entry.user:
                         continue
                     guild = await confg.get_guild(
                         gld.id,
                         (
-                            selectinload(Guild.observers_roles),
-                            selectinload(Guild.community_roles),
-                            selectinload(Guild.community_pings),
+                            orm.selectinload(models.Guild.observers_roles),
+                            orm.selectinload(models.Guild.community_roles),
+                            orm.selectinload(models.Guild.community_pings),
                         ),
                     )
                     if entry.target == channel and await confg.check_ticket_bot(
@@ -57,7 +73,7 @@ class Events(commands.Cog, name="Events"):
                             auto_archive_duration=10080,
                         )
                         await nts_thrd.send(
-                            Template(guild.open_message).safe_substitute(
+                            string.Template(guild.open_message).safe_substitute(
                                 channel=channel.mention
                             )
                         )
@@ -87,7 +103,7 @@ class Events(commands.Cog, name="Events"):
                             for role in comm_roles:
                                 try:
                                     rle = gld.get_role(role.role_id)
-                                    if rle is None:
+                                    if not rle:
                                         continue
                                     await channel.set_permissions(
                                         rle,
@@ -124,8 +140,16 @@ class Events(commands.Cog, name="Events"):
                         await confg.commit()
 
     @commands.Cog.listener(name="on_guild_channel_delete")
-    async def on_channel_delete(self, channel):
-        """Cleanups for when a ticket is deleted."""
+    async def on_channel_delete(self, channel: discord.abc.GuildChannel) -> None:
+        """Cleanups for when a ticket is deleted.
+
+        This is the main event that handles the deletion of tickets.
+        It is used to delete the ticket from the database.
+
+        Args:
+            channel: The channel that was deleted.
+              This is a `discord.abc.GuildChannel` object.
+        """
         if isinstance(channel, discord.channel.TextChannel):
             async with self._bt.get_connection() as confg:
                 ticket = await confg.fetch_ticket(channel.id)
@@ -136,9 +160,14 @@ class Events(commands.Cog, name="Events"):
 
     @commands.Cog.listener(name="on_message")
     async def on_message(self, message: discord.Message) -> None:
-        """
-        Minor Extension: Message Discovery
-        Displays the message linked to as an embed.
+        """Handles all message-related features.
+
+        We use this to handle the message discovery feature.
+        Adittionally, we use this if a ticket is in anonymous mode.
+
+        Args:
+            message: The message that was sent.
+              This is a `discord.Message` object.
         """
         async with self._bt.get_connection() as confg:
             if message.author.bot or message.guild is None:
@@ -200,12 +229,19 @@ class Events(commands.Cog, name="Events"):
                         return
                     await message.channel.send(
                         f"**{guild.staff_team_name}:** "
-                        + escape_mentions(message.content),
+                        + utils.escape_mentions(message.content),
                         embeds=message.embeds,
                     )
                     await message.delete()
 
 
-async def setup(bot: TicketsPlus):
-    """Setup function for the cog."""
-    await bot.add_cog(Events(bot))
+async def setup(bot_instance: bot.TicketsPlus) -> None:
+    """Setup function for the cog.
+
+    This is called when the cog is loaded.
+    It adds the cog to the bot.
+
+    Args:
+      bot: The bot that is loading the cog.
+        This is a TicketsPlus object."""
+    await bot_instance.add_cog(Events(bot_instance))

@@ -10,20 +10,26 @@ from sqlalchemy.sql import expression
 metadata_obj = MetaData(schema="tickets_plus")
 
 
-# pylint: disable=too-few-public-methods
-# pylint: disable=line-too-long
-
-
-class utcnow(expression.FunctionElement):
+class UTCnow(expression.FunctionElement):
     """Function to get current UTC time"""
 
     type = DateTime()
     inherit_cache = True
 
 
-@compiles(utcnow, "postgresql")
-def pg_utcnow(element, compiler, **kw):  # pylint: disable=unused-argument
-    """Compile the utcnow function"""
+@compiles(UTCnow, "postgresql")
+def pg_UTCnow(element, compiler, **kw):  # pylint: disable=unused-argument
+    """
+    Compile the utcnow function
+
+    Args:
+      element:
+      compiler:
+      **kw:
+
+    Returns:
+
+    """
     return "TIMEZONE('utc', CURRENT_TIMESTAMP)"
 
 
@@ -143,13 +149,13 @@ class Ticket(Base):
         DateTime(),
         nullable=False,
         comment="Date the ticket was created",
-        server_default=utcnow(),
+        server_default=UTCnow(),
     )
     last_response: Mapped[datetime] = mapped_column(
         DateTime(),
         nullable=False,
         comment="Date the ticket was last responded to",
-        server_default=utcnow(),
+        server_default=UTCnow(),
     )
     staff_note_thread: Mapped[int] = mapped_column(
         BigInteger(),

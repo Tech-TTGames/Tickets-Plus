@@ -5,8 +5,8 @@ This file is a based on the variables.py file from my other bot.
 import json
 import logging
 import pathlib
-from logging.handlers import RotatingFileHandler
-from string import Template
+import string
+from logging import handlers
 from typing import Any, List, Literal, Union
 
 import discord
@@ -20,7 +20,7 @@ PROG_DIR = pathlib.Path(__file__).parent.parent.parent.absolute()
 
 intents = discord.Intents.default()
 intents.message_content = True
-handler = RotatingFileHandler(
+handler = handlers.RotatingFileHandler(
     filename=pathlib.Path(PROG_DIR, "log", "bot.log"),
     encoding="utf-8",
     mode="w",
@@ -57,11 +57,26 @@ class MiniConfig:
         return self._config
 
     def getitem(self, key: str, opt: Any = None) -> Any:
-        """Returns the value of a key in the config.json file"""
+        """
+        Returns the value of a key in the config.json file
+
+        Args:
+          key: str:
+          opt: Any:  (Default value = None)
+
+        Returns:
+          Any: The value of the key in the config.json file
+
+        """
         return self._config.get(key, opt)
 
     def get_url(self) -> URL:
-        """Returns the database URL"""
+        """
+        Returns the database URL
+
+        Returns:
+            URL: The database URL as a sqlalchemy URL object
+        """
         return URL.create(
             drivername=self._config["dbtype"],
             host=self._config["dbhost"],
@@ -74,6 +89,12 @@ class MiniConfig:
 
 class Config:
     """DEPRECATED. Class for convinient config access"""
+
+    # pylint: disable=line-too-long
+    # I'm keeping this class for migration,
+    # but it's deprecated and will be removed in the future.
+    # Also I'm not going to update the docstrings for this class to the google-style ones.
+    # I'm just going to leave them as they are.
 
     def __init__(
         self, bot: Union[commands.Bot, Literal["offline"]], legacy: bool = False
@@ -132,9 +153,9 @@ class Config:
         return staff
 
     @property
-    def open_msg(self) -> Template:
+    def open_msg(self) -> string.Template:
         """Returns the message sent when a ticket is opened"""
-        return Template(
+        return string.Template(
             self._config.get("open_msg", "Staff notes for Ticket $channel.")
         )
 

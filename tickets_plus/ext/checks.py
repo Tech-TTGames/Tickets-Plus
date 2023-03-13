@@ -1,14 +1,57 @@
-"""Additional checks for bot."""
+"""Additional checks for bot.
+
+A set of decorators for use with discord.py application commands.
+These are generally Ticket Plus specific checks.
+
+Example:
+    ```py
+    from tickets_plus.ext import checks
+    from discord import app_commands
+    
+    @app_commands.command()
+    @checks.is_owner_check()
+    async def command(interaction: discord.Interaction):
+        ...
+    ```
+"""
 
 import discord
 from discord import app_commands
 
 
 def is_owner_check():
-    """Now a normal check for owner."""
+    """A check for owner only commands.
 
-    async def is_owner(interaction: discord.Interaction):
-        """Checks if interaction user is owner."""
+    We need to create our own check because the default one doesn't work with
+    application commands.
+
+    Returns:
+        app_commands.check: The check.
+          It's a decorator, so you can use it like this:
+            ```py
+            @app_commands.command()
+            @is_owner_check()
+            async def command(interaction: discord.Interaction):
+                ...
+            ```
+    """
+
+    async def is_owner(interaction: discord.Interaction) -> bool:
+        """Checks if interaction user is owner.
+
+        The actual check. It's a coroutine, so it can be awaited.
+
+        Args:
+            interaction: The interaction to check.
+
+        Returns:
+            bool: Whether the user is owner or not.
+              Doesn't return if the user is not owner.
+
+        Raises:
+            app_commands.CheckFailure: If the user is not owner.
+              This is according to the discord.py convention.
+        """
         if interaction.user.id in interaction.client.owner_ids:  # type: ignore
             return True
         await interaction.response.send_message("Error 403: Forbidden", ephemeral=True)
@@ -18,10 +61,37 @@ def is_owner_check():
 
 
 def is_staff_check():
-    """An actually normal check for staff."""
+    """A staff check using the database.
+
+    We need create our own check so we can use the database.
+
+    Returns:
+        app_commands.check: The check.
+          It's a decorator, so you can use it like this:
+            ```py
+            @app_commands.command()
+            @is_staff_check()
+            async def command(interaction: discord.Interaction):
+                ...
+            ```
+    """
 
     async def is_staff(interaction: discord.Interaction):
-        """Checks if interaction user is staff."""
+        """Checks if interaction user is staff.
+
+        The actual check. It's a coroutine, so it can be awaited.
+
+        Args:
+            interaction: The interaction to check.
+
+        Returns:
+            bool: Whether the user is staff or not.
+              Doesn't return if the user is not staff.
+
+        Raises:
+            app_commands.CheckFailure: If the user is not staff.
+              This is according to the discord.py convention.
+        """
         if interaction.guild is None:
             raise app_commands.CheckFailure("User is not in a guild")
         if interaction.user.id in interaction.client.owner_ids:  # type: ignore
