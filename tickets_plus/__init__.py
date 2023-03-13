@@ -22,10 +22,10 @@ import sqlalchemy
 from discord.ext import commands
 from sqlalchemy.ext import asyncio as sqlalchemy_asyncio
 
-# Future Proofing for possible future use of asyncio
-
 from tickets_plus import bot
 from tickets_plus.database import models, statvars
+
+# Future Proofing for possible future use of asyncio
 
 
 async def start_bot():

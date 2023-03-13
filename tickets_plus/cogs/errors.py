@@ -12,8 +12,8 @@ Example:
 """
 # License: EPL 2.0
 from discord import Interaction
-from discord.ext import commands
 from discord.app_commands import AppCommandError
+from discord.ext import commands
 
 from tickets_plus import bot
 

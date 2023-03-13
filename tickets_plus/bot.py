@@ -17,10 +17,10 @@ import discord
 from discord.ext import commands
 from sqlalchemy.ext import asyncio as sqlalchemy_asyncio
 
-# Future Proofing for possible future use of asyncio
-
 from tickets_plus import cogs
 from tickets_plus.database import layer, statvars
+
+# Future Proofing for possible future use of asyncio
 
 
 class TicketsPlus(commands.AutoShardedBot):

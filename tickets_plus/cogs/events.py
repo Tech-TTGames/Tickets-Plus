@@ -18,8 +18,8 @@ import re
 import string
 
 import discord
-from discord.ext import commands
 from discord import utils
+from discord.ext import commands
 from sqlalchemy import orm
 
 from tickets_plus import bot
