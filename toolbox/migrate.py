@@ -17,6 +17,7 @@ sys.path.append(str(PROG_DIR))
 
 # pylint: disable=wrong-import-position
 # pylint: disable=import-error # It works, I promise.
+# Full disclosure: This is a hacky way to do it.
 from tickets_plus.database.models import (  # isort:skip
     Base,
     CommunityRole,
