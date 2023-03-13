@@ -30,27 +30,29 @@ The 'name' of the team* is adjustable via /settings staffname.
   
   <sub>[1] - Staff role defined in settings.</sub>
 
-## Feature 3 - Strip Buttons
+## Feature 3 - Community Support
 
-Due to the main Tickets bot not facilitating permissions check withthe 'Close' and 'Close with Reason' buttons this bot will strip the buttons enabling the use of / command perms to limit access.
-Toggle with /setting stripbuttons.
+Automatically adds roles<sup>[1]</sup> to the channels created by the tracked users.
+Additionally, facilitates correct ping behavior with said community roles.
+  
+  <sub>[1] - Community support roles defined in settings</sub>
+
 
 ### Minor Feature 1 - Message Discovery
 
 The bot will display previews of discord message links.
 Requires message content intent.
 
-### Minor Feature 2 - Community Support
+### Minor Feature 2 - Strip Buttons
 
-Automatically adds roles<sup>[1]</sup> to the channels created by the tracked users.
-  
-  <sub>[1] - Community support roles defined in settings</sub>
+Due to the main Tickets bot not facilitating permissions check withthe 'Close' and 'Close with Reason' buttons this bot will strip the buttons enabling the use of / command perms to limit access.
+Toggle with /setting stripbuttons.
 
 ## Setup
 
  Here are the steps to host your copy of [this bot.](https://github.com/Tech-TTGames/Tickets-Plus):
   
-  <sub>Note that there is no publically hosted instance of the bot at this time.</sub>
+  <sub>Note that there is no publicly hosted instance of the bot at this time.</sub>
 
 1. Clone or Download the repo to your machine of choice.
 2. Run `python -m venv 'virt environment name'` to create an enviroment to avoid dependency conflicts.
