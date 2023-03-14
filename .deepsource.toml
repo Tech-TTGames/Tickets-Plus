@@ -13,4 +13,4 @@ name = "python"
 name = "isort"
 
 [[transformers]]
-name = "black"
+name = "yapf"
