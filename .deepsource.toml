@@ -11,6 +11,3 @@ name = "python"
 
 [[transformers]]
 name = "isort"
-
-[[transformers]]
-name = "yapf"
