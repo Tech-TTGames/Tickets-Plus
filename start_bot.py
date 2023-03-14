@@ -15,9 +15,8 @@ import sys
 import tickets_plus
 
 if __name__ == "__main__":
-    if (
-        sys.platform == "win32"
-    ):  # Psycopg3 doesn't work on Windows in async mode without this
+    if (sys.platform == "win32"
+       ):  # Psycopg3 doesn't work on Windows in async mode without this
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     loop = asyncio.get_event_loop()
     loop.run_until_complete(tickets_plus.start_bot())
