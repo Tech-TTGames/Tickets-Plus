@@ -37,11 +37,13 @@ class TicketsPlus(commands.AutoShardedBot):
             The database session maker.
     """
 
-    def __init__(self,
-                 *args,
-                 db_engine: sqlalchemy_asyncio.AsyncEngine,
-                 confg: statvars.MiniConfig = statvars.MiniConfig(),
-                 **kwargs) -> None:
+    def __init__(
+        self,
+        *args,
+        db_engine: sqlalchemy_asyncio.AsyncEngine,
+        confg: statvars.MiniConfig = statvars.MiniConfig(),
+        **kwargs
+    ) -> None:
         """Initialises the bot instance.
 
         Args:
@@ -55,7 +57,8 @@ class TicketsPlus(commands.AutoShardedBot):
         self._db_engine = db_engine
         self.stat_confg = confg
         self.sessions = sqlalchemy_asyncio.async_sessionmaker(
-            self._db_engine, expire_on_commit=False)
+            self._db_engine, expire_on_commit=False
+        )
 
     async def setup_hook(self) -> None:
         """Runs just before the bot connects to Discord.

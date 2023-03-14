@@ -55,8 +55,7 @@ def is_owner_check():
         """
         if interaction.user.id in interaction.client.owner_ids:  # type: ignore
             return True
-        await interaction.response.send_message("Error 403: Forbidden",
-                                                ephemeral=True)
+        await interaction.response.send_message("Error 403: Forbidden", ephemeral=True)
         raise app_commands.CheckFailure("User is not owner")
 
     return app_commands.check(is_owner)
@@ -105,8 +104,7 @@ def is_staff_check():
                 if parsed_role in interaction.user.roles:  # type: ignore
                     # Alredy checked for member
                     return True
-        await interaction.response.send_message("Error 403: Forbidden",
-                                                ephemeral=True)
+        await interaction.response.send_message("Error 403: Forbidden", ephemeral=True)
         raise app_commands.CheckFailure("User is not staff")
 
     return app_commands.check(is_staff)
