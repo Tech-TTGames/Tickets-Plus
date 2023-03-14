@@ -1,9 +1,10 @@
-"""Additional checks for bot.
+"""Tickets Plus decorators for use with discord.py app commands.
 
 A set of decorators for use with discord.py application commands.
 These are generally Ticket Plus specific checks.
+They require the client to be a tickets_plus.bot.TicketsPlus instance.
 
-Example:
+Typical usage example:
     ```py
     from tickets_plus.ext import checks
     from discord import app_commands
@@ -28,7 +29,7 @@ def is_owner_check():
 
     Returns:
         app_commands.check: The check.
-          It's a decorator, so you can use it like this:
+            It's a decorator, so you can use it like this:
             ```py
             @app_commands.command()
             @is_owner_check()
@@ -47,11 +48,11 @@ def is_owner_check():
 
         Returns:
             bool: Whether the user is owner or not.
-              Doesn't return if the user is not owner.
+                Doesn't return if the user is not owner.
 
         Raises:
             app_commands.CheckFailure: If the user is not owner.
-              This is according to the discord.py convention.
+                This is according to the discord.py convention.
         """
         if interaction.user.id in interaction.client.owner_ids:  # type: ignore
             return True
@@ -69,7 +70,7 @@ def is_staff_check():
 
     Returns:
         app_commands.check: The check.
-          It's a decorator, so you can use it like this:
+            It's a decorator, so you can use it like this:
             ```py
             @app_commands.command()
             @is_staff_check()
@@ -88,11 +89,11 @@ def is_staff_check():
 
         Returns:
             bool: Whether the user is staff or not.
-              Doesn't return if the user is not staff.
+                Doesn't return if the user is not staff.
 
         Raises:
             app_commands.CheckFailure: If the user is not staff.
-              This is according to the discord.py convention.
+                This is according to the discord.py convention.
         """
         if interaction.guild is None:
             raise app_commands.CheckFailure("User is not in a guild")

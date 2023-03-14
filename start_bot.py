@@ -5,7 +5,7 @@ We don't really do anything except invoke the start_bot function.
 All the magic happens in tickets_plus.__init__.py
 This file is to be used as a script, not as a module.
 
-Example:
+Typical usage example:
     $ python3 start_bot.py
 """
 # License: EPL-2.0

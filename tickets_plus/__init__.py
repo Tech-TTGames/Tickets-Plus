@@ -1,11 +1,11 @@
-"""The main file for the bot, containg startup code.
+"""Tickets Plus - A Discord bot for extending Tickets.
 
 This file is the main file for the bot.
 It contains the startup code for the bot.
 Other code is in the various submodules.
 This file is to be used as a module, not as a script.
 
-Example:
+Typical usage example:
     ```py
     #!/usr/bin/env python3
     import asyncio
@@ -41,8 +41,7 @@ async def start_bot():
     dt_fmr = "%Y-%m-%d %H:%M:%S"
     statvars.handler.setFormatter(
         logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s",
-                          dt_fmr)
-    )
+                          dt_fmr))
 
     # Set up discord.py logging
     dscrd_logger = logging.getLogger("discord")
@@ -71,8 +70,9 @@ async def start_bot():
             pool_size=10,
             max_overflow=-1,
             pool_recycle=600,
-            connect_args={"server_settings": {"jit": "off"}}
-        )
+            connect_args={"server_settings": {
+                "jit": "off"
+            }})
     else:
         engine = sqlalchemy_asyncio.create_async_engine(
             stat_data.get_url(),

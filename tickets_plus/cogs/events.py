@@ -28,7 +28,7 @@ from tickets_plus.database import models
 
 
 class Events(commands.Cog, name="Events"):
-    """All cog for handling events.
+    """Event handling for Tickets+.
 
     This cog handles all events for Tickets+.
     This is used to handle events from Discord.
@@ -125,7 +125,7 @@ class Events(commands.Cog, name="Events"):
                                     await msg.delete()
                         descr = (
                             f"Ticket {channel.name}\n" +
-                            f"Opened at <t:{int(channel.created_at.timestamp())}:f>"
+                            f"Opened at <t:{int(channel.created_at.timestamp())}:f>"  # skipcq: FLK-E501 # pylint: disable=line-too-long
                         )
                         if guild.first_autoclose:
                             descr += f"\nCloses at <t:{int((channel.created_at + datetime.timedelta(minutes=guild.first_autoclose)).timestamp())}:R>"  # skipcq: FLK-E501 # pylint: disable=line-too-long
@@ -174,7 +174,8 @@ class Events(commands.Cog, name="Events"):
                     message.content,
                 )
                 if alpha:
-                    try:  # We do not check any types in this block as we are catching the errors.
+                    # We do not check any types in try as we are catching.
+                    try:
                         gld = self._bt.get_guild(int(alpha.group("srv")))
                         chan = gld.get_channel_or_thread(  # type: ignore
                             int(alpha.group("cha")))
@@ -191,7 +192,8 @@ class Events(commands.Cog, name="Events"):
                             discovered_result = got_msg.embeds[0]
                             discovered_result.set_footer(
                                 text=
-                                f"[EMBED CAPTURED] Sent in {chan.name}"  # type: ignore
+                                "[EMBED CAPTURED] Sent in"
+                                f" {chan.name}"  # type: ignore
                                 f" at {time}")
                         else:
                             discovered_result = discord.Embed(
@@ -232,12 +234,12 @@ class Events(commands.Cog, name="Events"):
 
 
 async def setup(bot_instance: bot.TicketsPlus) -> None:
-    """Setup function for the cog.
+    """Sets up the Events handler.
 
     This is called when the cog is loaded.
     It adds the cog to the bot.
 
     Args:
       bot: The bot that is loading the cog.
-        This is a TicketsPlus object."""
+    """
     await bot_instance.add_cog(Events(bot_instance))

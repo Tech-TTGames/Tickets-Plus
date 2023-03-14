@@ -1,9 +1,9 @@
-"""A import utility for loading all cogs in this directory.
+"""A import utility for loading all cogs in this submodule.
 
-This file just makes it easier to load all cogs in this directory.
-It is not meant to be used as a script.
+This file just makes it easier to load all cogs in this submodule.
+We can just import this submodule and iterate over the EXTENSIONS list.
 
-Example:
+Typical usage example:
     ```py
     from tickets_plus import cogs
     for extension in cogs.EXTENSIONS:
@@ -17,4 +17,4 @@ import pkgutil
 EXTENSIONS = [
     module.name for module in pkgutil.iter_modules(__path__, f"{__package__}.")
 ]
-"""A list of all cogs in this directory. This is the list of cogs to load."""
+"""A list of all cogs in this submodule. This is the list of cogs to load."""

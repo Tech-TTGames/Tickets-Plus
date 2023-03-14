@@ -2,8 +2,9 @@
 
 We use this cog to handle errors from app commands globally.
 This is to actually handle and respond to errors.
+It's nice to not leave the user confused.
 
-Example:
+Typical usage example:
     ```py
     from tickets_plus import bot
     bot = bot.TicketsPlus(...)
@@ -20,14 +21,14 @@ from tickets_plus import bot
 
 
 class ErrorHandling(commands.Cog, name="AppCommandErrorHandler"):
-    """A cog that handles errors from app commands globally.
+    """Error handling for Tickets+.
 
     This cog is used to handle errors from app commands globally.
     This is to actually handle and respond to errors.
 
     Attributes:
         old_error_handler: The old error handler.
-          This is used to restore the old error handler.
+            This is used to restore the old error handler.
     """
 
     def __init__(self, bot_instance: bot.TicketsPlus) -> None:
@@ -35,7 +36,6 @@ class ErrorHandling(commands.Cog, name="AppCommandErrorHandler"):
 
         Args:
             bot_instance: The bot instance.
-              A bot.TicketsPlus instance.
         """
         self._bt = bot_instance
         self.old_error_handler = None
@@ -66,17 +66,19 @@ class ErrorHandling(commands.Cog, name="AppCommandErrorHandler"):
         So as to not leave the user confused.
 
         Args:
-            interaction (Interaction): The interaction that raised the error.
-            error (AppCommandError): The error that was raised.
+            interaction: The interaction that raised the error.
+            error: The error that was raised.
         """
         # TODO: Implement this function.
 
 
 async def setup(bot_instance: bot.TicketsPlus) -> None:
-    """Adds the cog to the bot.
+    """Sets up the error handler.
+
+    This function is called when the cog is loaded.
+    It is used to add the cog to the bot.
 
     Args:
         bot_instance: The bot instance.
-          A bot.TicketsPlus instance.
     """
     await bot_instance.add_cog(ErrorHandling(bot_instance))

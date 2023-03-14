@@ -1,10 +1,10 @@
-"""This file contains the main bot class.
+"""This main bot class module for Tickets Plus.
 
-We use this class to override the default bot class.
-This is to allow us to add our own methods and attributes.
-This file is to be used as a module, not as a script.
+A module that contains purely the bot class.
+It's a subclass of discord.ext.commands.AutoShardedBot.
+No other code is in this module at the moment.
 
-Example:
+Typical usage example:
     ```py
     from tickets_plus import bot
     bot = bot.TicketsPlus(...)
@@ -25,11 +25,12 @@ from tickets_plus.database import layer, statvars
 
 
 class TicketsPlus(commands.AutoShardedBot):
-    """The overriden bot class for Tickets Plus.
+    """A bot instance that is used to run Tickets Plus.
 
-    This class is used to override the default bot class.
+    A bot instance that is used to run Tickets Plus.
     This is to allow us to add our own methods and attributes.
-    In general, we use this class to add database connections.
+    In general, not much is done in this class.
+    Most of the work is done in the cogs.
 
     Attributes:
         stat_confg (statvars.MiniConfig): The config for the bot.
@@ -63,7 +64,6 @@ class TicketsPlus(commands.AutoShardedBot):
         This function is called just before the bot connects to Discord.
         This is used to load the cogs and sync the database.
         Generally, this function should not be called manually.
-        Additionally, this function does not raise any exceptions.
         """
         logging.info("Bot version: %s", statvars.VERSION)
         logging.info("Discord.py version: %s", discord.__version__)
