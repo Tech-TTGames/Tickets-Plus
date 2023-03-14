@@ -30,7 +30,7 @@ from tickets_plus.database.statvars import Config, MiniConfig  # isort:skip
 
 
 # pylint: disable=invalid-name
-if __name__ == "__main__":
+def main():
     print("Starting migration script...")
     new = 0
     legacy = 0
@@ -216,3 +216,6 @@ if __name__ == "__main__":
             except Exception as e:  # pylint: disable=broad-except # skipcq: PYL-W0703
                 print(e)
     print("Goodbye!")
+
+if __name__ == "__main__":
+    main()

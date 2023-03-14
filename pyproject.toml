@@ -21,6 +21,11 @@ yapf = "^0.32.0"
 pylint = "^2.17.0"
 toml = "^0.10.2"
 
+[tool.poetry.scripts]
+start = "start_bot:main"
+migrate = "toolbox.migrate:main"
+nuke = "toolbox.nuke:main"
+
 [tool.yapf]
 based_on_style = "google"
 

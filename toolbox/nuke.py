@@ -19,7 +19,7 @@ from tickets_plus.database.statvars import MiniConfig  # isort:skip
 
 SAFETY_TOGGLE = False
 
-if __name__ == "__main__":
+def main():
     engine = create_engine(MiniConfig().get_url())
     print(
         "This script will drop all tables in the database."
@@ -52,3 +52,6 @@ if __name__ == "__main__":
             print("Aborting.")
     else:
         print("Aborting.")
+
+if __name__ == "__main__":
+    main()
