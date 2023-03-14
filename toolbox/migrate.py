@@ -21,7 +21,12 @@ sys.path.append(str(PROG_DIR))
 # pylint: disable=import-error # It works, I promise.
 # Full disclosure: This is a hacky way to do it.
 from tickets_plus.database.models import (  # isort:skip
-    Base, CommunityRole, Guild, ObserversRole, StaffRole, TicketBot,
+    Base,
+    CommunityRole,
+    Guild,
+    ObserversRole,
+    StaffRole,
+    TicketBot,
 )
 from tickets_plus.database.statvars import Config, MiniConfig  # isort:skip
 
@@ -37,8 +42,10 @@ def main():
         try:
             cnfg.cnfg()["guild"]
         except KeyError:
-            print("Config is not pre-v0.1 template."
-                  " Attempting to cache v0.1 template...")
+            print(
+                "Config is not pre-v0.1 template."
+                " Attempting to cache v0.1 template..."
+            )
         else:
             print("Config is pre-v0.1 template.")
             legacy = 1
@@ -53,25 +60,34 @@ def main():
                 new = 1
     print("Entering interactive prompt...")
     if not new:
-        print("This is a migration script to help you"
-              " migrate from the old config file to the new database.")
-        print("The new config file contains information about the"
-              " database connection.")
-        print("The new database contains all the"
-              " information about the tickets and"
-              " the guilds and the data previously stored in config.")
-        print("This script will create the database"
-              " schema and tables if they do not exist.")
+        print(
+            "This is a migration script to help you"
+            " migrate from the old config file to the new database."
+        )
+        print(
+            "The new config file contains information about the" " database connection."
+        )
+        print(
+            "The new database contains all the"
+            " information about the tickets and"
+            " the guilds and the data previously stored in config."
+        )
+        print(
+            "This script will create the database"
+            " schema and tables if they do not exist."
+        )
         print("It will also load the config file into the database.")
-        create = input("Would you like to create the"
-                       " new config file? (Y/N)\n")
+        create = input("Would you like to create the" " new config file? (Y/N)\n")
         if create == "Y":
-            print("I will now guide you through the"
-                  " creation of the new config file.")
+            print(
+                "I will now guide you through the" " creation of the new config file."
+            )
             print("Please answer the following questions.")
             print("The default values are in parentheses.")
-            print("If you are unsure of the answer,"
-                  " please consult the documentation or a professional.")
+            print(
+                "If you are unsure of the answer,"
+                " please consult the documentation or a professional."
+            )
             config = {}
             dbarch = input("What is the database type? (postgresql)\n")
             if dbarch == "":
@@ -106,21 +122,22 @@ def main():
             config["dev_guild_id"] = int(dev_guild_id)
 
             print("This is the end of the configuration.")
-            print("The following is the configuration"
-                  " that will be written to the file.")
+            print(
+                "The following is the configuration"
+                " that will be written to the file."
+            )
             configjson = json.dumps(config, indent=4)
             print(configjson)
-            write = input(
-                "Would you like to write this to the config file? (Y/N)\n")
+            write = input("Would you like to write this to the config file? (Y/N)\n")
             if write == "Y":
                 if new:
                     write = input(
                         "Would you like to overwrite the existing config file? (Y/N)\n"  # noqa: E501 # pylint: disable=line-too-long
                     )
                 if write == "Y":
-                    with open(pathlib.Path(PROG_DIR, "config.json"),
-                              "w",
-                              encoding="utf-8") as f:
+                    with open(
+                        pathlib.Path(PROG_DIR, "config.json"), "w", encoding="utf-8"
+                    ) as f:
                         f.write(configjson)
                     print("Config file saved.")
             print(
@@ -128,8 +145,7 @@ def main():
             )
             engine = create_engine(URL.create(**config))
             with engine.begin() as conn:
-                conn.execute(
-                    schema.CreateSchema("tickets_plus", if_not_exists=True))
+                conn.execute(schema.CreateSchema("tickets_plus", if_not_exists=True))
                 Base.metadata.create_all(engine, checkfirst=True)
                 print("Database schema and tables created.")
             if legacy:
@@ -166,8 +182,7 @@ def main():
                         data.observers_roles = obsr
                         croles = []
                         for croles in dic["community_roles"]:
-                            croles.append(
-                                CommunityRole(role_id=croles, guild=data))
+                            croles.append(CommunityRole(role_id=croles, guild=data))
                         session.add_all(croles)
                         data.community_roles = croles
                         session.commit()
@@ -183,13 +198,11 @@ def main():
         )
         engine = create_engine(cnfg.get_url())  # type: ignore
         with engine.begin() as conn:
-            conn.execute(schema.CreateSchema("tickets_plus",
-                                             if_not_exists=True))
+            conn.execute(schema.CreateSchema("tickets_plus", if_not_exists=True))
             Base.metadata.create_all(engine, checkfirst=True)
             print("Database schema and tables created.")
 
-    data = input(
-        "This script has finished, enter ev to enter an interactive eval.\n")
+    data = input("This script has finished, enter ev to enter an interactive eval.\n")
     if data == "ev":
         while True:
             try:

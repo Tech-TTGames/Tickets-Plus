@@ -18,9 +18,9 @@ CNFG = MiniConfig()
 
 
 @app_commands.guilds(CNFG.getitem("dev_guild_id"))
-class Overrides(commands.GroupCog,
-                name="override",
-                description="Owner override commands."):
+class Overrides(
+    commands.GroupCog, name="override", description="Owner override commands."
+):
     """Owner override commands."""
 
     def __init__(self, bot: TicketsPlus):
@@ -52,7 +52,8 @@ class Overrides(commands.GroupCog,
         await self._bt.close()
 
     @app_commands.command(
-        name="pull", description="Pulls the latest changes from the git repo.")
+        name="pull", description="Pulls the latest changes from the git repo."
+    )
     @is_owner_check()
     async def pull(self, ctx: discord.Interaction):
         """Pulls the latest changes from the git repo."""
@@ -73,8 +74,10 @@ class Overrides(commands.GroupCog,
             await ctx.followup.send(f"[stderr]\n{stdr.decode()}")
             logging.info("[stderr]\n%s", stdr.decode())
 
-        await ctx.followup.send("Finished pulling latest changes.\n"
-                                "Restart bot or reload cogs to apply changes.")
+        await ctx.followup.send(
+            "Finished pulling latest changes.\n"
+            "Restart bot or reload cogs to apply changes."
+        )
 
     @app_commands.command(name="logs", description="Sends the logs.")
     @is_owner_check()
@@ -103,8 +106,7 @@ class Overrides(commands.GroupCog,
         logging.info("Sending config to %s...", str(ctx.user))
         async with self._bt.get_connection() as conn:
             guild_confg = await conn.get_guild(guid)
-            await ctx.user.send(str(guild_confg)
-                               )  # Eh. This is a bit of a test.
+            await ctx.user.send(str(guild_confg))  # Eh. This is a bit of a test.
         await ctx.followup.send("Sent config.")
         logging.info("Config sent.")
 
