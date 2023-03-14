@@ -11,7 +11,7 @@ Typical usage example:
     ```
 """
 # License: EPL-2.0
-# Copyright (c) 2021-2023 The Tickets Plus Contributors
+# Copyright (c) 2021-present The Tickets Plus Contributors
 import asyncio
 import datetime
 import logging
@@ -223,8 +223,8 @@ class Events(commands.Cog, name="Events"):
                     if not staff:
                         return
                     await message.channel.send(
-                        f"**{guild.staff_team_name}:** " +
-                        utils.escape_mentions(message.content),
+                        f"**{guild.staff_team_name}:** "
+                        f"{utils.escape_mentions(message.content)}",
                         embeds=message.embeds,
                     )
                     await message.delete()

@@ -1,6 +1,6 @@
 """General owner utility commands."""
 # License: EPL-2.0
-# Copyright (c) 2021-2023 The Tickets Plus Contributors
+# Copyright (c) 2021-present The Tickets Plus Contributors
 import asyncio
 import logging
 import os

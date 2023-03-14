@@ -12,10 +12,9 @@ Typical usage example:
     ```
 """
 # License: EPL-2.0
-# Copyright (c) 2021-2023 The Tickets Plus Contributors
+# Copyright (c) 2021-present The Tickets Plus Contributors
 import logging
 import string
-from typing import Optional
 
 import discord
 from discord import app_commands, utils
@@ -58,8 +57,8 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
         Args:
             ctx: The interaction context.
         """
-        await ctx.response.send_message("Pong! The bot is online.\nPing: " +
-                                        str(round(self._bt.latency * 1000)) +
+        await ctx.response.send_message("Pong! The bot is online.\nPing: "
+                                        f"{str(round(self._bt.latency * 1000))}"
                                         "ms")
 
     @app_commands.command(name="version", description="Get the bot's version.")
@@ -72,10 +71,10 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
             ctx: The interaction context.
         """
         await ctx.response.send_message(
-            "Bot 'Tickets Plus' version: " + statvars.VERSION +
-            " by Tech. TTGames#8616\n" +
-            "This bot is open source and experimental!\n" +
-            "Check it out and report issues at:" +
+            f"Bot 'Tickets Plus' version: {statvars.VERSION}"
+            " by Tech. TTGames#8616\n"
+            "This bot is open source and experimental!\n"
+            "Check it out and report issues at:"
             "https://github.com/Tech-TTGames/Tickets-Plus")
 
     @app_commands.command(name="respond",
@@ -112,7 +111,7 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
                     raise app_commands.AppCommandError(
                         "This channel is not a staff notes thread.")
                 await ctx.response.send_message(
-                    "Responding to ticket with message:\n" + sanitized_message)
+                    f"Responding to ticket with message:\n{sanitized_message}")
                 await ctx.channel.parent.send(  # type: ignore
                     f"**{guild.staff_team_name}:** {sanitized_message}")
 
@@ -123,7 +122,7 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
                         "This channel is not a ticket."
                         " If it is, use /register.")
                 await ctx.response.send_message(
-                    "Responding to ticket with message:\n" + sanitized_message,
+                    f"Responding to ticket with message:\n{sanitized_message}",
                     ephemeral=True,
                 )
                 await ctx.channel.send(
@@ -202,8 +201,9 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
         description="Register an existing channel as a ticket.")
     @app_commands.guild_only()
     @checks.is_staff_check()
-    async def register(self, ctx: discord.Interaction,
-                       thread: Optional[discord.Thread]):
+    async def register(self,
+                       ctx: discord.Interaction,
+                       thread: discord.Thread | None = None):
         """A migration command to register an existing channel as a ticket.
 
         We have this command to allow users to migrate from the old version,

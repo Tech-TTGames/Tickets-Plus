@@ -1,6 +1,6 @@
 """A layer for the database session."""
 # License: EPL-2.0
-# Copyright (c) 2021-2023 The Tickets Plus Contributors
+# Copyright (c) 2021-present The Tickets Plus Contributors
 from typing import Optional, Sequence, Tuple
 
 from discord.ext import commands

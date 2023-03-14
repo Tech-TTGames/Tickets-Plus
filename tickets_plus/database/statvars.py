@@ -3,7 +3,7 @@ Declare variables used in bot.
 This file is a based on the variables.py file from my other bot.
 """
 # License: EPL-2.0
-# Copyright (c) 2021-2023 The Tickets Plus Contributors
+# Copyright (c) 2021-present The Tickets Plus Contributors
 import json
 import logging
 import pathlib

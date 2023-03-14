@@ -5,7 +5,7 @@ This is a destructive operation and should only be used in development.
 It will also drop the schema if it exists.
 """
 # License: EPL-2.0
-# Copyright (c) 2021-2023 The Tickets Plus Contributors
+# Copyright (c) 2021-present The Tickets Plus Contributors
 import pathlib
 import sys
 

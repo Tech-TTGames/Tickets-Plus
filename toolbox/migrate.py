@@ -5,7 +5,7 @@ It will create the schema and tables if they do not exist.
 An interactive prompt will guide you through the creation of the config file.
 """
 # License: EPL-2.0
-# Copyright (c) 2021-2023 The Tickets Plus Contributors
+# Copyright (c) 2021-present The Tickets Plus Contributors
 import json
 import pathlib
 import sys
