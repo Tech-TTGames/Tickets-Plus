@@ -6,17 +6,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql import select
 from sqlalchemy.sql.base import ExecutableOption
 
-from tickets_plus.database.models import (
-    CommunityPing,
-    CommunityRole,
-    Guild,
-    Member,
-    ObserversRole,
-    StaffRole,
-    Ticket,
-    TicketBot,
-    User,
-)
+from tickets_plus.database.models import (CommunityPing, CommunityRole, Guild,
+                                          Member, ObserversRole, StaffRole,
+                                          Ticket, TicketBot, User)
 
 
 class OnlineConfig:
