@@ -39,9 +39,9 @@ async def start_bot():
 
     # Set up logging
     dt_fmr = "%Y-%m-%d %H:%M:%S"
-    statvars.handler.setFormatter(  # Can't split this line up.
+    statvars.handler.setFormatter(
         logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s",
-                          dt_fmr)  # noqa: E501 pylint: disable=line-too-long
+                          dt_fmr)
     )
 
     # Set up discord.py logging
@@ -54,6 +54,10 @@ async def start_bot():
     sql_logger.setLevel(logging.WARNING)
     sql_logger.addHandler(statvars.handler)
 
+    sql_pool_logger = logging.getLogger("sqlalchemy.pool")
+    sql_pool_logger.setLevel(logging.WARNING)
+    sql_pool_logger.addHandler(statvars.handler)
+
     # Set up bot logging
     logging.root.setLevel(logging.INFO)
     logging.root.addHandler(statvars.handler)
@@ -61,7 +65,21 @@ async def start_bot():
 
     # Set up bot
     logging.info("Creating engine...")
-    engine = sqlalchemy_asyncio.create_async_engine(stat_data.get_url())
+    if "asyncpg" in str(stat_data.getitem("dbtype")):
+        engine = sqlalchemy_asyncio.create_async_engine(
+            stat_data.get_url(),
+            pool_size=10,
+            max_overflow=-1,
+            pool_recycle=600,
+            connect_args={"server_settings": {"jit": "off"}}
+        )
+    else:
+        engine = sqlalchemy_asyncio.create_async_engine(
+            stat_data.get_url(),
+            pool_size=10,
+            max_overflow=-1,
+            pool_recycle=600,
+        )
     bot_instance = bot.TicketsPlus(
         db_engine=engine,
         intents=statvars.intents,
