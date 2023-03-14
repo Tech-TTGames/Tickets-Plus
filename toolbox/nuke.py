@@ -39,8 +39,9 @@ def main():
                 conn = engine.connect()
                 print("Engine started. Dropping schema...")
                 conn.execute(
-                    schema.DropSchema("tickets_plus", cascade=True, if_exists=True)
-                )
+                    schema.DropSchema("tickets_plus",
+                                      cascade=True,
+                                      if_exists=True))
                 print("Schema dropped. Dropping tables...")
                 Base.metadata.drop_all(conn)
                 print("Tables dropped. Closing connection...")

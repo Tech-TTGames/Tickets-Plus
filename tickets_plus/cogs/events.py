@@ -123,10 +123,9 @@ class Events(commands.Cog, name="Events"):
                                         msg.author.id, gld.id):
                                     await channel.send(embeds=msg.embeds)
                                     await msg.delete()
-                        descr = (
-                            f"Ticket {channel.name}\n" +
-                            f"Opened at <t:{int(channel.created_at.timestamp())}:f>"  # skipcq: FLK-E501 # pylint: disable=line-too-long
-                        )
+                        descr = (f"Ticket {channel.name}\n"
+                                 "Opened at "
+                                 f"<t:{int(channel.created_at.timestamp())}:f>")
                         if guild.first_autoclose:
                             descr += f"\nCloses at <t:{int((channel.created_at + datetime.timedelta(minutes=guild.first_autoclose)).timestamp())}:R>"  # skipcq: FLK-E501 # pylint: disable=line-too-long
                             descr += "If no one responds, the ticket will be closed automatically. Thank you for your patience!"  # skipcq: FLK-E501 # pylint: disable=line-too-long
@@ -164,10 +163,10 @@ class Events(commands.Cog, name="Events"):
         Args:
             message: The message that was sent.
         """
-        async with self._bt.get_connection() as confg:
+        async with self._bt.get_connection() as cnfg:
             if message.author.bot or message.guild is None:
                 return
-            guild = await confg.get_guild(message.guild.id)
+            guild = await cnfg.get_guild(message.guild.id)
             if guild.msg_discovery:
                 alpha = re.search(
                     r"https:\/\/(?:canary\.)?discord\.com\/channels\/(?P<srv>\d{18})\/(?P<cha>\d{18})\/(?P<msg>\d*)",  # skipcq: FLK-E501 # pylint: disable=line-too-long
@@ -191,16 +190,15 @@ class Events(commands.Cog, name="Events"):
                         if not got_msg.content and got_msg.embeds:
                             discovered_result = got_msg.embeds[0]
                             discovered_result.set_footer(
-                                text=
-                                "[EMBED CAPTURED] Sent in"
+                                text="[EMBED CAPTURED] Sent in"
                                 f" {chan.name}"  # type: ignore
                                 f" at {time}")
                         else:
                             discovered_result = discord.Embed(
                                 description=got_msg.content, color=0x0D0EB4)
                             discovered_result.set_footer(
-                                text=
-                                f"Sent in {chan.name} at {time}"  # type: ignore
+                                text="Sent in "
+                                f"{chan.name} at {time}"  # type: ignore
                             )
                         discovered_result.set_author(
                             name=got_msg.author.name,
@@ -210,13 +208,12 @@ class Events(commands.Cog, name="Events"):
                             url=got_msg.attachments[0].url if got_msg.
                             attachments else None)
                         await message.reply(embed=discovered_result)
-            ticket = await confg.fetch_ticket(message.channel.id)
+            ticket = await cnfg.fetch_ticket(message.channel.id)
             if ticket:
                 # Make sure the ticket exists
                 if ticket.anonymous:
                     staff = False
-                    staff_roles = await confg.get_all_staff_roles(guild.guild_id
-                                                                 )
+                    staff_roles = await cnfg.get_all_staff_roles(guild.guild_id)
                     for role in staff_roles:
                         parsed_role = message.guild.get_role(role.role_id)
                         if parsed_role in message.author.roles:  # type: ignore

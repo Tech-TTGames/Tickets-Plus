@@ -17,6 +17,11 @@ import tickets_plus
 
 
 def main():
+    """Start the bot
+
+    Adjust the event loop policy if we're on Windows.
+    Then, run the bot until it's done.
+    """
     if (
         sys.platform == "win32"
     ):  # Psycopg3 doesn't work on Windows in async mode without this

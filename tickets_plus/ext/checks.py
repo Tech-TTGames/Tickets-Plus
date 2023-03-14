@@ -8,7 +8,7 @@ Typical usage example:
     ```py
     from tickets_plus.ext import checks
     from discord import app_commands
-    
+
     @app_commands.command()
     @checks.is_owner_check()
     async def command(interaction: discord.Interaction):

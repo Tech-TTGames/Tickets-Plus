@@ -65,9 +65,9 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
     @app_commands.command(name="version", description="Get the bot's version.")
     async def version(self, ctx: discord.Interaction):
         """This command is used to check the bot's version.
-        
+    
         Responds with the bot's version and a link to the source code.
-        
+    
         Args:
             ctx: The interaction context.
         """
@@ -93,7 +93,7 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
         Args:
             ctx: The interaction context.
             message: The message to send to the ticket.
-        
+
         Raises:
             AppCommandError: If the channel is neither a ticket, nor thread.
         """
@@ -205,14 +205,14 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
     async def register(self, ctx: discord.Interaction,
                        thread: Optional[discord.Thread]):
         """A migration command to register an existing channel as a ticket.
-        
+
         We have this command to allow users to migrate from the old version,
         or add channels that the bot has missed while it was offline.
-        
+
         Args:
             ctx: The interaction context.
             thread: The staff notes thread for the ticket.
-        
+
         Raises:
             AppCommandError: If the channel is already a ticket.
                 Or the execution space is not a text channel.
@@ -236,7 +236,7 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
                     ctx.guild.id,  # type: ignore
                     thread.id)
                 # Unused, we just want to check if it's new and commit it.
-                del ticket
+                del ticket  # skipcq: PTC-W0043
                 if not new:
                     raise app_commands.AppCommandError(
                         "This channel is already a ticket.")
@@ -248,7 +248,7 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
 
 async def setup(bot_instance: bot.TicketsPlus):
     """Sets up up the free commands.
-    
+
     Called by the bot when the cog is loaded.
     It adds the cog to the bot.
 
