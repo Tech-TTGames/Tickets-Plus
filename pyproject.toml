@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "tickets-plus"
+version = "0.1.0"
+description = "A companion bot adding some extensions to Tickets discord bot. Experimental."
+authors = ["Tech. TTGames <50541739+Tech-TTGames@users.noreply.github.com>"]
+license = "EPL-2.0"
+readme = "README.md"
+packages = [{include = "tickets_plus"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+"discord.py" = "^2.2.2"
+SQLAlchemy = {extras = ["asyncio"], version = "^2.0.6"}
+psycopg = "^3.1.8"
+psycopg-binary = "^3.1.8"
+alembic = {extras = ["tz"], version = "^1.10.2"}
+
+
+[tool.poetry.group.dev.dependencies]
+yapf = "^0.32.0"
+pylint = "^2.17.0"
+toml = "^0.10.2"
+
+[tool.yapf]
+based_on_style = "google"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
