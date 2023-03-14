@@ -16,26 +16,26 @@ Which works as a supplimentary, separate bot<sup>[2]</sup>.
 
 Private threads are *(now)* free!
 
-This creates a private thread in a channel and adds the staff roles to it<sup>*</sup>.
+This creates a private thread in a channel and adds the staff roles to it<sup>\*</sup>.
 You can now disable pings, just use /settings staffpings to toggle.
 The 'open message' is adjustable via /settings openmsg. $channels is replaced with the channel mention.
   
-  <sub>* - Staff role defined in settings.</sub>
+  <sub>\* - Staff role defined in settings.</sub>
 
 ## Feature 2 - Staff Response
 
-You can now respond as the staff team* using /respond.
-The command is limited to users with roles added to staff<sup>*</sup>.
-The 'name' of the team* is adjustable via /settings staffname.
+You can now respond as the staff team\* using /respond.
+The command is limited to users with roles added to staff<sup>\*</sup>.
+The 'name' of the team\* is adjustable via /settings staffname.
   
-  <sub>* - Staff role defined in settings.</sub>
+  <sub>\* - Staff role defined in settings.</sub>
 
 ## Feature 3 - Community Support
 
-Automatically adds roles<sup>*</sup> to the channels created by the tracked users.
+Automatically adds roles<sup>\*</sup> to the channels created by the tracked users.
 Additionally, facilitates correct ping behavior with said community roles.
   
-  <sub>* - Community support roles defined in settings</sub>
+  <sub>\* - Community support roles defined in settings</sub>
 
 
 ### Minor Feature 1 - Message Discovery
