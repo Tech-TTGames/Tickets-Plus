@@ -1,8 +1,11 @@
+#!/usr/bin/env python3
 """
 This script will drop all tables in the database.
 This is a destructive operation and should only be used in development.
 It will also drop the schema if it exists.
 """
+# License: EPL-2.0
+# Copyright (c) 2021-2023 The Tickets Plus Contributors
 import pathlib
 import sys
 
@@ -18,6 +21,7 @@ from tickets_plus.database.models import Base  # isort:skip
 from tickets_plus.database.statvars import MiniConfig  # isort:skip
 
 SAFETY_TOGGLE = False
+
 
 def main():
     engine = create_engine(MiniConfig().get_url())
@@ -35,8 +39,9 @@ def main():
                 conn = engine.connect()
                 print("Engine started. Dropping schema...")
                 conn.execute(
-                    schema.DropSchema("tickets_plus", cascade=True, if_exists=True)
-                )
+                    schema.DropSchema("tickets_plus",
+                                      cascade=True,
+                                      if_exists=True))
                 print("Schema dropped. Dropping tables...")
                 Base.metadata.drop_all(conn)
                 print("Tables dropped. Closing connection...")
@@ -52,6 +57,7 @@ def main():
             print("Aborting.")
     else:
         print("Aborting.")
+
 
 if __name__ == "__main__":
     main()

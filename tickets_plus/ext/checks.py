@@ -14,7 +14,8 @@ Example:
         ...
     ```
 """
-
+# License: EPL-2.0
+# Copyright (c) 2021-2023 The Tickets Plus Contributors
 import discord
 from discord import app_commands
 

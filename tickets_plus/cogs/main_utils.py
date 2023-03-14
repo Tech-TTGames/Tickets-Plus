@@ -1,4 +1,6 @@
 """Random commands that don't fit anywhere else."""
+# License: EPL-2.0
+# Copyright (c) 2021-2023 The Tickets Plus Contributors
 import logging
 import string
 from typing import Optional

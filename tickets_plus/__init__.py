@@ -14,7 +14,8 @@ Example:
     loop.run_until_complete(tickets_plus.start_bot())
     ```
 """
-# License: EPL 2.0
+# License: EPL-2.0
+# Copyright (c) 2021-2023 The Tickets Plus Contributors
 import logging
 
 import discord

@@ -10,7 +10,8 @@ Typical usage example:
     await bot.load_extension("tickets_plus.cogs.events")
     ```
 """
-# License: EPL 2.0
+# License: EPL-2.0
+# Copyright (c) 2021-2023 The Tickets Plus Contributors
 import asyncio
 import datetime
 import logging

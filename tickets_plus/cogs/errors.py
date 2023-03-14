@@ -10,7 +10,8 @@ Example:
     await bot.load_extension("tickets_plus.cogs.errors")
     ```
 """
-# License: EPL 2.0
+# License: EPL-2.0
+# Copyright (c) 2021-2023 The Tickets Plus Contributors
 from discord import Interaction
 from discord.app_commands import AppCommandError
 from discord.ext import commands

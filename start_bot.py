@@ -8,7 +8,8 @@ This file is to be used as a script, not as a module.
 Example:
     $ python3 start_bot.py
 """
-# License: EPL 2.0
+# License: EPL-2.0
+# Copyright (c) 2021-2023 The Tickets Plus Contributors
 import asyncio
 import sys
 
