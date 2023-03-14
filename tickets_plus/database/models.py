@@ -18,7 +18,9 @@ class UTCnow(expression.FunctionElement):
 
 
 @compiles(UTCnow, "postgresql")
-def pg_UTCnow(element, compiler, **kw):  # pylint: disable=unused-argument
+# This is as according to the docs, but pylint doesn't like it
+# pylint: disable=unused-argument, invalid-name
+def pg_UTCnow(element, compiler, **kw):
     """
     Compile the utcnow function
 
@@ -44,8 +46,8 @@ class Guild(Base):
 
     __tablename__ = "general_configs"
     __table_args__ = {
-        "comment":
-            "Table for general configurations, this is the parent table for all-guild specific tables."
+        "comment": ("Table for general configurations,"
+                    " this is the parent table for all-guild specific tables.")
     }
 
     # Simple columns
@@ -108,15 +110,17 @@ class TicketBot(Base):
     __tablename__ = "ticket_bots"
     __table_args__ = {
         "comment":
-            "Users that open the ticket channels, mostly the Tickets bot, but can be other users due to whitelabel options."
+            ("Users that open the ticket channels, mostly the Tickets bot,"
+             " but can be other users due to whitelabel options.")
     }
 
     # Simple columns
     user_id: Mapped[int] = mapped_column(
         BigInteger(),
         nullable=False,
-        comment=
-        "Unique discord-provided user ID. Used in conjunction with guild_id to make a unique primary key",
+        comment=(
+            "Unique discord-provided user ID."
+            " Used in conjunction with guild_id to make a unique primary key"),
         primary_key=True,
         unique=False,
     )
@@ -124,8 +128,9 @@ class TicketBot(Base):
         BigInteger(),
         ForeignKey("general_configs.guild_id"),
         nullable=False,
-        comment=
-        "Unique Guild ID of parent guild. Used in conjunction with user_id to make a unique primary key",
+        comment=(
+            "Unique Guild ID of parent guild."
+            " Used in conjunction with user_id to make a unique primary key"),
         primary_key=True,
         unique=False,
     )

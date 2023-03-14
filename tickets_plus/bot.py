@@ -33,7 +33,8 @@ class TicketsPlus(commands.AutoShardedBot):
 
     Attributes:
         stat_confg (statvars.MiniConfig): The config for the bot.
-        sessions (sqlalchemy_asyncio.async_sessionmaker): The database session maker.
+        sessions (sqlalchemy_asyncio.async_sessionmaker):
+            The database session maker.
     """
 
     def __init__(self,

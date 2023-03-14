@@ -48,7 +48,6 @@ class Events(commands.Cog, name="Events"):
 
         Args:
             channel: The channel that was created.
-              This is a `discord.abc.GuildChannel` object.
         """
         async with self._bt.get_connection() as confg:
             if isinstance(channel, discord.channel.TextChannel):
@@ -146,7 +145,6 @@ class Events(commands.Cog, name="Events"):
 
         Args:
             channel: The channel that was deleted.
-              This is a `discord.abc.GuildChannel` object.
         """
         if isinstance(channel, discord.channel.TextChannel):
             async with self._bt.get_connection() as confg:
@@ -165,7 +163,6 @@ class Events(commands.Cog, name="Events"):
 
         Args:
             message: The message that was sent.
-              This is a `discord.Message` object.
         """
         async with self._bt.get_connection() as confg:
             if message.author.bot or message.guild is None:
@@ -179,10 +176,10 @@ class Events(commands.Cog, name="Events"):
                 if alpha:
                     try:  # We do not check any types in this block as we are catching the errors.
                         gld = self._bt.get_guild(int(alpha.group("srv")))
-                        chan = gld.get_channel_or_thread(
-                            int(alpha.group("cha")))  # type: ignore
-                        got_msg = await chan.fetch_message(
-                            int(alpha.group("msg")))  # type: ignore
+                        chan = gld.get_channel_or_thread(  # type: ignore
+                            int(alpha.group("cha")))
+                        got_msg = await chan.fetch_message(  # type: ignore
+                            int(alpha.group("msg")))
                     except (
                             AttributeError,
                             discord.HTTPException,
