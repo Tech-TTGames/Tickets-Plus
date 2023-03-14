@@ -80,9 +80,7 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
             )  # type: ignore # checked in decorator
             sanitized_message = utils.escape_mentions(message)
             if isinstance(ctx.channel, discord.Thread):
-                ticket = await confg.fetch_ticket(
-                    ctx.channel.parent.id  # type: ignore
-                )
+                ticket = await confg.fetch_ticket(ctx.channel.parent.id)  # type: ignore
                 if ticket is None:
                     await ctx.response.send_message(
                         "This channel is not a ticket.", ephemeral=True
@@ -218,7 +216,8 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
                         )
                     )
                 new, ticket = await confg.get_ticket(
-                    ctx.channel.id, ctx.guild.id,thread.id)# type: ignore
+                    ctx.channel.id, ctx.guild.id, thread.id
+                )  # type: ignore
                 # Unused, we just want to check if it's new and commit it.
                 del ticket
                 if not new:

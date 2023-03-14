@@ -46,8 +46,10 @@ class Guild(Base):
 
     __tablename__ = "general_configs"
     __table_args__ = {
-        "comment": ("Table for general configurations,"
-                    " this is the parent table for all-guild specific tables.")
+        "comment": (
+            "Table for general configurations,"
+            " this is the parent table for all-guild specific tables."
+        )
     }
 
     # Simple columns
@@ -108,9 +110,10 @@ class TicketBot(Base):
 
     __tablename__ = "ticket_bots"
     __table_args__ = {
-        "comment":
-            ("Users that open the ticket channels, mostly the Tickets bot,"
-             " but can be other users due to whitelabel options.")
+        "comment": (
+            "Users that open the ticket channels, mostly the Tickets bot,"
+            " but can be other users due to whitelabel options."
+        )
     }
 
     # Simple columns
@@ -119,7 +122,8 @@ class TicketBot(Base):
         nullable=False,
         comment=(
             "Unique discord-provided user ID."
-            " Used in conjunction with guild_id to make a unique primary key"),
+            " Used in conjunction with guild_id to make a unique primary key"
+        ),
         primary_key=True,
         unique=False,
     )
@@ -129,7 +133,8 @@ class TicketBot(Base):
         nullable=False,
         comment=(
             "Unique Guild ID of parent guild."
-            " Used in conjunction with user_id to make a unique primary key"),
+            " Used in conjunction with user_id to make a unique primary key"
+        ),
         primary_key=True,
         unique=False,
     )
