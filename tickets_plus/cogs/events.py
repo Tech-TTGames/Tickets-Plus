@@ -39,7 +39,8 @@ class Events(commands.Cog, name="Events"):
         logging.info("Loaded %s", self.__class__.__name__)
 
     @commands.Cog.listener(name="on_guild_channel_create")
-    async def on_channel_create(self, channel: discord.abc.GuildChannel) -> None:
+    async def on_channel_create(self,
+                                channel: discord.abc.GuildChannel) -> None:
         """Runs when a channel is created.
 
         Handles the checking and facilitating of ticket creation.
@@ -52,8 +53,7 @@ class Events(commands.Cog, name="Events"):
             if isinstance(channel, discord.channel.TextChannel):
                 gld = channel.guild
                 async for entry in gld.audit_logs(
-                    limit=3, action=discord.AuditLogAction.channel_create
-                ):
+                        limit=3, action=discord.AuditLogAction.channel_create):
                     if not entry.user:
                         continue
                     guild = await confg.get_guild(
@@ -65,8 +65,7 @@ class Events(commands.Cog, name="Events"):
                         ),
                     )
                     if entry.target == channel and await confg.check_ticket_bot(
-                        entry.user.id, gld.id
-                    ):
+                            entry.user.id, gld.id):
                         nts_thrd: discord.Thread = await channel.create_thread(
                             name="Staff Notes",
                             reason=f"Staff notes for Ticket {channel.name}",
@@ -74,23 +73,20 @@ class Events(commands.Cog, name="Events"):
                         )
                         await nts_thrd.send(
                             string.Template(guild.open_message).safe_substitute(
-                                channel=channel.mention
-                            )
-                        )
+                                channel=channel.mention))
                         await confg.get_ticket(channel.id, gld.id, nts_thrd.id)
-                        logging.info(
-                            "Created thread %s for %s", nts_thrd.name, channel.name
-                        )
+                        logging.info("Created thread %s for %s", nts_thrd.name,
+                                     channel.name)
                         if guild.observers_roles:
-                            observer_ids = await confg.get_all_observers_roles(gld.id)
-                            inv = await nts_thrd.send(
-                                " ".join(
-                                    [f"<@&{role.role_id}>" for role in observer_ids]
-                                )
-                            )
+                            observer_ids = await confg.get_all_observers_roles(
+                                gld.id)
+                            inv = await nts_thrd.send(" ".join([
+                                f"<@&{role.role_id}>" for role in observer_ids
+                            ]))
                             await inv.delete()
                         if guild.community_roles:
-                            comm_roles = await confg.get_all_community_roles(gld.id)
+                            comm_roles = await confg.get_all_community_roles(
+                                gld.id)
                             overwrite = discord.PermissionOverwrite()
                             overwrite.view_channel = True
                             overwrite.add_reactions = True
@@ -113,34 +109,35 @@ class Events(commands.Cog, name="Events"):
                                 except (TypeError, discord.NotFound):
                                     pass
                         if guild.community_pings:
-                            comm_pings = await confg.get_all_community_pings(gld.id)
-                            inv = await channel.send(
-                                " ".join([f"<@&{role.role_id}>" for role in comm_pings])
-                            )
+                            comm_pings = await confg.get_all_community_pings(
+                                gld.id)
+                            inv = await channel.send(" ".join(
+                                [f"<@&{role.role_id}>" for role in comm_pings]))
                             await asyncio.sleep(0.25)
                             await inv.delete()
                         if guild.strip_buttons:
                             await asyncio.sleep(1)
-                            async for msg in channel.history(
-                                oldest_first=True, limit=2
-                            ):
-                                if await confg.check_ticket_bot(msg.author.id, gld.id):
+                            async for msg in channel.history(oldest_first=True,
+                                                             limit=2):
+                                if await confg.check_ticket_bot(
+                                        msg.author.id, gld.id):
                                     await channel.send(embeds=msg.embeds)
                                     await msg.delete()
                         descr = (
-                            f"Ticket {channel.name}\n"
-                            + f"Opened at <t:{int(channel.created_at.timestamp())}:f>"
+                            f"Ticket {channel.name}\n" +
+                            f"Opened at <t:{int(channel.created_at.timestamp())}:f>"
                         )
                         if guild.first_autoclose:
                             descr += f"\nCloses at <t:{int((channel.created_at + datetime.timedelta(minutes=guild.first_autoclose)).timestamp())}:R>"  # skipcq: FLK-E501 # pylint: disable=line-too-long
                             descr += "If no one responds, the ticket will be closed automatically. Thank you for your patience!"  # skipcq: FLK-E501 # pylint: disable=line-too-long
                         await channel.edit(
-                            topic=descr, reason="More information for the ticket."
-                        )
+                            topic=descr,
+                            reason="More information for the ticket.")
                         await confg.commit()
 
     @commands.Cog.listener(name="on_guild_channel_delete")
-    async def on_channel_delete(self, channel: discord.abc.GuildChannel) -> None:
+    async def on_channel_delete(self,
+                                channel: discord.abc.GuildChannel) -> None:
         """Cleanups for when a ticket is deleted.
 
         This is the main event that handles the deletion of tickets.
@@ -180,14 +177,12 @@ class Events(commands.Cog, name="Events"):
                     try:  # We do not check any types in this block as we are catching the errors.
                         gld = self._bt.get_guild(int(alpha.group("srv")))
                         chan = gld.get_channel_or_thread(  # type: ignore
-                            int(alpha.group("cha"))
-                        )
+                            int(alpha.group("cha")))
                         got_msg = await chan.fetch_message(  # type: ignore
-                            int(alpha.group("msg"))
-                        )
+                            int(alpha.group("msg")))
                     except (
-                        AttributeError,
-                        discord.HTTPException,
+                            AttributeError,
+                            discord.HTTPException,
                     ):
                         logging.warning("Message discovery failed.")
                     else:
@@ -195,32 +190,31 @@ class Events(commands.Cog, name="Events"):
                         if not got_msg.content and got_msg.embeds:
                             discovered_result = got_msg.embeds[0]
                             discovered_result.set_footer(
-                                text=f"[EMBED CAPTURED] Sent in {chan.name}"  # type: ignore
-                                f" at {time}"
-                            )
+                                text=
+                                f"[EMBED CAPTURED] Sent in {chan.name}"  # type: ignore
+                                f" at {time}")
                         else:
                             discovered_result = discord.Embed(
-                                description=got_msg.content, color=0x0D0EB4
-                            )
+                                description=got_msg.content, color=0x0D0EB4)
                             discovered_result.set_footer(
-                                text=f"Sent in {chan.name} at {time}"  # type: ignore
+                                text=
+                                f"Sent in {chan.name} at {time}"  # type: ignore
                             )
                         discovered_result.set_author(
                             name=got_msg.author.name,
                             icon_url=got_msg.author.display_avatar.url,
                         )
                         discovered_result.set_image(
-                            url=got_msg.attachments[0].url
-                            if got_msg.attachments
-                            else None
-                        )
+                            url=got_msg.attachments[0].url if got_msg.
+                            attachments else None)
                         await message.reply(embed=discovered_result)
             ticket = await confg.fetch_ticket(message.channel.id)
             if ticket:
                 # Make sure the ticket exists
                 if ticket.anonymous:
                     staff = False
-                    staff_roles = await confg.get_all_staff_roles(guild.guild_id)
+                    staff_roles = await confg.get_all_staff_roles(guild.guild_id
+                                                                 )
                     for role in staff_roles:
                         parsed_role = message.guild.get_role(role.role_id)
                         if parsed_role in message.author.roles:  # type: ignore
@@ -230,8 +224,8 @@ class Events(commands.Cog, name="Events"):
                     if not staff:
                         return
                     await message.channel.send(
-                        f"**{guild.staff_team_name}:** "
-                        + utils.escape_mentions(message.content),
+                        f"**{guild.staff_team_name}:** " +
+                        utils.escape_mentions(message.content),
                         embeds=message.embeds,
                     )
                     await message.delete()

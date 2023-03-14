@@ -56,9 +56,8 @@ class ErrorHandling(commands.Cog, name="AppCommandErrorHandler"):
         # TODO: Implement this function.
         pass
 
-    async def on_app_command_error(
-        self, interaction: Interaction, error: AppCommandError
-    ) -> None:
+    async def on_app_command_error(self, interaction: Interaction,
+                                   error: AppCommandError) -> None:
         """Handles errors from app commands globally.
 
         This function is automatically called when an error is raised,

@@ -40,9 +40,8 @@ async def start_bot():
     # Set up logging
     dt_fmr = "%Y-%m-%d %H:%M:%S"
     statvars.handler.setFormatter(  # Can't split this line up.
-        logging.Formatter(
-            "%(asctime)s:%(levelname)s:%(name)s: %(message)s", dt_fmr
-        )  # noqa: E501 pylint: disable=line-too-long
+        logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s",
+                          dt_fmr)  # noqa: E501 pylint: disable=line-too-long
     )
 
     # Set up discord.py logging
@@ -68,15 +67,13 @@ async def start_bot():
         intents=statvars.intents,
         command_prefix=commands.when_mentioned,
         status=discord.Status.online,
-        activity=discord.Activity(
-            type=discord.ActivityType.playing, name="with tickets"
-        ),
+        activity=discord.Activity(type=discord.ActivityType.playing,
+                                  name="with tickets"),
     )
     logging.info("Engine created. Ensuring tables...")
     async with engine.begin() as conn:
         await conn.execute(
-            sqlalchemy.schema.CreateSchema("tickets_plus", if_not_exists=True)
-        )
+            sqlalchemy.schema.CreateSchema("tickets_plus", if_not_exists=True))
         await conn.run_sync(models.Base.metadata.create_all)
     logging.info("Tables ensured. Starting bot...")
     try:
