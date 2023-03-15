@@ -26,52 +26,53 @@ import logging
 import discord
 import sqlalchemy
 from discord.ext import commands
-from sqlalchemy.ext import asyncio as sqlalchemy_asyncio
+from sqlalchemy.ext import asyncio as sa_asyncio
+# Future Proofing for possible future use of asyncio
 
 from tickets_plus import bot
 from tickets_plus.database import models, statvars
 
 
-# Future Proofing for possible future use of asyncio
-async def start_bot(stat_data: statvars.MiniConfig | None = None):
+async def start_bot(stat_data: statvars.MiniConfig = statvars.MiniConfig()):
     """Sets up the bot and starts it. Corutine.
 
     This function uses the exitsting .json files to set up the bot.
     It also sets up logging, and starts the bot.
+
+    Args:
+        stat_data: The statvars.MiniConfig object to use for the bot.
+            If None, a new one will be created.
     """
-    # Set up statvars
-    if stat_data is None:
-        stat_data = statvars.MiniConfig()
 
     # Set up logging
     dt_fmr = "%Y-%m-%d %H:%M:%S"
-    statvars.handler.setFormatter(
+    statvars.HANDLER.setFormatter(
         logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s",
                           dt_fmr))
 
     # Set up discord.py logging
     dscrd_logger = logging.getLogger("discord")
     dscrd_logger.setLevel(logging.INFO)
-    dscrd_logger.addHandler(statvars.handler)
+    dscrd_logger.addHandler(statvars.HANDLER)
 
     # Set up sqlalchemy logging
     sql_logger = logging.getLogger("sqlalchemy.engine")
     sql_logger.setLevel(logging.WARNING)
-    sql_logger.addHandler(statvars.handler)
+    sql_logger.addHandler(statvars.HANDLER)
 
     sql_pool_logger = logging.getLogger("sqlalchemy.pool")
     sql_pool_logger.setLevel(logging.WARNING)
-    sql_pool_logger.addHandler(statvars.handler)
+    sql_pool_logger.addHandler(statvars.HANDLER)
 
     # Set up bot logging
     logging.root.setLevel(logging.INFO)
-    logging.root.addHandler(statvars.handler)
+    logging.root.addHandler(statvars.HANDLER)
     logging.info("Logging set up.")
 
     # Set up bot
     logging.info("Creating engine...")
     if "asyncpg" in stat_data.getitem("dbtype"):
-        engine = sqlalchemy_asyncio.create_async_engine(
+        engine = sa_asyncio.create_async_engine(
             stat_data.get_url(),
             pool_size=10,
             max_overflow=-1,
@@ -80,7 +81,7 @@ async def start_bot(stat_data: statvars.MiniConfig | None = None):
                 "jit": "off"
             }})
     else:
-        engine = sqlalchemy_asyncio.create_async_engine(
+        engine = sa_asyncio.create_async_engine(
             stat_data.get_url(),
             pool_size=10,
             max_overflow=-1,
@@ -88,7 +89,7 @@ async def start_bot(stat_data: statvars.MiniConfig | None = None):
         )
     bot_instance = bot.TicketsPlus(
         db_engine=engine,
-        intents=statvars.intents,
+        intents=statvars.INTENTS,
         command_prefix=commands.when_mentioned,
         status=discord.Status.online,
         activity=discord.Activity(type=discord.ActivityType.playing,

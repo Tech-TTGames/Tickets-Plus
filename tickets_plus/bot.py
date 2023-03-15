@@ -21,12 +21,11 @@ import logging
 
 import discord
 from discord.ext import commands
-from sqlalchemy.ext import asyncio as sqlalchemy_asyncio
+from sqlalchemy.ext import asyncio as sa_asyncio
+# Future Proofing for possible future use of asyncio
 
 from tickets_plus import cogs
 from tickets_plus.database import layer, statvars
-
-# Future Proofing for possible future use of asyncio
 
 
 class TicketsPlus(commands.AutoShardedBot):
@@ -45,7 +44,7 @@ class TicketsPlus(commands.AutoShardedBot):
 
     def __init__(self,
                  *args,
-                 db_engine: sqlalchemy_asyncio.AsyncEngine,
+                 db_engine: sa_asyncio.AsyncEngine,
                  confg: statvars.MiniConfig = statvars.MiniConfig(),
                  **kwargs) -> None:
         """Initialises the bot instance.
@@ -60,8 +59,8 @@ class TicketsPlus(commands.AutoShardedBot):
         super().__init__(*args, **kwargs)
         self._db_engine = db_engine
         self.stat_confg = confg
-        self.sessions = sqlalchemy_asyncio.async_sessionmaker(
-            self._db_engine, expire_on_commit=False)
+        self.sessions = sa_asyncio.async_sessionmaker(self._db_engine,
+                                                      expire_on_commit=False)
 
     async def setup_hook(self) -> None:
         """Runs just before the bot connects to Discord.

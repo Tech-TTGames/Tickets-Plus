@@ -1,6 +1,16 @@
-"""
-Declare variables used in bot.
-This file is a based on the variables.py file from my other bot.
+"""Constant variables used throughout the bot.
+
+We use this file to store static variables that are used throughout the bot.
+This is to keep the code clean and easy to read.
+We also use this file to store the bot's version number.
+Basically, this file is a collection of global constants.
+
+Typical usage example:
+    ```py
+    from tickets_plus.database import statvars
+    # Make use of the variables in this file
+    print(statvars.VERSION)
+    ```
 """
 # License: EPL-2.0
 # SPDX-License-Identifier: EPL-2.0
@@ -17,33 +27,55 @@ from logging import handlers
 from typing import Any, Literal
 
 import discord
+import sqlalchemy
 from discord.ext import commands
-from sqlalchemy import URL
 
-# v[major].[minor].[release].[build]
-# MAJOR and MINOR version changes can be compatibility-breaking
 VERSION = "v0.1.0.0"
-PROG_DIR = pathlib.Path(__file__).parent.parent.parent.absolute()
+"""The current version of the bot as a string.
 
-intents = discord.Intents.default()
-intents.message_content = True
-handler = handlers.RotatingFileHandler(
+FORMAT:
+v[major].[minor].[release].[build]
+
+MAJOR and MINOR version changes can be compatibility-breaking.
+"""
+PROG_DIR = pathlib.Path(__file__).parent.parent.parent.absolute()
+"""The absolute path to the root directory of the bot."""
+INTENTS = discord.Intents.default()
+"""The discord gateway intents that the bot uses."""
+INTENTS.members = True
+HANDLER = handlers.RotatingFileHandler(
     filename=pathlib.Path(PROG_DIR, "log", "bot.log"),
     encoding="utf-8",
     mode="w",
     backupCount=10,
     maxBytes=100000,
 )
+"""The default logging handler for the bot."""
 
 
 class Secret:
-    """Class for secret.json management"""
+    """Class for secret.json management
+
+    This class is used to manage the secret.json file.
+    It is used to store sensitive information such as the bot token.
+    This class is used to obfuscate the token when printing the object.
+    Also, this class is used to make it easier to access the token.
+
+    Attributes:
+        token: The bot token.
+        secrets: The raw dictionary of the secret.json file.
+    """
 
     def __init__(self) -> None:
+        """Loads the secret.json file and stores the data in self.secrets
+
+        We load the secret.json file and store the data in self.secrets.
+        We also store the token in self.token for easy access.
+        """
         self._file = pathlib.Path(PROG_DIR, "secret.json")
         with open(self._file, encoding="utf-8", mode="r") as secret_f:
-            self.secrets = json.load(secret_f)
-        self.token = self.secrets["token"]
+            self.secrets: dict = json.load(secret_f)
+        self.token: str = self.secrets["token"]
 
     def __repr__(self) -> str:
         return "[OBFUSCATED]"
@@ -53,7 +85,14 @@ class Secret:
 
 
 class MiniConfig:
-    """Class for new config.json management"""
+    """Class for new config.json management
+
+    This class is used to manage the config.json file.
+    It is used to store non-sensitive information such as the bot prefix.
+    It does not allow for modification of the config.json file.
+    As any functiality that should modify the config.json file should be
+    instead implemented in the OnlineConfig class.
+    """
 
     def __init__(self) -> None:
         self._file = pathlib.Path(PROG_DIR, "config.json")
@@ -64,27 +103,25 @@ class MiniConfig:
         return self._config
 
     def getitem(self, key: str, opt: Any = None) -> Any:
-        """
-        Returns the value of a key in the config.json file
+        """Returns the value of a key in the config.json file
 
         Args:
-          key: str:
-          opt: Any:  (Default value = None)
+          key: The key to get the value of
+          opt: The default value to return if the key is not found
 
         Returns:
           Any: The value of the key in the config.json file
-
+            or the default value if the key is not found.
         """
         return self._config.get(key, opt)
 
-    def get_url(self) -> URL:
-        """
-        Returns the database URL
+    def get_url(self) -> sqlalchemy.URL:
+        """Returns the database URL
 
         Returns:
             URL: The database URL as a sqlalchemy URL object
         """
-        return URL.create(
+        return sqlalchemy.URL.create(
             drivername=self._config["dbtype"],
             host=self._config["dbhost"],
             port=self._config["dbport"],
@@ -104,7 +141,7 @@ class Config:
     # I'm just going to leave them as they are.
 
     def __init__(self,
-                 bot: commands.Bot| Literal["offline"],
+                 bot: commands.Bot | Literal["offline"],
                  legacy: bool = False) -> None:
         self._file = pathlib.Path(PROG_DIR, "config.json")
         with open(self._file, encoding="utf-8", mode="r") as config_f:

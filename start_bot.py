@@ -7,6 +7,8 @@ This file is to be used as a script, not as a module.
 
 Typical usage example:
     $ python3 start_bot.py
+    OR
+    $ poetry run start
 """
 # License: EPL-2.0
 # SPDX-License-Identifier: EPL-2.0

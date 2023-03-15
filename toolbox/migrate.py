@@ -1,8 +1,14 @@
 #!/usr/bin/env python3
-"""
-This script is to be used to load the config file into the database.
+"""This script is to be used to load the config file into the database.
+
 It will create the schema and tables if they do not exist.
 An interactive prompt will guide you through the creation of the config file.
+This script is to be used to migrate from the old config file to the new db.
+
+Typical usage example:
+    $ python3 migrate.py
+    OR
+    $ poetry run migrate
 """
 # License: EPL-2.0
 # SPDX-License-Identifier: EPL-2.0
@@ -18,9 +24,8 @@ import sys
 from sqlalchemy import URL, create_engine, schema
 from sqlalchemy.orm import create_session
 
-PROG_DIR = pathlib.Path(__file__).parent.parent.absolute()
-print(PROG_DIR)
-sys.path.append(str(PROG_DIR))
+_PROG_DIR = pathlib.Path(__file__).parent.parent.absolute()
+sys.path.append(str(_PROG_DIR))
 
 # pylint: disable=wrong-import-position
 # pylint: disable=import-error # It works, I promise.
@@ -33,10 +38,15 @@ from tickets_plus.database.statvars import Config, MiniConfig  # isort:skip
 
 # pylint: disable=invalid-name
 def main():
+    """A interactive script to migrate from the old config file to the new file.
+
+    This script will create the database schema and tables if they do not exist.
+    It will also load the config file into the database.
+    """
     print("Starting migration script...")
     new = 0
     legacy = 0
-    if pathlib.Path(PROG_DIR, "config.json").exists():
+    if pathlib.Path(_PROG_DIR, "config.json").exists():
         print("Existing config file found. Attempting to cache...")
         cnfg = Config("offline", True)
         try:
@@ -123,7 +133,7 @@ def main():
                         "Would you like to overwrite the existing config file? (Y/N)\n"  # pylint: disable=line-too-long
                     )
                 if write == "Y":
-                    with open(pathlib.Path(PROG_DIR, "config.json"),
+                    with open(pathlib.Path(_PROG_DIR, "config.json"),
                               "w",
                               encoding="utf-8") as f:
                         f.write(configjson)

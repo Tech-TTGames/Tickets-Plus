@@ -8,8 +8,8 @@ schema will require a database migration.
 Typical usage example:
     ```py
     from tickets_plus import bot
-
-    await bot.load_extension("tickets_plus.cogs.override")
+    bot_instance = bot.TicketsPlus(...)
+    await bot_instance.load_extension("tickets_plus.cogs.override")
     ```
 """
 # License: EPL-2.0
@@ -32,7 +32,7 @@ from tickets_plus.database import statvars
 from tickets_plus.ext import checks
 
 _CNFG = statvars.MiniConfig()
-"""Submodule global constant for the config."""
+"""Submodule private global constant for the config."""
 
 
 @app_commands.guilds(_CNFG.getitem("dev_guild_id"))
@@ -182,8 +182,7 @@ class Overrides(commands.GroupCog,
         logging.info("Sending config to %s...", str(ctx.user))
         async with self._bt.get_connection() as conn:
             guild_confg = await conn.get_guild(guid)
-            await ctx.user.send(str(guild_confg)
-                               )  # Eh. This is a bit of a test.
+            await ctx.user.send(str(guild_confg))  # Eh. This is not tested.
         await ctx.followup.send("Sent config.")
         logging.info("Config sent.")
 
