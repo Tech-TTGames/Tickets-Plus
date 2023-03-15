@@ -3,7 +3,12 @@ Declare variables used in bot.
 This file is a based on the variables.py file from my other bot.
 """
 # License: EPL-2.0
+# SPDX-License-Identifier: EPL-2.0
 # Copyright (c) 2021-present The Tickets Plus Contributors
+# This Source Code may also be made available under the following
+# Secondary Licenses when the conditions for such availability set forth
+# in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
+# If later approved by the Initial Contrubotor, GPL-3.0-or-later.
 import json
 import logging
 import pathlib

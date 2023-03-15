@@ -5,7 +5,12 @@ This is a destructive operation and should only be used in development.
 It will also drop the schema if it exists.
 """
 # License: EPL-2.0
+# SPDX-License-Identifier: EPL-2.0
 # Copyright (c) 2021-present The Tickets Plus Contributors
+# This Source Code may also be made available under the following
+# Secondary Licenses when the conditions for such availability set forth
+# in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
+# If later approved by the Initial Contrubotor, GPL-3.0-or-later.
 import pathlib
 import sys
 
