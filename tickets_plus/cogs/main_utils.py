@@ -64,9 +64,9 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
     @app_commands.command(name="version", description="Get the bot's version.")
     async def version(self, ctx: discord.Interaction):
         """This command is used to check the bot's version.
-    
+
         Responds with the bot's version and a link to the source code.
-    
+
         Args:
             ctx: The interaction context.
         """
