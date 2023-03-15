@@ -14,11 +14,20 @@ SQLAlchemy = {extras = ["asyncio"], version = "^2.0.6"}
 alembic = {extras = ["tz"], version = "^1.10.2"}
 asyncpg = "^0.27.0"
 
+[tool.poetry.group.dev]
+optional = true
 
 [tool.poetry.group.dev.dependencies]
 yapf = "^0.32.0"
 pylint = "^2.17.0"
 toml = "^0.10.2"
+pdoc = "^13.0.0"
+
+[tool.poetry.group.sqlite]
+optional= true
+
+[tool.poetry.group.sqlite.dependencies]
+aiosqlite = "^0.18.0"
 
 [tool.poetry.scripts]
 start = "start_bot:main"
