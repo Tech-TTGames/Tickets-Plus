@@ -14,6 +14,7 @@ import asyncio
 import sys
 
 import tickets_plus
+from tickets_plus.database import statvars
 
 
 def main():
@@ -22,12 +23,12 @@ def main():
     Adjust the event loop policy if we're on Windows.
     Then, run the bot until it's done.
     """
-    if (
-        sys.platform == "win32"
-    ):  # Psycopg3 doesn't work on Windows in async mode without this
+    cnfg = statvars.MiniConfig()
+    if (sys.platform == "win32" and "psycopg" in cnfg.getitem("dbtype")):
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(tickets_plus.start_bot())
+    # We don't need to pass the config to start_bot, but we do it anyway
+    loop.run_until_complete(tickets_plus.start_bot(cnfg))
 
 
 if __name__ == "__main__":

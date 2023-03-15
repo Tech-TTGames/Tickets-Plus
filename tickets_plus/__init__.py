@@ -28,14 +28,15 @@ from tickets_plus.database import models, statvars
 
 
 # Future Proofing for possible future use of asyncio
-async def start_bot():
+async def start_bot(stat_data: statvars.MiniConfig | None = None):
     """Sets up the bot and starts it. Corutine.
 
     This function uses the exitsting .json files to set up the bot.
     It also sets up logging, and starts the bot.
     """
     # Set up statvars
-    stat_data = statvars.MiniConfig()
+    if stat_data is None:
+        stat_data = statvars.MiniConfig()
 
     # Set up logging
     dt_fmr = "%Y-%m-%d %H:%M:%S"
@@ -64,7 +65,7 @@ async def start_bot():
 
     # Set up bot
     logging.info("Creating engine...")
-    if "asyncpg" in str(stat_data.getitem("dbtype")):
+    if "asyncpg" in stat_data.getitem("dbtype"):
         engine = sqlalchemy_asyncio.create_async_engine(
             stat_data.get_url(),
             pool_size=10,
