@@ -11,7 +11,7 @@ Typical usage example:
     import asyncio
     import tickets_plus
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(tickets_plus.start_bot())
+    loop.run_until_complete(tickets_plus.start_bot(config))
     ```
 """
 # License: EPL-2.0

@@ -6,8 +6,8 @@ They require the client to be a tickets_plus.bot.TicketsPlus instance.
 
 Typical usage example:
     ```py
-    from tickets_plus.ext import checks
     from discord import app_commands
+    from tickets_plus.ext import checks
 
     @app_commands.command()
     @checks.is_owner_check()

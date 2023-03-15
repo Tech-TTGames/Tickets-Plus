@@ -5,9 +5,11 @@ We can just import this submodule and iterate over the EXTENSIONS list.
 
 Typical usage example:
     ```py
+    from tickets_plus import bot
     from tickets_plus import cogs
+    bot_instance = bot.TicketsPlus(...)
     for extension in cogs.EXTENSIONS:
-        await bot.load_extension(extension)
+        await bot_instance.load_extension(extension)
     ```
 """
 # License: EPL-2.0

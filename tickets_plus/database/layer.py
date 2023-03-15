@@ -1,7 +1,7 @@
 """A layer for the database session."""
 # License: EPL-2.0
 # Copyright (c) 2021-present The Tickets Plus Contributors
-from typing import Optional, Sequence, Tuple
+from typing import Sequence, Tuple
 
 from discord.ext import commands
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -48,7 +48,7 @@ class OnlineConfig:
     async def get_guild(
             self,
             guild_id: int,
-            options: Optional[Sequence[ExecutableOption]] = None) -> Guild:
+            options: Sequence[ExecutableOption] | None = None) -> Guild:
         """Get or create a guild from the database."""
         if options:
             guild_conf = await self._session.scalar(
@@ -64,7 +64,7 @@ class OnlineConfig:
     async def get_user(
             self,
             user_id: int,
-            options: Optional[Sequence[ExecutableOption]] = None) -> User:
+            options: Sequence[ExecutableOption] | None = None) -> User:
         """Get or create a user from the database."""
         if options:
             user = await self._session.scalar(
@@ -108,13 +108,13 @@ class OnlineConfig:
                                     TicketBot.guild_id == guild_id))
         return ticket_user is not None
 
-    async def fetch_ticket(self, channel_id: int) -> Optional[Ticket]:
+    async def fetch_ticket(self, channel_id: int) -> Ticket | None:
         """Get a ticket from the database."""
         ticket = await self._session.get(Ticket, channel_id)
         return ticket
 
     async def get_ticket(self, channel_id: int, guild_id: int,
-                         staff_note: Optional[int]) -> Tuple[bool, Ticket]:
+                         staff_note: int | None = None) -> Tuple[bool, Ticket]:
         """Get a or create ticket from the database."""
         guild = await self.get_guild(guild_id)
         ticket = await self._session.get(Ticket, channel_id)

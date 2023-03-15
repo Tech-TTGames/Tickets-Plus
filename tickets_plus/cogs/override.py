@@ -1,4 +1,17 @@
-"""General owner utility commands."""
+"""General powertools for the bot owner.
+
+This submodule contains general powertools for the bot owner.
+This includes commands to reload cogs, restart the bot, and pull from git.
+The last command is to be used very carefully, as changes to the database
+schema will require a database migration.
+
+Typical usage example:
+    ```py
+    from tickets_plus import bot
+
+    await bot.load_extension("tickets_plus.cogs.override")
+    ```
+"""
 # License: EPL-2.0
 # Copyright (c) 2021-present The Tickets Plus Contributors
 import asyncio
@@ -14,16 +27,31 @@ from tickets_plus.cogs import EXTENSIONS
 from tickets_plus.database.statvars import PROG_DIR, MiniConfig
 from tickets_plus.ext.checks import is_owner_check
 
-CNFG = MiniConfig()
+_CNFG = MiniConfig()
+"""Submodule global constant for the config."""
 
 
-@app_commands.guilds(CNFG.getitem("dev_guild_id"))
+@app_commands.guilds(_CNFG.getitem("dev_guild_id"))
 class Overrides(commands.GroupCog,
                 name="override",
                 description="Owner override commands."):
-    """Owner override commands."""
+    """Owner override commands.
+
+    This class contains commands that are only available to the bot owner.
+    These commands are used to reload cogs, restart the bot, and pull from git.
+    The commands are only available in the development guild.
+    """
 
     def __init__(self, bot: TicketsPlus):
+        """Initialises the cog.
+
+        We load the cog here.
+        We set the bot instance as an private attribute.
+        We then call the super class's __init__ method.
+
+        Args:
+            bot: The bot instance.
+        """
         self._bt = bot
         super().__init__()
         logging.info("Loaded %s", self.__class__.__name__)
@@ -32,21 +60,40 @@ class Overrides(commands.GroupCog,
     @is_owner_check()
     @app_commands.describe(sync="Syncs the tree after reloading cogs.")
     async def reload(self, ctx: discord.Interaction, sync: bool = False):
-        """Reloads the bot's cogs."""
+        """Reloads the bot's cogs.
+
+        This command reloads all cogs in the EXTENSIONS list.
+        Reloads are atomic, so if one fails, it rolls back.
+        We can just import this submodule and iterate over the EXTENSIONS list.
+        You can also sync the tree after reloading cogs. Though this is not
+        to be used very often, as it has low rate limits.
+
+        Args:
+            ctx: The interaction context.
+            sync: Whether to sync the tree after reloading cogs.
+        """
         await ctx.response.send_message("Reloading cogs...")
         logging.info("Reloading cogs...")
         for extension in EXTENSIONS:
             await self._bt.reload_extension(extension)
-        await ctx.channel.send("Reloaded cogs.")  # type: ignore
+        await ctx.followup.send("Reloaded cogs.")
         logging.info("Finished reloading cogs.")
         if sync:
             await self._bt.tree.sync()
             logging.info("Finished syncing tree.")
 
-    @app_commands.command(name="restart", description="Restarts the bot.")
+    @app_commands.command(name="close", description="Closes the bot.")
     @is_owner_check()
-    async def restart(self, ctx: discord.Interaction):
-        """Restarts the bot."""
+    async def close(self, ctx: discord.Interaction):
+        """Closes the bot.
+
+        If used with a process manager, this will restart the bot.
+        This is a bit of a hack, but it works.
+        Don't really know how to do this better.
+
+        Args:
+            ctx: The interaction context.
+        """
         await ctx.response.send_message("Restarting...")
         logging.info("Restarting...")
         await self._bt.close()
@@ -55,7 +102,15 @@ class Overrides(commands.GroupCog,
         name="pull", description="Pulls the latest changes from the git repo.")
     @is_owner_check()
     async def pull(self, ctx: discord.Interaction):
-        """Pulls the latest changes from the git repo."""
+        """Pulls the latest changes from the git repo.
+
+        This command pulls the latest changes from the git repo.
+        This is a dangerous command, as it can break the bot.
+        If you are not sure what you are doing, don't use this command.
+
+        Args:
+            ctx: The interaction context.
+        """
         await ctx.response.send_message("Pulling latest changes...")
         logging.info("Pulling latest changes...")
         pull = await asyncio.create_subprocess_shell(
@@ -80,7 +135,17 @@ class Overrides(commands.GroupCog,
     @is_owner_check()
     @app_commands.describe(id_no="Log ID (0 for latest log)")
     async def logs(self, ctx: discord.Interaction, id_no: int = 0):
-        """Sends the logs."""
+        """Sends the logs.
+
+        This command sends the logs to the user who invoked the command.
+        The logs are sent as a file attachment.
+        It is possible to specify a log ID, which will send a specific log.
+        If no log ID is specified, the latest log will be sent.
+
+        Args:
+            ctx: The interaction context.
+            id_no: The log ID.
+        """
         await ctx.response.defer(thinking=True)
         logging.info("Sending logs to %s...", str(ctx.user))
         filename = f"discord.log{'.'+str(id_no) if id_no else ''}"
@@ -98,7 +163,17 @@ class Overrides(commands.GroupCog,
     @is_owner_check()
     @app_commands.describe(guid="Guild ID")
     async def config(self, ctx: discord.Interaction, guid: int):
-        """Sends the config."""
+        """Sends the config.
+
+        This command sends the config to the user who invoked the command.
+        I don't really know if it works with the new db system.
+        It is required to specify a guild ID. This is because the config
+        is guild specific.
+
+        Args:
+            ctx: The interaction context.
+            guid: The guild ID.
+        """
         await ctx.response.defer(thinking=True)
         logging.info("Sending config to %s...", str(ctx.user))
         async with self._bt.get_connection() as conn:
@@ -111,7 +186,15 @@ class Overrides(commands.GroupCog,
     @commands.command(name="sync", description="Syncs the tree.")
     @is_owner_check()
     async def sync(self, ctx: commands.Context):
-        """Syncs the tree."""
+        """Syncs the tree.
+
+        This command syncs the tree.
+        It is not recommended to use this command often, as it has low rate
+        limits. It is the only non-slash command in this bot.
+
+        Args:
+            ctx: The command context.
+        """
         await ctx.send("Syncing...")
         logging.info("Syncing...")
         await self._bt.tree.sync()
@@ -120,5 +203,11 @@ class Overrides(commands.GroupCog,
 
 
 async def setup(bot: TicketsPlus):
-    """Setup function for the cog."""
+    """Sets up the overrides.
+
+    We add the overrides to the bot.
+
+    Args:
+        bot: The bot.
+    """
     await bot.add_cog(Overrides(bot))

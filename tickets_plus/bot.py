@@ -7,7 +7,7 @@ No other code is in this module at the moment.
 Typical usage example:
     ```py
     from tickets_plus import bot
-    bot = bot.TicketsPlus(...)
+    bot_instance = bot.TicketsPlus(...)
     ```
 """
 # License: EPL-2.0

@@ -7,8 +7,8 @@ They are in free discord commands not assigned to groups.
 Typical usage example:
     ```py
     from tickets_plus import bot
-    bot = bot.TicketsPlus(...)
-    await bot.load_extension("tickets_plus.cogs.main_utils")
+    bot_instance = bot.TicketsPlus(...)
+    await bot_instance.load_extension("tickets_plus.cogs.main_utils")
     ```
 """
 # License: EPL-2.0

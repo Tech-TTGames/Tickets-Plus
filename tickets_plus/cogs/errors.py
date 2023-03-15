@@ -7,8 +7,8 @@ It's nice to not leave the user confused.
 Typical usage example:
     ```py
     from tickets_plus import bot
-    bot = bot.TicketsPlus(...)
-    await bot.load_extension("tickets_plus.cogs.errors")
+    bot_instance = bot.TicketsPlus(...)
+    await bot_instance.load_extension("tickets_plus.cogs.errors")
     ```
 """
 # License: EPL-2.0

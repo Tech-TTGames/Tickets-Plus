@@ -6,8 +6,8 @@ This is used to handle events from Discord.
 Typical usage example:
     ```py
     from tickets_plus import bot
-    bot = bot.TicketsPlus(...)
-    await bot.load_extension("tickets_plus.cogs.events")
+    bot_instance = bot.TicketsPlus(...)
+    await bot_instance.load_extension("tickets_plus.cogs.events")
     ```
 """
 # License: EPL-2.0

@@ -9,7 +9,7 @@ import logging
 import pathlib
 import string
 from logging import handlers
-from typing import Any, List, Literal, Union
+from typing import Any, Literal
 
 import discord
 from discord.ext import commands
@@ -99,7 +99,7 @@ class Config:
     # I'm just going to leave them as they are.
 
     def __init__(self,
-                 bot: Union[commands.Bot, Literal["offline"]],
+                 bot: commands.Bot| Literal["offline"],
                  legacy: bool = False) -> None:
         self._file = pathlib.Path(PROG_DIR, "config.json")
         with open(self._file, encoding="utf-8", mode="r") as config_f:
@@ -125,12 +125,12 @@ class Config:
         raise ValueError("Guild Not Found")
 
     @property
-    def ticket_users(self) -> List[int]:
+    def ticket_users(self) -> list[int]:
         """List of users who are tracked for ticket creation"""
         return self._config.get("ticket_users", [508391840525975553])
 
     @property
-    def staff(self) -> List[discord.Role]:
+    def staff(self) -> list[discord.Role]:
         """List of roles who are staff"""
         staff = []
         for role in self._config.get("staff", []):
@@ -140,12 +140,12 @@ class Config:
         return staff
 
     @property
-    def staff_ids(self) -> List[int]:
+    def staff_ids(self) -> list[int]:
         """List of role ids who are staff"""
         return self._config.get("staff", [])
 
     @property
-    def observers(self) -> List[discord.Role]:
+    def observers(self) -> list[discord.Role]:
         """List of roles who are pinged in staff notes"""
         staff = []
         for role in self._config.get("observers", []):
@@ -176,7 +176,7 @@ class Config:
         return self._config.get("strip_buttons", False)
 
     @property
-    def community_roles(self) -> List[discord.Role]:
+    def community_roles(self) -> list[discord.Role]:
         """List of roles who are staff"""
         staff = []
         for role in self._config.get("community_roles", []):
@@ -186,11 +186,11 @@ class Config:
         return staff
 
     @property
-    def community_roles_ids(self) -> List[int]:
+    def community_roles_ids(self) -> list[int]:
         """List of role ids who are staff"""
         return self._config.get("community_roles", [])
 
     @property
-    def owner(self) -> List[int]:
+    def owner(self) -> list[int]:
         """List of user ids who are owner"""
         return self._config.get("owner_id", [414075045678284810])

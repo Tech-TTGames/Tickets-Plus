@@ -1,9 +1,6 @@
 """File for database models"""
 # License: EPL-2.0
 # Copyright (c) 2021-present The Tickets Plus Contributors
-from datetime import datetime
-from typing import List, Optional
-
 from sqlalchemy import BigInteger, DateTime, ForeignKey, MetaData, String
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
@@ -69,7 +66,7 @@ class Guild(Base):
         nullable=False,
         comment="Name of the staff team",
     )
-    first_autoclose: Mapped[Optional[int]] = mapped_column(
+    first_autoclose: Mapped[int|None] = mapped_column(
         nullable=True,
         comment=
         "Number of minutes since open with no response to autoclose the ticket",
@@ -86,22 +83,22 @@ class Guild(Base):
         comment="Whether to strip buttons from messages")
 
     # Relationships
-    ticket_bots: Mapped[List["TicketBot"]] = relationship(
+    ticket_bots: Mapped[list["TicketBot"]] = relationship(
         back_populates="guild", lazy="raise")
-    tickets: Mapped[List["Ticket"]] = relationship(back_populates="guild",
+    tickets: Mapped[list["Ticket"]] = relationship(back_populates="guild",
                                                    lazy="raise")
-    staff_roles: Mapped[List["StaffRole"]] = relationship(
+    staff_roles: Mapped[list["StaffRole"]] = relationship(
         back_populates="guild", lazy="raise")
-    observers_roles: Mapped[List["ObserversRole"]] = relationship(
+    observers_roles: Mapped[list["ObserversRole"]] = relationship(
         back_populates="guild", lazy="raise")
-    community_roles: Mapped[List["CommunityRole"]] = relationship(
+    community_roles: Mapped[list["CommunityRole"]] = relationship(
         back_populates="guild", lazy="raise")
-    community_pings: Mapped[List["CommunityPing"]] = relationship(
+    community_pings: Mapped[list["CommunityPing"]] = relationship(
         back_populates="guild", lazy="raise")
-    members: Mapped[List["Member"]] = relationship(back_populates="guild",
+    members: Mapped[list["Member"]] = relationship(back_populates="guild",
                                                    lazy="raise")
     # Disabled for now gets sqlalchemy confused
-    # users: Mapped[List["User"]] = relationship(
+    # users: Mapped[list["User"]] = relationship(
     #    secondary="members", back_populates="guilds", lazy="raise", viewonly=True
     # )
 
@@ -165,7 +162,7 @@ class Ticket(Base):
         comment="Date the ticket was created",
         server_default=UTCnow(),
     )
-    last_response: Mapped[datetime] = mapped_column(
+    last_response: Mapped[DateTime] = mapped_column(
         DateTime(),
         nullable=False,
         comment="Date the ticket was last responded to",
@@ -355,9 +352,9 @@ class User(Base):
         default=False, comment="Is the user the owner of the bot?")
 
     # Relationships
-    memberships: Mapped[List["Member"]] = relationship(back_populates="user",
+    memberships: Mapped[list["Member"]] = relationship(back_populates="user",
                                                        lazy="raise")
     # Disabled for now gets sqlalchemy confused
-    # guilds: Mapped[List["Guild"]] = relationship(
+    # guilds: Mapped[list["Guild"]] = relationship(
     #    secondary="members", back_populates="users", lazy="raise", viewonly=True
     # )
