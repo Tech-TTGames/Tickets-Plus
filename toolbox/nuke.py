@@ -2,7 +2,7 @@
 """This script will drop all tables in the database.
 
 This is a destructive operation and should only be used in development.
-It will also drop the schema if it exists.
+The tickets_plus schema will also be dropped if it exists.
 
 Typical usage example:
     $ python3 nuke.py
@@ -34,13 +34,23 @@ _SAFETY_TOGGLE = False
 
 
 def main():
+    """An interactive script to drop all tables in the database.
+
+    This is a destructive operation and should only be used in development.
+    The tickets_plus schema will also be dropped if it exists.
+    Leave the safety toggle enabled unless you know what you're doing.
+    Like, really know what you're doing.
+    """
     engine = create_engine(MiniConfig().get_url())
-    print(
-        "This script will drop all tables in the database."
-        " This is a destructive operation and"
-        " should only be used in development."
-    )
+    print("This script will drop all tables in the database."
+          " This is a destructive operation and"
+          " should only be used in development.")
     print("It will also drop the schema if it exists.")
+    inf = input("Do you know what you're doing? (Y/N)\n")
+    if inf == "N":
+        print("Please consult a developer or system administrator.")
+        print("Aborting.")
+        return
     op = input("Are you sure you want to drop all tables? (Y/N)\n")
     if op == "Y":
         confrm = input("Are you REALLY sure? (Y/N)\n")
@@ -59,11 +69,9 @@ def main():
                 conn.close()
                 print("Connection closed. Exiting...")
             else:
-                print(
-                    "Safety toggle not enabled."
-                    " Please change the value of"
-                    " _SAFETY_TOGGLE to True in nuke.py and try again."
-                )
+                print("Safety toggle not enabled."
+                      " Please change the value of"
+                      " _SAFETY_TOGGLE to True in nuke.py and try again.")
                 print("Aborting.")
         else:
             print("Aborting.")

@@ -1,12 +1,13 @@
-"""This is a event handling extension for Tickets+.
+"""This is the event handling extension for Tickets+.
 
-This extension handles all events for Tickets+.
-This is used to handle events from Discord.
+We add any and all event listeners here.
+At the moment we only have discord.py event listeners.
+But should we add any other event listeners, we can add them here.
 
 Typical usage example:
     ```py
     from tickets_plus import bot
-    bot_instance = bot.TicketsPlus(...)
+    bot_instance = bot.TicketsPlusBot(...)
     await bot_instance.load_extension("tickets_plus.cogs.events")
     ```
 """
@@ -39,7 +40,7 @@ class Events(commands.Cog, name="Events"):
     This is used to handle events from Discord.
     """
 
-    def __init__(self, bot_instance: bot.TicketsPlus) -> None:
+    def __init__(self, bot_instance: bot.TicketsPlusBot) -> None:
         """Initialises the cog instance.
 
         We set some attributes here, so we can use them later.
@@ -149,10 +150,10 @@ class Events(commands.Cog, name="Events"):
     @commands.Cog.listener(name="on_guild_channel_delete")
     async def on_channel_delete(self,
                                 channel: discord.abc.GuildChannel) -> None:
-        """Cleanups for when a ticket is deleted.
+        """Cleanups for when a ticket channel is deleted.
 
         This is the main event that handles the deletion of tickets.
-        It is used to delete the ticket from the database.
+        We remove stale tickets from the database.
 
         Args:
             channel: The channel that was deleted.
@@ -169,8 +170,11 @@ class Events(commands.Cog, name="Events"):
     async def on_message(self, message: discord.Message) -> None:
         """Handles all message-related features.
 
-        We use this to handle the message discovery feature.
-        Adittionally, we use this if a ticket is in anonymous mode.
+        We use this to handle the message discovery feature,
+        searching for links to messages, resolving them, and
+        sending their contents as a reply.
+        Also handles anonymous mode for tickets. Resending
+        staff messages as the bot.
 
         Args:
             message: The message that was sent.
@@ -242,7 +246,7 @@ class Events(commands.Cog, name="Events"):
                     await message.delete()
 
 
-async def setup(bot_instance: bot.TicketsPlus) -> None:
+async def setup(bot_instance: bot.TicketsPlusBot) -> None:
     """Sets up the Events handler.
 
     This is called when the cog is loaded.

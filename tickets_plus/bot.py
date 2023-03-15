@@ -7,7 +7,7 @@ No other code is in this module at the moment.
 Typical usage example:
     ```py
     from tickets_plus import bot
-    bot_instance = bot.TicketsPlus(...)
+    bot_instance = bot.TicketsPlusBot(...)
     ```
 """
 # License: EPL-2.0
@@ -28,10 +28,10 @@ from tickets_plus import cogs
 from tickets_plus.database import layer, statvars
 
 
-class TicketsPlus(commands.AutoShardedBot):
-    """A bot instance that is used to run Tickets Plus.
+class TicketsPlusBot(commands.AutoShardedBot):
+    """A bot instance that is used to run Tickets+.
 
-    A bot instance that is used to run Tickets Plus.
+    Automatically sharded bot instance that is used to run Tickets Plus.
     This is to allow us to add our own methods and attributes.
     In general, not much is done in this class.
     Most of the work is done in the cogs.
@@ -49,6 +49,9 @@ class TicketsPlus(commands.AutoShardedBot):
                  **kwargs) -> None:
         """Initialises the bot instance.
 
+        This function is used to initialise the bot instance.
+        We create prep some stuff for the bot to use.
+
         Args:
             *args: The arguments to pass to the super class.
             db_engine: The database engine.
@@ -65,7 +68,7 @@ class TicketsPlus(commands.AutoShardedBot):
     async def setup_hook(self) -> None:
         """Runs just before the bot connects to Discord.
 
-        This function is called just before the bot connects to Discord.
+        Sets up the bot, for actual use.
         This is used to load the cogs and sync the database.
         Generally, this function should not be called manually.
         """
@@ -86,7 +89,7 @@ class TicketsPlus(commands.AutoShardedBot):
     def get_connection(self) -> layer.OnlineConfig:
         """Gets a connection from the database pool.
 
-        This function is used to get a connection from the database pool.
+        Grabs a connection from the async session maker.
         We additionally wrap the connection in a OnlineConfig object.
         This is to allow us to use the OnlineConfig object as a context manager.
         And to allow for more convenient access to the database.
@@ -101,7 +104,7 @@ class TicketsPlus(commands.AutoShardedBot):
         """Closes the bot.
 
         This function is used to close the bot.
-        We additionally close the database engine.
+        We additionally clean up the database engine/pool.
         """
         logging.info("Closing bot...")
         await self._db_engine.dispose()

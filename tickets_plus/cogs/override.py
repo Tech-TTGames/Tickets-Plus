@@ -1,6 +1,7 @@
 """General powertools for the bot owner.
 
-This submodule contains general powertools for the bot owner.
+This module contains the override cog, which contains commands that are only
+available to the bot owner.
 This includes commands to reload cogs, restart the bot, and pull from git.
 The last command is to be used very carefully, as changes to the database
 schema will require a database migration.
@@ -8,7 +9,7 @@ schema will require a database migration.
 Typical usage example:
     ```py
     from tickets_plus import bot
-    bot_instance = bot.TicketsPlus(...)
+    bot_instance = bot.TicketsPlusBot(...)
     await bot_instance.load_extension("tickets_plus.cogs.override")
     ```
 """
@@ -43,15 +44,16 @@ class Overrides(commands.GroupCog,
 
     This class contains commands that are only available to the bot owner.
     These commands are used to reload cogs, restart the bot, and pull from git.
-    The commands are only available in the development guild.
+    The commands are only available in the development guild, as specified in
+    the config.
     """
 
-    def __init__(self, bot_instance: bot.TicketsPlus):
+    def __init__(self, bot_instance: bot.TicketsPlusBot):
         """Initialises the cog.
 
-        We load the cog here.
-        We set the bot instance as an private attribute.
-        We then call the super class's __init__ method.
+        This method initialises the cog.
+        It also sets the bot instance as a private attribute.
+        And finally initialises the superclass.
 
         Args:
             bot_instance: The bot instance.
@@ -92,8 +94,7 @@ class Overrides(commands.GroupCog,
         """Closes the bot.
 
         If used with a process manager, this will restart the bot.
-        This is a bit of a hack, but it works.
-        Don't really know how to do this better.
+        If used without a process manager, this will close the bot.
 
         Args:
             ctx: The interaction context.
@@ -103,7 +104,8 @@ class Overrides(commands.GroupCog,
         await self._bt.close()
 
     @app_commands.command(
-        name="pull", description="Pulls the latest changes from the git repo.")
+        name="pull",
+        description="Pulls the latest changes from the git repo. DANGEROUS!")
     @checks.is_owner_check()
     async def pull(self, ctx: discord.Interaction):
         """Pulls the latest changes from the git repo.
@@ -205,10 +207,10 @@ class Overrides(commands.GroupCog,
         logging.info("Synced.")
 
 
-async def setup(bot_instance: bot.TicketsPlus):
+async def setup(bot_instance: bot.TicketsPlusBot):
     """Sets up the overrides.
 
-    We add the overrides to the bot.
+    We add the overrides cog to the bot.
 
     Args:
         bot_instance: The bot.

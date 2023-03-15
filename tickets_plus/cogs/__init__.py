@@ -7,7 +7,7 @@ Typical usage example:
     ```py
     from tickets_plus import bot
     from tickets_plus import cogs
-    bot_instance = bot.TicketsPlus(...)
+    bot_instance = bot.TicketsPlusBot(...)
     for extension in cogs.EXTENSIONS:
         await bot_instance.load_extension(extension)
     ```

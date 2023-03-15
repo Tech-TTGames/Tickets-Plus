@@ -3,7 +3,7 @@
 
 It will create the schema and tables if they do not exist.
 An interactive prompt will guide you through the creation of the config file.
-This script is to be used to migrate from the old config file to the new db.
+Additionally, it will load the old config file into the database.
 
 Typical usage example:
     $ python3 migrate.py
@@ -42,6 +42,7 @@ def main():
 
     This script will create the database schema and tables if they do not exist.
     It will also load the config file into the database.
+    At the end of file an eval option is provided for advanced users.
     """
     print("Starting migration script...")
     new = 0

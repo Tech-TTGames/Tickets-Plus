@@ -27,7 +27,7 @@ from tickets_plus.database import statvars
 def main():
     """Start the bot
 
-    Adjust the event loop policy if we're on Windows.
+    Adjust the event loop policy if we're on Windows and psycopg3.
     Then, run the bot until it's done.
     """
     cnfg = statvars.MiniConfig()

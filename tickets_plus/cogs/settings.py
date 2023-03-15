@@ -6,7 +6,7 @@ Those settings are guild-specific and are stored in the database.
 Typical usage example:
     ```py
     from tickets_plus import bot
-    bot_instance = bot.TicketsPlus(...)
+    bot_instance = bot.TicketsPlusBot(...)
     await bot_instance.load_extension("tickets_plus.cogs.settings")
     ```
 """
@@ -35,11 +35,12 @@ class Settings(commands.GroupCog,
     """Provides commands to change the bot's settings.
 
     These settings are guild-specific and are stored in the database.
-    We suggest the settings to be only changed by administrators.
+    We suggest the settings to be only changed by administrators,
+    however this can be changed discord-side.
     This is a group cog, so all commands are under the settings group.
     """
 
-    def __init__(self, bot_instance: bot.TicketsPlus):
+    def __init__(self, bot_instance: bot.TicketsPlusBot):
         """Initialises the cog.
 
         We initialise the variables we need.
@@ -64,7 +65,7 @@ class Settings(commands.GroupCog,
 
         Args:
             ctx: The interaction context.
-            user: The user to add to ticket bots.
+            user: The user to add/remove to ticket bots.
         """
         async with self._bt.get_connection() as conn:
             new, ticket_user = await conn.get_ticket_bot(
@@ -213,7 +214,7 @@ class Settings(commands.GroupCog,
             message: The new open message.
 
         Raises:
-            AppCommandError: The message is too long.
+            app_commands.AppCommandError: The message is too long.
         """
         if len(message) > 200:
             raise app_commands.AppCommandError("The message must be less than"
@@ -241,7 +242,7 @@ class Settings(commands.GroupCog,
             name: The new staff team's name.
 
         Raises:
-            AppCommandError: The name is too long.
+            app_commands.AppCommandError: The name is too long.
         """
         if len(name) > 40:
             await ctx.response.send_message(
@@ -342,7 +343,7 @@ class Settings(commands.GroupCog,
         )
 
 
-async def setup(bot_instance: bot.TicketsPlus):
+async def setup(bot_instance: bot.TicketsPlusBot):
     """Setup up the settings commands.
     
     We add the settings cog to the bot.

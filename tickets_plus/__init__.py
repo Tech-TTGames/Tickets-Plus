@@ -43,7 +43,6 @@ async def start_bot(stat_data: statvars.MiniConfig = statvars.MiniConfig()):
         stat_data: The statvars.MiniConfig object to use for the bot.
             If None, a new one will be created.
     """
-
     # Set up logging
     dt_fmr = "%Y-%m-%d %H:%M:%S"
     statvars.HANDLER.setFormatter(
@@ -87,7 +86,7 @@ async def start_bot(stat_data: statvars.MiniConfig = statvars.MiniConfig()):
             max_overflow=-1,
             pool_recycle=600,
         )
-    bot_instance = bot.TicketsPlus(
+    bot_instance = bot.TicketsPlusBot(
         db_engine=engine,
         intents=statvars.INTENTS,
         command_prefix=commands.when_mentioned,

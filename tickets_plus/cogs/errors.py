@@ -7,7 +7,7 @@ It's nice to not leave the user confused.
 Typical usage example:
     ```py
     from tickets_plus import bot
-    bot_instance = bot.TicketsPlus(...)
+    bot_instance = bot.TicketsPlusBot(...)
     await bot_instance.load_extension("tickets_plus.cogs.errors")
     ```
 """
@@ -36,8 +36,10 @@ class ErrorHandling(commands.Cog, name="AppCommandErrorHandler"):
             This is used to restore the old error handler.
     """
 
-    def __init__(self, bot_instance: bot.TicketsPlus) -> None:
+    def __init__(self, bot_instance: bot.TicketsPlusBot) -> None:
         """Initialises the cog instance.
+
+        We store some attributes here for later use.
 
         Args:
             bot_instance: The bot instance.
@@ -77,7 +79,7 @@ class ErrorHandling(commands.Cog, name="AppCommandErrorHandler"):
         # TODO: Implement this function.
 
 
-async def setup(bot_instance: bot.TicketsPlus) -> None:
+async def setup(bot_instance: bot.TicketsPlusBot) -> None:
     """Sets up the error handler.
 
     This function is called when the cog is loaded.

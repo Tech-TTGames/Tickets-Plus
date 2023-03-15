@@ -1,13 +1,13 @@
 """Miscellaneous commands that don't fit anywhere else.
 
-This module contains commands that don't fit anywhere else.
 They are various commands that don't fit into any other category.
 They are in free discord commands not assigned to groups.
+If the comamnd set warrants it, we may move it to a group.
 
 Typical usage example:
     ```py
     from tickets_plus import bot
-    bot_instance = bot.TicketsPlus(...)
+    bot_instance = bot.TicketsPlusBot(...)
     await bot_instance.load_extension("tickets_plus.cogs.main_utils")
     ```
 """
@@ -38,11 +38,10 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
     If a context is big enough, we may move it to a group.
     """
 
-    def __init__(self, bot_instance: bot.TicketsPlus):
+    def __init__(self, bot_instance: bot.TicketsPlusBot):
         """Initialise the FreeCommands cog.
 
-        We initialise the cog here.
-        We also log that the cog has been loaded correctly.
+        We initialise some attributes here for later use.
 
         Args:
             bot_instance: The bot instance that loaded this cog.
@@ -144,11 +143,12 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
         """Adds the user to the ticket's staff notes thread.
 
         This command is used to add the user to the ticket's staff notes thread.
-        It's used to allow the joining without the need for the user to have
-        the Manage Threads permission.
+        It's used to allow staff to join notes without the need for the
+        user to have the Manage Threads permission.
 
         Args:
             ctx: The interaction context.
+
         Raises:
             app_commands.AppCommandError: If the channel is not a ticket.
         """
@@ -182,7 +182,7 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
         """Toggle anonymous staff responses.
 
         This command is used to toggle anonymous staff responses.
-        It was requested by a user, so I added it.
+        The implementation itself is in events.py.
 
         Args:
             ctx: The interaction context.
@@ -214,6 +214,7 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
 
         We have this command to allow users to migrate from the old version,
         or add channels that the bot has missed while it was offline.
+        It basically just tells the bot to start tracking the channel.
 
         Args:
             ctx: The interaction context.
@@ -252,7 +253,7 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
         raise app_commands.AppCommandError("Invalid command execution space.")
 
 
-async def setup(bot_instance: bot.TicketsPlus):
+async def setup(bot_instance: bot.TicketsPlusBot):
     """Sets up up the free commands.
 
     Called by the bot when the cog is loaded.

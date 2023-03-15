@@ -45,15 +45,15 @@ class OnlineConfig:
 
     This class is used to make the database session easier to use.
     It also handles the async with statement.
+    Any and all commits have to be done manually.
     """
 
     def __init__(self, bot_instance: commands.AutoShardedBot,
                  session: sa_asyncio.AsyncSession) -> None:
         """Initialises the database session layer.
 
-        We create a new database session layer.
-        It applies some basic handling for the session.
-        We have the _bot attribute for future use.
+        Wraps the provided session in a async context manager.
+        And sets the bot instance as a private attribute.
 
         Args:
             bot_instance: The bot instance.
@@ -80,7 +80,7 @@ class OnlineConfig:
         This method is called when exiting the async with statement.
         Or when an exception is raised.
         We rollback the session if an exception is raised.
-        We then close the session.
+        We then close the session regardless.
 
         Args:
             exc_type: The exception type.
@@ -205,7 +205,6 @@ class OnlineConfig:
 
         Fetches a member from the database.
         If the member does not exist, it will be created.
-        However, we do not commit the changes.
         We also check if the guild exists and create it if it does not.
         We also check if the user exists and create it if it does not.
 
@@ -235,7 +234,6 @@ class OnlineConfig:
 
         Fetches a ticket bot from the database.
         If the ticket bot does not exist, it will be created.
-        However, we do not commit the changes.
         We also check if the guild exists and create it if it does not.
 
         Args:
@@ -307,7 +305,6 @@ class OnlineConfig:
 
         Fetches a ticket from the database.
         If the ticket does not exist, it will be created.
-        However, we do not commit the changes.
         We also check if the guild exists and create it if it does not.
         If you want to check if a ticket exists, use fetch_ticket instead.
 
@@ -339,7 +336,6 @@ class OnlineConfig:
 
         Fetches a staff role from the database.
         If the staff role does not exist, it will be created.
-        However, we do not commit the changes.
         We also check if the guild exists and create it if it does not.
 
         Args:
@@ -381,7 +377,7 @@ class OnlineConfig:
 
     async def check_staff_role(self, role_id: int) -> bool:
         """Check if the staff role exists.
-        
+
         A more efficient way to check if a staff role exists.
         Instead of attempting to create the staff role,
         we just check if it exists.
@@ -402,7 +398,6 @@ class OnlineConfig:
 
         Fetches a observers role from the database.
         If the observers role does not exist, it will be created.
-        However, we do not commit the changes.
         We also check if the guild exists and create it if it does not.
 
         Args:
@@ -464,10 +459,9 @@ class OnlineConfig:
             self, role_id: int,
             guild_id: int) -> Tuple[bool, models.CommunityRole]:
         """Get or create the community role from the database.
-        
+
         Fetches a community role from the database.
         If the community role does not exist, it will be created.
-        However, we do not commit the changes.
         We also check if the guild exists and create it if it does not.
 
         Args:
@@ -511,7 +505,7 @@ class OnlineConfig:
 
     async def check_community_role(self, role_id: int) -> bool:
         """Check if the community role exists.
-        
+
         A more efficient way to check if a community role exists.
         Instead of attempting to create the community role,
         we just check if it exists.
@@ -532,7 +526,6 @@ class OnlineConfig:
 
         Fetches a community ping from the database.
         If the community ping does not exist, it will be created.
-        However, we do not commit the changes.
         We also check if the guild exists and create it if it does not.
 
         Args:
@@ -576,7 +569,7 @@ class OnlineConfig:
 
     async def check_community_ping(self, role_id: int) -> bool:
         """Check if the community ping exists.
-        
+
         A more efficient way to check if a community ping exists.
         Instead of attempting to create the community ping,
         we just check if it exists.

@@ -136,9 +136,7 @@ class Guild(Base):
     )
     first_autoclose: orm.Mapped[int | None] = orm.mapped_column(
         nullable=True,
-        comment=
-        "Number of minutes since open with no response to autoclose the ticket",
-    )
+        comment="Number of minutes since open with no response to autoclose")
 
     # Toggles
     msg_discovery: orm.Mapped[bool] = orm.mapped_column(
@@ -411,18 +409,17 @@ class CommunityPing(Base):
 
     __tablename__ = "community_pings"
     __table_args__ = {
-        "comment": (
-            "Table for community pings,"
-            " pinged when a ticket is opened but after adding the community roles."
-        )
+        "comment": ("Table for community pings,"
+                    " pinged when a ticket is opened but"
+                    " after adding the community roles.")
     }
 
     # Simple columns
     role_id: orm.Mapped[int] = orm.mapped_column(
         sqlalchemy.BigInteger(),
         primary_key=True,
-        comment=
-        "Unique discord-provided role ID, this is the primary key as it is unique across guilds",
+        comment=("Unique discord-provided role ID,"
+                 " this is the primary key as it is unique across guilds"),
     )
     guild_id: orm.Mapped[int] = orm.mapped_column(
         sqlalchemy.BigInteger(),
@@ -475,8 +472,9 @@ class Member(Base):
         sqlalchemy.BigInteger(),
         sqlalchemy.ForeignKey("general_configs.guild_id"),
         nullable=False,
-        comment=
-        "Unique Guild ID of parent guild. Used in conjunction with user_id to make a unique primary key",
+        comment=(
+            "Unique Guild ID of parent guild."
+            " Used in conjunction with user_id to make a unique primary key"),
         primary_key=True,
         unique=False,
     )
@@ -514,10 +512,8 @@ class User(Base):
     user_id: orm.Mapped[int] = orm.mapped_column(
         sqlalchemy.BigInteger(),
         primary_key=True,
-        comment=(
-        "Unique discord-provided user ID,"
-        " this is the primary key as it is unique across guilds"
-        ),
+        comment=("Unique discord-provided user ID,"
+                 " this is the primary key as it is unique across guilds"),
     )
 
     # Toggles
