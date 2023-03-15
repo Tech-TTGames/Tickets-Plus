@@ -345,7 +345,7 @@ class Settings(commands.GroupCog,
 
 async def setup(bot_instance: bot.TicketsPlusBot):
     """Setup up the settings commands.
-    
+
     We add the settings cog to the bot.
     Nothing different from the normal setup function.
 

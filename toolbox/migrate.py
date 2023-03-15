@@ -212,8 +212,10 @@ def main():
                 code = input(">>> ")
                 if code == "exit":
                     break
-                exec(code)  # pylint: disable=exec-used # skipcq: PYL-W0122
-            except Exception as e:  # pylint: disable=broad-except # skipcq: PYL-W0703
+                # pylint: disable=exec-used # skipcq: PYL-W0122
+                exec(code)
+            # pylint: disable=broad-except # skipcq: PYL-W0703
+            except Exception as e:
                 print(e)
     print("Goodbye!")
 
