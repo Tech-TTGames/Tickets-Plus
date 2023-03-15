@@ -18,8 +18,8 @@ Typical usage example:
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
-from discord import Interaction
-from discord.app_commands import AppCommandError
+import discord
+from discord import app_commands
 from discord.ext import commands
 
 from tickets_plus import bot
@@ -61,8 +61,8 @@ class ErrorHandling(commands.Cog, name="AppCommandErrorHandler"):
         # TODO: Implement this function.
         pass
 
-    async def on_app_command_error(self, interaction: Interaction,
-                                   error: AppCommandError) -> None:
+    async def on_app_command_error(self, interaction: discord.Interaction,
+                                   error: app_commands.AppCommandError) -> None:
         """Handles errors from app commands globally.
 
         This function is automatically called when an error is raised,

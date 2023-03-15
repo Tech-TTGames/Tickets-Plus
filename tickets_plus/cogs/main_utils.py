@@ -99,7 +99,8 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
             message: The message to send to the ticket.
 
         Raises:
-            AppCommandError: If the channel is neither a ticket, nor thread.
+            app_commands.AppCommandError: If the channel is neither a ticket,
+                nor a staff notes thread.
         """
         async with self._bt.get_connection() as confg:
             guild = await confg.get_guild(
@@ -149,7 +150,7 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
         Args:
             ctx: The interaction context.
         Raises:
-            AppCommandError: If the channel is not a ticket.
+            app_commands.AppCommandError: If the channel is not a ticket.
         """
         async with self._bt.get_connection() as confg:
             # We don't need account for DMs here, due to the guild_only.
@@ -187,7 +188,7 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
             ctx: The interaction context.
 
         Raises:
-            AppCommandError: If the command is not executed in a ticket.
+            app_commands.AppCommandError: If the channel is not a ticket.
         """
         async with self._bt.get_connection() as confg:
             # Checked by discord in decorator
@@ -219,7 +220,7 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
             thread: The staff notes thread for the ticket.
 
         Raises:
-            AppCommandError: If the channel is already a ticket.
+            app_commands.AppCommandError: If the channel is already a ticket.
                 Or the execution space is not a text channel.
         """
         if isinstance(ctx.channel, discord.TextChannel):

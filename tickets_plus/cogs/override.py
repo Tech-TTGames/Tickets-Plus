@@ -27,12 +27,11 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from tickets_plus.bot import TicketsPlus
-from tickets_plus.cogs import EXTENSIONS
-from tickets_plus.database.statvars import PROG_DIR, MiniConfig
-from tickets_plus.ext.checks import is_owner_check
+from tickets_plus import bot, cogs
+from tickets_plus.database import statvars
+from tickets_plus.ext import checks
 
-_CNFG = MiniConfig()
+_CNFG = statvars.MiniConfig()
 """Submodule global constant for the config."""
 
 
@@ -47,7 +46,7 @@ class Overrides(commands.GroupCog,
     The commands are only available in the development guild.
     """
 
-    def __init__(self, bot: TicketsPlus):
+    def __init__(self, bot_instance: bot.TicketsPlus):
         """Initialises the cog.
 
         We load the cog here.
@@ -55,14 +54,14 @@ class Overrides(commands.GroupCog,
         We then call the super class's __init__ method.
 
         Args:
-            bot: The bot instance.
+            bot_instance: The bot instance.
         """
-        self._bt = bot
+        self._bt = bot_instance
         super().__init__()
         logging.info("Loaded %s", self.__class__.__name__)
 
     @app_commands.command(name="reload", description="Reloads the bot's cogs.")
-    @is_owner_check()
+    @checks.is_owner_check()
     @app_commands.describe(sync="Syncs the tree after reloading cogs.")
     async def reload(self, ctx: discord.Interaction, sync: bool = False):
         """Reloads the bot's cogs.
@@ -79,7 +78,7 @@ class Overrides(commands.GroupCog,
         """
         await ctx.response.send_message("Reloading cogs...")
         logging.info("Reloading cogs...")
-        for extension in EXTENSIONS:
+        for extension in cogs.EXTENSIONS:
             await self._bt.reload_extension(extension)
         await ctx.followup.send("Reloaded cogs.")
         logging.info("Finished reloading cogs.")
@@ -88,7 +87,7 @@ class Overrides(commands.GroupCog,
             logging.info("Finished syncing tree.")
 
     @app_commands.command(name="close", description="Closes the bot.")
-    @is_owner_check()
+    @checks.is_owner_check()
     async def close(self, ctx: discord.Interaction):
         """Closes the bot.
 
@@ -105,7 +104,7 @@ class Overrides(commands.GroupCog,
 
     @app_commands.command(
         name="pull", description="Pulls the latest changes from the git repo.")
-    @is_owner_check()
+    @checks.is_owner_check()
     async def pull(self, ctx: discord.Interaction):
         """Pulls the latest changes from the git repo.
 
@@ -122,7 +121,7 @@ class Overrides(commands.GroupCog,
             "git pull",
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
-            cwd=PROG_DIR,
+            cwd=statvars.PROG_DIR,
         )
         stdo, stdr = await pull.communicate()
         if stdo:
@@ -137,7 +136,7 @@ class Overrides(commands.GroupCog,
                                 "Restart bot or reload cogs to apply changes.")
 
     @app_commands.command(name="logs", description="Sends the logs.")
-    @is_owner_check()
+    @checks.is_owner_check()
     @app_commands.describe(id_no="Log ID (0 for latest log)")
     async def logs(self, ctx: discord.Interaction, id_no: int = 0):
         """Sends the logs.
@@ -154,7 +153,7 @@ class Overrides(commands.GroupCog,
         await ctx.response.defer(thinking=True)
         logging.info("Sending logs to %s...", str(ctx.user))
         filename = f"discord.log{'.'+str(id_no) if id_no else ''}"
-        file_path = os.path.join(PROG_DIR, "log", filename)
+        file_path = os.path.join(statvars.PROG_DIR, "log", filename)
         try:
             await ctx.user.send(file=discord.File(fp=file_path))
         except FileNotFoundError:
@@ -165,7 +164,7 @@ class Overrides(commands.GroupCog,
         logging.info("Logs sent.")
 
     @app_commands.command(name="config", description="Sends the guild config.")
-    @is_owner_check()
+    @checks.is_owner_check()
     @app_commands.describe(guid="Guild ID")
     async def config(self, ctx: discord.Interaction, guid: int):
         """Sends the config.
@@ -189,7 +188,7 @@ class Overrides(commands.GroupCog,
         logging.info("Config sent.")
 
     @commands.command(name="sync", description="Syncs the tree.")
-    @is_owner_check()
+    @checks.is_owner_check()
     async def sync(self, ctx: commands.Context):
         """Syncs the tree.
 
@@ -207,12 +206,12 @@ class Overrides(commands.GroupCog,
         logging.info("Synced.")
 
 
-async def setup(bot: TicketsPlus):
+async def setup(bot_instance: bot.TicketsPlus):
     """Sets up the overrides.
 
     We add the overrides to the bot.
 
     Args:
-        bot: The bot.
+        bot_instance: The bot.
     """
-    await bot.add_cog(Overrides(bot))
+    await bot_instance.add_cog(Overrides(bot_instance))

@@ -40,6 +40,13 @@ class Events(commands.Cog, name="Events"):
     """
 
     def __init__(self, bot_instance: bot.TicketsPlus) -> None:
+        """Initialises the cog instance.
+
+        We set some attributes here, so we can use them later.
+
+        Args:
+            bot_instance: The bot instance.
+        """
         self._bt = bot_instance
         logging.info("Loaded %s", self.__class__.__name__)
 
@@ -242,6 +249,6 @@ async def setup(bot_instance: bot.TicketsPlus) -> None:
     It adds the cog to the bot.
 
     Args:
-      bot: The bot that is loading the cog.
+      bot_instance: The bot that is loading the cog.
     """
     await bot_instance.add_cog(Events(bot_instance))
