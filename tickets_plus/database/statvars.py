@@ -148,7 +148,8 @@ class Config:
             self._config: dict = json.load(config_f)
         if not legacy:
             logging.warning(
-                "Config is deprecated and read-only. Use OnlineConfig and MiniConfig instead."
+                "Config is deprecated and read-only."
+                " Use OnlineConfig and MiniConfig instead."
             )
         self._bot = bot
 
