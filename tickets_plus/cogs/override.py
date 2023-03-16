@@ -65,7 +65,9 @@ class Overrides(commands.GroupCog,
     @app_commands.command(name="reload", description="Reloads the bot's cogs.")
     @checks.is_owner_check()
     @app_commands.describe(sync="Syncs the tree after reloading cogs.")
-    async def reload(self, ctx: discord.Interaction, sync: bool = False):
+    async def reload(self,
+                     ctx: discord.Interaction,
+                     sync: bool = False) -> None:
         """Reloads the bot's cogs.
 
         This command reloads all cogs in the EXTENSIONS list.
@@ -90,7 +92,7 @@ class Overrides(commands.GroupCog,
 
     @app_commands.command(name="close", description="Closes the bot.")
     @checks.is_owner_check()
-    async def close(self, ctx: discord.Interaction):
+    async def close(self, ctx: discord.Interaction) -> None:
         """Closes the bot.
 
         If used with a process manager, this will restart the bot.
@@ -107,7 +109,7 @@ class Overrides(commands.GroupCog,
         name="pull",
         description="Pulls the latest changes from the git repo. DANGEROUS!")
     @checks.is_owner_check()
-    async def pull(self, ctx: discord.Interaction):
+    async def pull(self, ctx: discord.Interaction) -> None:
         """Pulls the latest changes from the git repo.
 
         This command pulls the latest changes from the git repo.
@@ -140,7 +142,7 @@ class Overrides(commands.GroupCog,
     @app_commands.command(name="logs", description="Sends the logs.")
     @checks.is_owner_check()
     @app_commands.describe(id_no="Log ID (0 for latest log)")
-    async def logs(self, ctx: discord.Interaction, id_no: int = 0):
+    async def logs(self, ctx: discord.Interaction, id_no: int = 0) -> None:
         """Sends the logs.
 
         This command sends the logs to the user who invoked the command.
@@ -168,7 +170,7 @@ class Overrides(commands.GroupCog,
     @app_commands.command(name="config", description="Sends the guild config.")
     @checks.is_owner_check()
     @app_commands.describe(guid="Guild ID")
-    async def config(self, ctx: discord.Interaction, guid: int):
+    async def config(self, ctx: discord.Interaction, guid: int) -> None:
         """Sends the config.
 
         This command sends the config to the user who invoked the command.
@@ -190,7 +192,7 @@ class Overrides(commands.GroupCog,
 
     @commands.command(name="sync", description="Syncs the tree.")
     @checks.is_owner_check()
-    async def sync(self, ctx: commands.Context):
+    async def sync(self, ctx: commands.Context) -> None:
         """Syncs the tree.
 
         This command syncs the tree.

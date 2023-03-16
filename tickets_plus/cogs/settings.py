@@ -18,13 +18,14 @@ Typical usage example:
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
 import logging
-from datetime import timedelta
+import datetime
 
 import discord
 from discord import app_commands
 from discord.ext import commands
 
 from tickets_plus import bot
+from tickets_plus.ext import exceptions
 
 
 @app_commands.guild_only()
@@ -57,7 +58,7 @@ class Settings(commands.GroupCog,
                           description="Change the ticket bots for your server.")
     @app_commands.describe(user="The user to add to ticket bots.")
     async def change_tracked(self, ctx: discord.Interaction,
-                             user: discord.User):
+                             user: discord.User) -> None:
         """Changes the tickets bot for the server.
 
         This command is used to change the ticket bots users.
@@ -72,17 +73,21 @@ class Settings(commands.GroupCog,
                 user.id,
                 ctx.guild.id,  # type: ignore
             )
+            emd = discord.Embed(title="Ticket Bot List Edited")
             if not new:
                 await conn.delete(ticket_user)
-                text = f"Untracked {user.mention}"
+                emd.add_field(name="Removed:", value=user.mention)
+                emd.color = discord.Color.red()
             else:
-                text = f"Tracked {user.mention}"
+                emd.add_field(name="Added:", value=user.mention)
+                emd.color = discord.Color.green()
             await conn.commit()
-        await ctx.response.send_message(text, ephemeral=True)
+        await ctx.response.send_message(embed=emd, ephemeral=True)
 
     @app_commands.command(name="staff", description="Change the staff roles.")
     @app_commands.describe(role="The role to add/remove from staff roles.")
-    async def change_staff(self, ctx: discord.Interaction, role: discord.Role):
+    async def change_staff(self, ctx: discord.Interaction,
+                           role: discord.Role) -> None:
         """Changes the staff roles for the server.
 
         This command is used to change the staff roles.
@@ -98,19 +103,22 @@ class Settings(commands.GroupCog,
                 role.id,
                 ctx.guild.id,  # type: ignore
             )
+            emd = discord.Embed(title="Staff Role List Edited")
             if not new:
                 await conn.delete(staff_role)
-                text = f"Removed {role.mention} from staff roles."
+                emd.add_field(name="Removed:", value=role.mention)
+                emd.color = discord.Color.red()
             else:
-                text = f"Added {role.mention} to staff roles."
+                emd.add_field(name="Added:", value=role.mention)
+                emd.color = discord.Color.green()
             await conn.commit()
-        await ctx.response.send_message(text, ephemeral=True)
+        await ctx.response.send_message(embed=emd, ephemeral=True)
 
     @app_commands.command(name="observers",
                           description="Change the observers roles.")
     @app_commands.describe(role="The role to add/remove from observers roles.")
     async def change_observers(self, ctx: discord.Interaction,
-                               role: discord.Role):
+                               role: discord.Role) -> None:
         """Changes the observers roles for the server.
 
         This command is used to change the observers roles.
@@ -127,20 +135,23 @@ class Settings(commands.GroupCog,
                 role.id,
                 ctx.guild.id,  # type: ignore
             )
+            emd = discord.Embed(title="Observers Role List Edited")
             if not new:
                 await conn.delete(obsrvrs)
-                text = f"Removed {role.mention} from ping staff roles."
+                emd.add_field(name="Removed:", value=role.mention)
+                emd.color = discord.Color.red()
             else:
-                text = f"Added {role.mention} to ping staff roles."
+                emd.add_field(name="Added:", value=role.mention)
+                emd.color = discord.Color.green()
             await conn.commit()
-        await ctx.response.send_message(text, ephemeral=True)
+        await ctx.response.send_message(embed=emd, ephemeral=True)
 
     @app_commands.command(name="communitysupport",
                           description="Change the community support roles.")
     @app_commands.describe(
         role="The role to add/remove from community support roles.")
     async def change_community_roles(self, ctx: discord.Interaction,
-                                     role: discord.Role):
+                                     role: discord.Role) -> None:
         """Modifies the server's community support roles.
 
         This command is used to change the community support roles.
@@ -157,20 +168,23 @@ class Settings(commands.GroupCog,
                 role.id,
                 ctx.guild.id,  # type: ignore
             )
+            emd = discord.Embed(title="Community Support Role List Edited")
             if not new:
                 await conn.delete(comsup)
-                text = f"Removed {role.mention} from community support roles."
+                emd.add_field(name="Removed:", value=role.mention)
+                emd.color = discord.Color.red()
             else:
-                text = f"Added {role.mention} to community support roles."
+                emd.add_field(name="Added:", value=role.mention)
+                emd.color = discord.Color.green()
             await conn.commit()
-        await ctx.response.send_message(text, ephemeral=True)
+        await ctx.response.send_message(embed=emd, ephemeral=True)
 
     @app_commands.command(name="communityping",
                           description="Change the community ping roles.")
     @app_commands.describe(
         role="The role to add/remove from community ping roles.")
     async def change_community_ping_roles(self, ctx: discord.Interaction,
-                                          role: discord.Role):
+                                          role: discord.Role) -> None:
         """Modifies the server's community ping roles.
 
         This command is used to change the community ping roles.
@@ -189,18 +203,22 @@ class Settings(commands.GroupCog,
                 role.id,
                 ctx.guild.id,  # type: ignore
             )
+            emd = discord.Embed(title="Community Ping Role List Edited")
             if not new:
                 await conn.delete(comsup)
-                text = f"Removed {role.mention} from community ping roles."
+                emd.add_field(name="Removed:", value=role.mention)
+                emd.color = discord.Color.red()
             else:
-                text = f"Added {role.mention} to community ping roles."
+                emd.add_field(name="Added:", value=role.mention)
+                emd.color = discord.Color.green()
             await conn.commit()
-        await ctx.response.send_message(text, ephemeral=True)
+        await ctx.response.send_message(embed=emd, ephemeral=True)
 
     @app_commands.command(name="openmsg",
                           description="Change the open message.")
     @app_commands.describe(message="The new open message.")
-    async def change_openmsg(self, ctx: discord.Interaction, message: str):
+    async def change_openmsg(self, ctx: discord.Interaction,
+                             message: str) -> None:
         """This command is used to change the open message.
 
         This is the message that opens a new ticket notes thread.
@@ -214,22 +232,28 @@ class Settings(commands.GroupCog,
             message: The new open message.
 
         Raises:
-            app_commands.AppCommandError: The message is too long.
+            `tickets_plus.ext.exceptions.InvalidParameters`: Message too long.
+                Raised when the message is longer than 200 characters.
         """
         if len(message) > 200:
-            raise app_commands.AppCommandError("The message must be less than"
+            raise exceptions.InvalidParameters("The message must be less than"
                                                " 200 characters.")
         async with self._bt.get_connection() as conn:
             guild = await conn.get_guild(ctx.guild.id)  # type: ignore
+            old = guild.open_message
             guild.open_message = message
             await conn.commit()
-        await ctx.response.send_message(f"Open message is now {message}",
-                                        ephemeral=True)
+        emd = discord.Embed(title="Open Message Changed",
+                            color=discord.Color.yellow())
+        emd.add_field(name="Old message:", value=old)
+        emd.add_field(name="New message:", value=message)
+        await ctx.response.send_message(embed=emd, ephemeral=True)
 
     @app_commands.command(name="staffteamname",
                           description="Change the staff team's name.")
     @app_commands.describe(name="The new staff team's name.")
-    async def change_staffteamname(self, ctx: discord.Interaction, name: str):
+    async def change_staffteamname(self, ctx: discord.Interaction,
+                                   name: str) -> None:
         """This command is used to change the staff team's name.
 
         We use this name when the bot sends messages as the staff team.
@@ -242,18 +266,23 @@ class Settings(commands.GroupCog,
             name: The new staff team's name.
 
         Raises:
-            app_commands.AppCommandError: The name is too long.
+            `tickets_plus.ext.exceptions.InvalidParameters`: Name too long.
+                Raised when the name is longer than 40 characters.
         """
         if len(name) > 40:
             await ctx.response.send_message(
                 "The name must be less than 40 characters.", ephemeral=True)
-            raise app_commands.AppCommandError("Name too long")
+            raise exceptions.InvalidParameters("Name too long")
         async with self._bt.get_connection() as conn:
             guild = await conn.get_guild(ctx.guild.id)  # type: ignore
+            old = guild.staff_team_name
             guild.staff_team_name = name
             await conn.commit()
-        await ctx.response.send_message(f"Staff team is now {name}",
-                                        ephemeral=True)
+        emd = discord.Embed(title="Staff Team Name Changed",
+                            color=discord.Color.yellow())
+        emd.add_field(name="Old name:", value=old)
+        emd.add_field(name="New name:", value=name)
+        await ctx.response.send_message(embed=emd, ephemeral=True)
 
     @app_commands.command(name="autoclose",
                           description="Change the autoclose time.")
@@ -266,7 +295,7 @@ class Settings(commands.GroupCog,
                                ctx: discord.Interaction,
                                days: int = 0,
                                hours: int = 0,
-                               minutes: int = 0):
+                               minutes: int = 0) -> None:
         """Set the guild-wide autoclose time.
 
         This command is used to change the autoclose time.
@@ -284,20 +313,34 @@ class Settings(commands.GroupCog,
         """
         async with self._bt.get_connection() as conn:
             guild = await conn.get_guild(ctx.guild.id)  # type: ignore
-            if days + hours + minutes == 0:
-                guild.first_autoclose = None
-                text = "Autoclose disabled."
+            if guild.first_autoclose is None:
+                emd = discord.Embed(title="Autoclose is already disabled.",
+                                    color=discord.Color.orange())
             else:
-                guild.first_autoclose = int(
-                    timedelta(days=days, hours=hours,
-                              minutes=minutes).total_seconds() / 60)
-                text = f"Autoclose set to {guild.first_autoclose} minutes."
-            await conn.commit()
-        await ctx.response.send_message(text, ephemeral=True)
+                prev = datetime.timedelta(minutes=int(guild.first_autoclose))
+                if days + hours + minutes == 0:
+                    guild.first_autoclose = None
+                    emd = discord.Embed(title="Autoclose Disabled",
+                                        color=discord.Color.red())
+                    emd.add_field(name="Previous autoclose time:",
+                                  value=f"{str(prev)}")
+                else:
+                    newtime = datetime.timedelta(days=days,
+                                                 hours=hours,
+                                                 minutes=minutes)
+                    guild.first_autoclose = int(newtime.total_seconds() / 60)
+                    emd = discord.Embed(title="Autoclose Changed",
+                                        color=discord.Color.yellow())
+                    emd.add_field(name="Previous autoclose time:",
+                                  value=f"{str(prev)}")
+                    emd.add_field(name="New autoclose time:",
+                                  value=f"{str(newtime)}")
+                await conn.commit()
+        await ctx.response.send_message(embed=emd, ephemeral=True)
 
     @app_commands.command(name="msgdiscovery",
                           description="Toggle message link discovery.")
-    async def toggle_msg_discovery(self, ctx: discord.Interaction):
+    async def toggle_msg_discovery(self, ctx: discord.Interaction) -> None:
         """This command is used to toggle message link discovery.
 
         This is the feature that makes the bot automatically
@@ -313,14 +356,15 @@ class Settings(commands.GroupCog,
             new_status = not guild.msg_discovery
             guild.msg_discovery = new_status
             await conn.commit()
-        await ctx.response.send_message(
-            f"Message link discovery is now {new_status}",
-            ephemeral=True,
-        )
+        emd = discord.Embed(
+            title="Message Toggled",
+            description=f"Message discovery is now {new_status}",
+            color=discord.Color.green() if new_status else discord.Color.red())
+        await ctx.response.send_message(embed=emd, ephemeral=True)
 
     @app_commands.command(name="stripbuttons",
                           description="Toggle button stripping.")
-    async def toggle_button_stripping(self, ctx: discord.Interaction):
+    async def toggle_button_stripping(self, ctx: discord.Interaction) -> None:
         """This command is used to toggle button stripping.
 
         Button stripping is the feature that makes the bot
@@ -337,13 +381,14 @@ class Settings(commands.GroupCog,
             new_status = not guild.strip_buttons
             guild.strip_buttons = new_status
             await conn.commit()
-        await ctx.response.send_message(
-            f"Button stripping is now {new_status}",
-            ephemeral=True,
-        )
+        emd = discord.Embed(
+            title="Button Stripping Toggled",
+            description=f"Button stripping is now {new_status}",
+            color=discord.Color.green() if new_status else discord.Color.red())
+        await ctx.response.send_message(embed=emd, ephemeral=True)
 
 
-async def setup(bot_instance: bot.TicketsPlusBot):
+async def setup(bot_instance: bot.TicketsPlusBot) -> None:
     """Setup up the settings commands.
 
     We add the settings cog to the bot.

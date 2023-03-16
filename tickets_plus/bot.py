@@ -1,7 +1,7 @@
 """This main bot class module for Tickets Plus.
 
-A module that contains purely the bot class.
-It's a subclass of discord.ext.commands.AutoShardedBot.
+A module that contains purely the bot class - `TicketsPlusBot`.
+It's a subclass of `discord.ext.commands.AutoShardedBot`.
 No other code is in this module at the moment.
 
 Typical usage example:
@@ -37,10 +37,11 @@ class TicketsPlusBot(commands.AutoShardedBot):
     Most of the work is done in the cogs.
 
     Attributes:
-        stat_confg (statvars.MiniConfig): The config for the bot.
-        sessions (sqlalchemy_asyncio.async_sessionmaker):
-            The database session maker.
+        stat_confg: The config for the bot.
+        sessions: The database session maker.
     """
+    stat_confg: statvars.MiniConfig
+    sessions: sa_asyncio.async_sessionmaker
 
     def __init__(self,
                  *args,
@@ -56,7 +57,7 @@ class TicketsPlusBot(commands.AutoShardedBot):
             *args: The arguments to pass to the super class.
             db_engine: The database engine.
             confg: The config for the bot.
-                Defaults to statvars.MiniConfig().
+                Defaults to `tickets_plus.statvars.MiniConfig`.
             **kwargs: The keyword arguments to pass to the super class.
         """
         super().__init__(*args, **kwargs)
@@ -95,7 +96,7 @@ class TicketsPlusBot(commands.AutoShardedBot):
         And to allow for more convenient access to the database.
 
         Returns:
-            layer.OnlineConfig: The OnlineConfig object.
+            `tickets_plus.layer.OnlineConfig`: The OnlineConfig object.
                 A wrapper for the database connection.
         """
         return layer.OnlineConfig(self, self.sessions())

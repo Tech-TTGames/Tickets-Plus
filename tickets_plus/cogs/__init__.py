@@ -1,7 +1,7 @@
 """A import utility for loading all cogs in this submodule.
 
 This file just makes it easier to load all cogs in this submodule.
-We can just import this submodule and iterate over the EXTENSIONS list.
+We can just import this submodule and iterate over the `EXTENSIONS` list.
 
 Typical usage example:
     ```py

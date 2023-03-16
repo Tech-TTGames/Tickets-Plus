@@ -2,7 +2,7 @@
 """A startup file for the tickets_plus bot
 
 We don't really do anything except invoke the start_bot function.
-All the magic happens in tickets_plus.__init__.py
+All the magic happens in `tickets_plus`.
 This file is to be used as a script, not as a module.
 
 Typical usage example:

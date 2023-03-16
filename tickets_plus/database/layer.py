@@ -1,6 +1,6 @@
 """A layer for the database session.
 
-This module contains the OnlineConfig class.
+This module contains the `OnlineConfig` class.
 It is used to make the database session easier to use.
 It is also a async context manager.
 Generally, you should use this class instead of the session directly.
@@ -9,8 +9,8 @@ by default. But any relationship that is a one-to-many or many-to-many
 relationship is not loaded by default.
 This is due to efficiency concerns.
 If you need to load a relationship, you can use the options argument, which
-is a list of ExecutableOptions.
-For more information on ExecutableOptions, see the SQLAlchemy documentation.
+is a list of `sqlalchemy.sql.base.ExecutableOption`s.
+For more information on `ExecutableOption`s, see the SQLAlchemy documentation.
 
 Typical usage example:
     ```py

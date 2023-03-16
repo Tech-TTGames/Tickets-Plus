@@ -2,7 +2,8 @@
 
 A set of decorators for use with discord.py application commands.
 These are generally Ticket Plus specific checks.
-They require the client to be a tickets_plus.bot.TicketsPlus instance.
+They require the client to be a `tickets_plus.bot.TicketsPlusBot` instance.
+Though some may work with any `discord.ext.commands.Bot` instance.
 
 Typical usage example:
     ```py
@@ -25,6 +26,8 @@ Typical usage example:
 import discord
 from discord import app_commands
 
+from tickets_plus.ext import exceptions
+
 
 def is_owner_check():
     """A check for owner only commands.
@@ -33,7 +36,7 @@ def is_owner_check():
     application commands.
 
     Returns:
-        app_commands.check: The check.
+        `discord.app_commands.check`: The check.
             It's a decorator, so you can use it like this:
             ```py
             @app_commands.command()
@@ -52,18 +55,18 @@ def is_owner_check():
             interaction: The interaction to check.
 
         Returns:
-            bool: Whether the user is owner or not.
+            `bool`: Whether the user is owner or not.
                 Doesn't return if the user is not owner.
 
         Raises:
-            app_commands.CheckFailure: If the user is not owner.
-                This is according to the discord.py convention.
+            `tickets_plus.exceptions.TicketsCheckFailure`: Requirements not met.
+                Raised if the user is not owner. This is according to the
+                discord.py convention.
         """
         if interaction.user.id in interaction.client.owner_ids:  # type: ignore
             return True
-        await interaction.response.send_message("Error 403: Forbidden",
-                                                ephemeral=True)
-        raise app_commands.CheckFailure("User is not owner")
+        raise exceptions.TicketsCheckFailure(
+            "You do not have permission to do this.")
 
     return app_commands.check(is_owner)
 
@@ -74,7 +77,7 @@ def is_staff_check():
     We need create our own check so we can use the database.
 
     Returns:
-        app_commands.check: The check.
+        `discord.app_commands.check`: The check.
             It's a decorator, so you can use it like this:
             ```py
             @app_commands.command()
@@ -84,7 +87,7 @@ def is_staff_check():
             ```
     """
 
-    async def is_staff(interaction: discord.Interaction):
+    async def is_staff(interaction: discord.Interaction) -> bool:
         """Checks if interaction user is staff.
 
         The actual check. It's a coroutine, so it can be awaited.
@@ -97,11 +100,14 @@ def is_staff_check():
                 Doesn't return if the user is not staff.
 
         Raises:
-            app_commands.CheckFailure: If the user is not staff.
-                This is according to the discord.py convention.
+            `tickets_plus.exceptions.TicketsCheckFailure`: Requirements not met.
+                Raised if the user is not staff. This is according to the
+                discord.py convention.
         """
         if interaction.guild is None:
-            raise app_commands.CheckFailure("User is not in a guild")
+            raise exceptions.TicketsCheckFailure("This command can only"
+                                                 " be used in a guild."
+                                                 " (DMs are not supported)")
         if interaction.user.id in interaction.client.owner_ids:  # type: ignore
             return True
         async with interaction.client.get_connection() as conn:  # type: ignore
@@ -111,8 +117,7 @@ def is_staff_check():
                 if parsed_role in interaction.user.roles:  # type: ignore
                     # Alredy checked for member
                     return True
-        await interaction.response.send_message("Error 403: Forbidden",
-                                                ephemeral=True)
-        raise app_commands.CheckFailure("User is not staff")
+        raise exceptions.TicketsCheckFailure("You do not have"
+                                             " permission to do this here.")
 
     return app_commands.check(is_staff)

@@ -27,7 +27,7 @@ from discord.ext import commands
 
 from tickets_plus import bot
 from tickets_plus.database import statvars
-from tickets_plus.ext import checks
+from tickets_plus.ext import checks, exceptions
 
 
 class FreeCommands(commands.Cog, name="General Random Commands"):
@@ -52,7 +52,7 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
     @app_commands.command(
         name="ping",
         description="The classic ping command. Checks the bot's latency.")
-    async def ping(self, ctx: discord.Interaction):
+    async def ping(self, ctx: discord.Interaction) -> None:
         """The classic ping command. Checks the bot's latency.
 
         This command is used to check the bot's latency.
@@ -61,12 +61,14 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
         Args:
             ctx: The interaction context.
         """
-        await ctx.response.send_message("Pong! The bot is online.\nPing: "
-                                        f"{str(round(self._bt.latency * 1000))}"
-                                        "ms")
+        embd = discord.Embed(title="Pong!",
+                             description=f"The bot is online.\nPing: "
+                             f"{str(round(self._bt.latency * 1000))}ms",
+                             color=discord.Color.green())
+        await ctx.response.send_message(embed=embd)
 
     @app_commands.command(name="version", description="Get the bot's version.")
-    async def version(self, ctx: discord.Interaction):
+    async def version(self, ctx: discord.Interaction) -> None:
         """This command is used to check the bot's version.
 
         Responds with the bot's version and a link to the source code.
@@ -74,19 +76,27 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
         Args:
             ctx: The interaction context.
         """
-        await ctx.response.send_message(
-            f"Bot 'Tickets Plus' version: {statvars.VERSION}"
-            " by Tech. TTGames#8616\n"
-            "This bot is open source and experimental!\n"
-            "Check it out and report issues at:"
-            "https://github.com/Tech-TTGames/Tickets-Plus")
+        emd = discord.Embed(
+            title="Tickets+",
+            description=f"Bot version: {statvars.VERSION}\n"
+            "This bot is open source and experimental!",
+            color=discord.Color.from_str("0x00FFFF"),
+        ).add_field(
+            name="Source Code:",
+            value=(
+                "[Available on GitHub](https://github.com/Tech-TTGames/Tickets-Plus)"  # pylint: disable=line-too-long # skipcq: PYL-W0511
+                "\nThis is the place to report bugs and suggest features."
+            ),
+        )  #.add_field(name="Get Support:",
+        #            value="[Join the support server](<NO SUPPORT SERVER YET>)")
+        await ctx.response.send_message(embed=emd)
 
     @app_commands.command(name="respond",
                           description="Respond to a ticket as the bot.")
     @app_commands.guild_only()
     @checks.is_staff_check()
     @app_commands.describe(message="The message to send to the ticket.")
-    async def respond(self, ctx: discord.Interaction, message: str):
+    async def respond(self, ctx: discord.Interaction, message: str) -> None:
         """Respond to a ticket as the bot.
 
         This command is used to respond to a ticket as the bot.
@@ -98,8 +108,9 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
             message: The message to send to the ticket.
 
         Raises:
-            app_commands.AppCommandError: If the channel is neither a ticket,
-                nor a staff notes thread.
+            `tickets_plus.ext.exceptions.InvalidLocation`: Wrong location.
+                Raised if the command is used in a channel that is not a ticket
+                or a staff notes thread.
         """
         async with self._bt.get_connection() as confg:
             guild = await confg.get_guild(
@@ -110,11 +121,12 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
                     ctx.channel.parent.id  # type: ignore
                 )
                 if ticket is None:
-                    raise app_commands.AppCommandError(
-                        "This channel is not a ticket.")
+                    raise exceptions.InvalidLocation(
+                        "The parent channel is not a ticket.")
                 if ticket.staff_note_thread != ctx.channel.id:
-                    raise app_commands.AppCommandError(
-                        "This channel is not a staff notes thread.")
+                    raise exceptions.InvalidLocation(
+                        "This channel is not the designated staff"
+                        " notes thread.")
                 await ctx.response.send_message(
                     f"Responding to ticket with message:\n{sanitized_message}")
                 await ctx.channel.parent.send(  # type: ignore
@@ -123,7 +135,7 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
             elif isinstance(ctx.channel, discord.TextChannel):
                 ticket = await confg.fetch_ticket(ctx.channel.id)
                 if ticket is None:
-                    raise app_commands.AppCommandError(
+                    raise exceptions.InvalidLocation(
                         "This channel is not a ticket."
                         " If it is, use /register.")
                 await ctx.response.send_message(
@@ -139,7 +151,7 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
                           description="Join a ticket's staff notes.")
     @app_commands.guild_only()
     @checks.is_staff_check()
-    async def join(self, ctx: discord.Interaction):
+    async def join(self, ctx: discord.Interaction) -> None:
         """Adds the user to the ticket's staff notes thread.
 
         This command is used to add the user to the ticket's staff notes thread.
@@ -150,35 +162,39 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
             ctx: The interaction context.
 
         Raises:
-            app_commands.AppCommandError: If the channel is not a ticket.
+            `tickets_plus.ext.exceptions.InvalidLocation`: Wrong location.
+                Raised if the command is used in a channel that is not a ticket
+                or there is no staff notes thread.
+            `tickets_plus.ext.exceptions.ReferenceNotFound`: Thread missing.
+                Raised if the staff notes thread is missing.
         """
         async with self._bt.get_connection() as confg:
             # We don't need account for DMs here, due to the guild_only.
             ticket = await confg.fetch_ticket(ctx.channel.id)  # type: ignore
             if ticket is None:
-                raise app_commands.AppCommandError(
-                    "This channel is not a ticket."
-                    " If it is, use /register.")
+                raise exceptions.InvalidLocation("This channel is not a ticket."
+                                                 " If it is, use /register.")
             if ticket.staff_note_thread is None:
-                raise app_commands.AppCommandError(
+                raise exceptions.InvalidLocation(
                     "This ticket has no staff notes.")
             thred = ctx.guild.get_thread(  # type: ignore
                 ticket.staff_note_thread)
             if thred is None:
-                raise app_commands.AppCommandError(
+                raise exceptions.ReferenceNotFound(
                     "This ticket's staff notes thread is missing."
                     " Was it deleted?")
+            emd = discord.Embed(
+                title="Success!",
+                description="You have joined the staff notes thread.",
+                color=discord.Color.green())
             await thred.add_user(ctx.user)
-            await ctx.response.send_message("Joined staff notes thread.",
-                                            ephemeral=True)
-
-        raise app_commands.AppCommandError("Invalid command execution space.")
+            await ctx.response.send_message(embed=emd, ephemeral=True)
 
     @app_commands.command(name="anonymize",
                           description="Toggle anonymous staff responses.")
     @app_commands.guild_only()
     @checks.is_staff_check()
-    async def anonymize(self, ctx: discord.Interaction):
+    async def anonymize(self, ctx: discord.Interaction) -> None:
         """Toggle anonymous staff responses.
 
         This command is used to toggle anonymous staff responses.
@@ -188,19 +204,23 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
             ctx: The interaction context.
 
         Raises:
-            app_commands.AppCommandError: If the channel is not a ticket.
+            `tickets_plus.ext.exceptions.InvalidLocation`: Wrong location.
+                Raised if the command is used in a channel that is not a ticket.
         """
         async with self._bt.get_connection() as confg:
             # Checked by discord in decorator
             ticket = await confg.fetch_ticket(ctx.channel.id)  # type: ignore
             if ticket is None:
-                raise app_commands.AppCommandError(
+                raise exceptions.InvalidLocation(
                     "This channel is not a ticket.")
             ticket.anonymous = not ticket.anonymous
+            status = ticket.anonymous
             await confg.commit()
-        await ctx.response.send_message(
-            f"Anonymous staff responses are now {ticket.anonymous}.",
-            ephemeral=True)
+        emd = discord.Embed(
+            title="Success!",
+            description=f"Anonymous staff responses are now {status}.",
+            color=discord.Color.green() if status else discord.Color.red())
+        await ctx.response.send_message(embed=emd, ephemeral=True)
 
     @app_commands.command(
         name="register",
@@ -209,7 +229,7 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
     @checks.is_staff_check()
     async def register(self,
                        ctx: discord.Interaction,
-                       thread: discord.Thread | None = None):
+                       thread: discord.Thread | None = None) -> None:
         """A migration command to register an existing channel as a ticket.
 
         We have this command to allow users to migrate from the old version,
@@ -221,7 +241,8 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
             thread: The staff notes thread for the ticket.
 
         Raises:
-            app_commands.AppCommandError: If the channel is already a ticket.
+            `tickets_plus.ext.exceptions.InvalidLocation`: Wrong location.
+                If the channel is already a ticket.
                 Or the execution space is not a text channel.
         """
         if isinstance(ctx.channel, discord.TextChannel):
@@ -245,15 +266,18 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
                 # Unused, we just want to check if it's new and commit it.
                 del ticket  # skipcq: PTC-W0043
                 if not new:
-                    raise app_commands.AppCommandError(
+                    raise exceptions.InvalidLocation(
                         "This channel is already a ticket.")
                 await confg.commit()
-            await ctx.response.send_message("Registered channel as a ticket.",
-                                            ephemeral=True)
-        raise app_commands.AppCommandError("Invalid command execution space.")
+            emd = discord.Embed(title="Success!",
+                                description="Registered channel as a ticket.",
+                                color=discord.Color.green())
+            await ctx.response.send_message(embed=emd, ephemeral=True)
+            return
+        raise exceptions.InvalidLocation("Invalid command execution space.")
 
 
-async def setup(bot_instance: bot.TicketsPlusBot):
+async def setup(bot_instance: bot.TicketsPlusBot) -> None:
     """Sets up up the free commands.
 
     Called by the bot when the cog is loaded.

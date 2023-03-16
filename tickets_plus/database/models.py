@@ -53,12 +53,12 @@ def pg_UTCnow(element, compiler, **kw):
     This script is based on the example given in the docs.
 
     Args:
-      element: The element to compile so, in this case, the UTCnow object
-      compiler: The Compiled object, can be accessed to get information
-      **kw: Keyword arguments
+      element: The element to compile so, in this case, the UTCnow object.
+      compiler: The Compiled object, can be accessed to get information.
+      **kw: Keyword arguments.
 
     Returns:
-        The compiled SQL expression
+        The compiled SQL expression.
     """
     return "TIMEZONE('utc', CURRENT_TIMESTAMP)"
 
@@ -74,7 +74,7 @@ class Base(orm.DeclarativeBase):
     how to use this class.
 
     Attributes:
-        metadata: The metadata object for the database
+        metadata: The metadata object for the database.
     """
 
     metadata = _METADATA_OBJ
@@ -90,25 +90,25 @@ class Guild(Base):
     It also contains the relationships to all other guild-specific tables.
 
     Attributes:
-        guild_id: The unique discord-provided guild ID
+        guild_id: The unique discord-provided guild ID.
         open_message: The message to send when a staff thread is opened
             defaults to "Staff notes for Ticket $channel." and is
-            limited to 200 characters
+            limited to 200 characters.
         staff_team_name: The name of the staff team
-            defaults to "Staff Team" and is limited to 40 characters
+            defaults to "Staff Team" and is limited to 40 characters.
         first_autoclose: The number of minutes since open with no response
-            to autoclose the ticket
+            to autoclose the ticket.
         msg_discovery: Whether to allow message discovery
-            defaults to True
+            defaults to True.
         strip_buttons: Whether to strip buttons from messages
-            defaults to False
-        ticket_bots: The relationship to the TicketBot table
-        tickets: The relationship to the Ticket table
-        staff_roles: The relationship to the StaffRole table
-        observers_roles: The relationship to the ObserversRole table
-        community_roles: The relationship to the CommunityRole table
-        community_pings: The relationship to the CommunityPing table
-        members: The relationship to the Member table
+            defaults to False.
+        ticket_bots: The relationship to the TicketBot table.
+        tickets: The relationship to the Ticket table.
+        staff_roles: The relationship to the StaffRole table.
+        observers_roles: The relationship to the ObserversRole table.
+        community_roles: The relationship to the CommunityRole table.
+        community_pings: The relationship to the CommunityPing table.
+        members: The relationship to the Member table.
     """
 
     __tablename__ = "general_configs"
@@ -227,13 +227,13 @@ class Ticket(Base):
     Any closed tickets are deleted from this table.
 
     Attributes:
-        channel_id: The unique discord-provided channel ID
-        guild_id: The unique discord-provided guild ID
-        date_created: The date the ticket was created
-        last_response: The date of the last response in the ticket
-        staff_note_thread: The unique discord-provided ID of the note thread
-        anonymous: Whether the ticket is in anonymous mode
-        guild: The relationship to the Guild table
+        channel_id: The unique discord-provided channel ID.
+        guild_id: The unique discord-provided guild ID.
+        date_created: The date the ticket was created.
+        last_response: The date of the last response in the ticket.
+        staff_note_thread: The unique discord-provided ID of the note thread.
+        anonymous: Whether the ticket is in anonymous mode.
+        guild: The relationship to the Guild table.
     """
 
     __tablename__ = "tickets"
@@ -287,9 +287,9 @@ class StaffRole(Base):
     And the foreign key to the guild ID.
 
     Attributes:
-        role_id: The unique discord-provided role ID
-        guild_id: The unique discord-provided guild ID
-        guild: The relationship to the Guild table
+        role_id: The unique discord-provided role ID.
+        guild_id: The unique discord-provided guild ID.
+        guild: The relationship to the Guild table.
     """
 
     __tablename__ = "staff_roles"
@@ -326,9 +326,9 @@ class ObserversRole(Base):
     And the foreign key to the guild ID.
 
     Attributes:
-        role_id: The unique discord-provided role ID
-        guild_id: The unique discord-provided guild ID
-        guild: The relationship to the Guild table
+        role_id: The unique discord-provided role ID.
+        guild_id: The unique discord-provided guild ID.
+        guild: The relationship to the Guild table.
     """
 
     __tablename__ = "observer_roles"
@@ -364,9 +364,9 @@ class CommunityRole(Base):
     And the foreign key to the guild ID.
 
     Attributes:
-        role_id: The unique discord-provided role ID
-        guild_id: The unique discord-provided guild ID
-        guild: The relationship to the Guild table
+        role_id: The unique discord-provided role ID.
+        guild_id: The unique discord-provided guild ID.
+        guild: The relationship to the Guild table.
     """
 
     __tablename__ = "community_roles"
@@ -402,9 +402,9 @@ class CommunityPing(Base):
     And the foreign key to the guild ID.
 
     Attributes:
-        role_id: The unique discord-provided role ID
-        guild_id: The unique discord-provided guild ID
-        guild: The relationship to the Guild table
+        role_id: The unique discord-provided role ID.
+        guild_id: The unique discord-provided guild ID.
+        guild: The relationship to the Guild table.
     """
 
     __tablename__ = "community_pings"
@@ -443,10 +443,10 @@ class Member(Base):
     It will also contain any bot information about the user.
 
     Attributes:
-        user_id: The unique discord-provided user ID
-        guild_id: The unique discord-provided guild ID
-        user: The relationship to the User table
-        guild: The relationship to the Guild table
+        user_id: The unique discord-provided user ID.
+        guild_id: The unique discord-provided guild ID.
+        user: The relationship to the User table.
+        guild: The relationship to the Guild table.
     """
 
     __tablename__ = "members"
@@ -495,8 +495,8 @@ class User(Base):
     It will also contain any bot information about the user.
 
     Attributes:
-        user_id: The unique discord-provided user ID
-        memberships: The relationship to the Member table
+        user_id: The unique discord-provided user ID.
+        memberships: The relationship to the Member table.
         is_owner: Is the user the owner of the bot?
     """
 

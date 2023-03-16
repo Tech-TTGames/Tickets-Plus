@@ -33,14 +33,17 @@ from tickets_plus import bot
 from tickets_plus.database import models, statvars
 
 
-async def start_bot(stat_data: statvars.MiniConfig = statvars.MiniConfig()):
-    """Sets up the bot and starts it. Corutine.
+async def start_bot(stat_data: statvars.MiniConfig = statvars.MiniConfig()
+                   ) -> None:
+    """Sets up the bot and starts it. Coroutine.
 
     This function uses the exitsting .json files to set up the bot.
     It also sets up logging, and starts the bot.
 
     Args:
-        stat_data: The statvars.MiniConfig object to use for the bot.
+        stat_data: The config to use.
+            Must implement the getitem method.
+            And the get_url method.
             If None, a new one will be created.
     """
     # Set up logging

@@ -65,6 +65,8 @@ class Secret:
         token: The bot token.
         secrets: The raw dictionary of the secret.json file.
     """
+    token: str
+    secrets: dict[str, Any]
 
     def __init__(self) -> None:
         """Loads the secret.json file and stores the data in self.secrets
@@ -74,7 +76,7 @@ class Secret:
         """
         self._file = pathlib.Path(PROG_DIR, "secret.json")
         with open(self._file, encoding="utf-8", mode="r") as secret_f:
-            self.secrets: dict = json.load(secret_f)
+            self.secrets = json.load(secret_f)
         self.token: str = self.secrets["token"]
 
     def __repr__(self) -> str:
@@ -91,7 +93,7 @@ class MiniConfig:
     It is used to store non-sensitive information such as the bot prefix.
     It does not allow for modification of the config.json file.
     As any functiality that should modify the config.json file should be
-    instead implemented in the OnlineConfig class.
+    instead implemented in the `tickets_plus.database.layer.OnlineConfig` class.
     """
 
     def __init__(self) -> None:
@@ -119,7 +121,7 @@ class MiniConfig:
         """Returns the database URL
 
         Returns:
-            URL: The database URL as a sqlalchemy URL object
+            `sqlalchemy.URL`: The database URL as a sqlalchemy URL object
         """
         return sqlalchemy.URL.create(
             drivername=self._config["dbtype"],
@@ -147,10 +149,8 @@ class Config:
         with open(self._file, encoding="utf-8", mode="r") as config_f:
             self._config: dict = json.load(config_f)
         if not legacy:
-            logging.warning(
-                "Config is deprecated and read-only."
-                " Use OnlineConfig and MiniConfig instead."
-            )
+            logging.warning("Config is deprecated and read-only."
+                            " Use OnlineConfig and MiniConfig instead.")
         self._bot = bot
 
     def cnfg(self) -> dict:
