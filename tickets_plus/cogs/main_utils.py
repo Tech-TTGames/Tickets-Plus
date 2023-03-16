@@ -84,10 +84,11 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
         ).add_field(
             name="Source Code:",
             value=(
-                "[Available on GitHub](https://github.com/Tech-TTGames/Tickets-Plus)"  # pylint: disable=line-too-long # skipcq: PYL-W0511
+                "[Available on GitHub](https://github.com/Tech-TTGames/Tickets-Plus)"  # pylint: disable=line-too-long # skipcq: PYL-W0511, PYL-W505
                 "\nThis is the place to report bugs and suggest features."
             ),
-        )  #.add_field(name="Get Support:",
+        )
+        #.add_field(name="Get Support:",
         #            value="[Join the support server](<NO SUPPORT SERVER YET>)")
         await ctx.response.send_message(embed=emd)
 

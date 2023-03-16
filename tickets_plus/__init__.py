@@ -34,7 +34,7 @@ from tickets_plus.database import models, statvars
 
 
 async def start_bot(stat_data: statvars.MiniConfig = statvars.MiniConfig()
-                   ) -> None:
+                   ) -> None: # shush deepsource # skipcq: FLK-E124
     """Sets up the bot and starts it. Coroutine.
 
     This function uses the exitsting .json files to set up the bot.

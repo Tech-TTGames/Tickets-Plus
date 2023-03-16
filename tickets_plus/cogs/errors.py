@@ -59,7 +59,6 @@ class ErrorHandling(commands.Cog, name="AppCommandErrorHandler"):
         """
         tree = self._bt.tree
         self.old_error_handler = tree.on_error
-        assert self.old_error_handler is not None
         tree.on_error = self.on_app_command_error
         logging.info("Error handling ready.")
 
@@ -90,6 +89,7 @@ class ErrorHandling(commands.Cog, name="AppCommandErrorHandler"):
                 return
 
             if hasattr(ctx.command, "parent"):
+                # Split up to avoid AttributeError
                 if hasattr(ctx.command.parent, "on_error"):  # type: ignore
                     return
 

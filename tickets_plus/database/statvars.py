@@ -65,6 +65,7 @@ class Secret:
         token: The bot token.
         secrets: The raw dictionary of the secret.json file.
     """
+
     token: str
     secrets: dict[str, Any]
 

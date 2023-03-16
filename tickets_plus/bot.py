@@ -40,6 +40,7 @@ class TicketsPlusBot(commands.AutoShardedBot):
         stat_confg: The config for the bot.
         sessions: The database session maker.
     """
+
     stat_confg: statvars.MiniConfig
     sessions: sa_asyncio.async_sessionmaker
 
