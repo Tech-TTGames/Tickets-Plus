@@ -1,4 +1,8 @@
-"""Tickets Plus - A Discord bot for extending Tickets.
+"""Tickets+ - A Discord bot for extending Tickets.
+
+.. include:: ../README.md
+
+**API DOCUMENTATION FOLLOWS:**
 
 This file is the main file for the bot.
 It contains the startup code for the bot.
@@ -6,6 +10,8 @@ Other code is in the various submodules.
 This file is to be used as a module, not as a script.
 
 Typical usage example:
+    For a standard startup, use start_bot.
+    For a custom startup, use the code in the example below.
     ```py
     #!/usr/bin/env python3
     import asyncio
@@ -16,7 +22,7 @@ Typical usage example:
 """
 # License: EPL-2.0
 # SPDX-License-Identifier: EPL-2.0
-# Copyright (c) 2021-present The Tickets Plus Contributors
+# Copyright (c) 2021-present The Tickets+ Contributors
 # This Source Code may also be made available under the following
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR

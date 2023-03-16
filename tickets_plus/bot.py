@@ -1,4 +1,4 @@
-"""This main bot class module for Tickets Plus.
+"""This main bot class module for Tickets+.
 
 A module that contains purely the bot class - `TicketsPlusBot`.
 It's a subclass of `discord.ext.commands.AutoShardedBot`.
@@ -12,7 +12,7 @@ Typical usage example:
 """
 # License: EPL-2.0
 # SPDX-License-Identifier: EPL-2.0
-# Copyright (c) 2021-present The Tickets Plus Contributors
+# Copyright (c) 2021-present The Tickets+ Contributors
 # This Source Code may also be made available under the following
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
@@ -31,7 +31,7 @@ from tickets_plus.database import layer, statvars
 class TicketsPlusBot(commands.AutoShardedBot):
     """A bot instance that is used to run Tickets+.
 
-    Automatically sharded bot instance that is used to run Tickets Plus.
+    Automatically sharded bot instance that is used to run Tickets+.
     This is to allow us to add our own methods and attributes.
     In general, not much is done in this class.
     Most of the work is done in the cogs.

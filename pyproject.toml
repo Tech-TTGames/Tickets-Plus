@@ -30,7 +30,7 @@ toml = "^0.10.2"
 pdoc = "^13.0.0"
 
 [tool.poetry.scripts]
-start = "start_bot:main"
+start = "tickets_plus.__main__:main"
 migrate = "toolbox.migrate:main"
 nuke = "toolbox.nuke:main"
 
