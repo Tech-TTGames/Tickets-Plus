@@ -33,8 +33,8 @@ from typing import Sequence, Tuple, Type
 
 from discord.ext import commands
 from sqlalchemy import sql
-from sqlalchemy.sql import base
 from sqlalchemy.ext import asyncio as sa_asyncio
+from sqlalchemy.sql import base
 # Future Proofing for possible future use of asyncio
 
 from tickets_plus.database import models
