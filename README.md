@@ -32,7 +32,7 @@ Additionally, facilitates correct ping behavior with said community roles.
 The bot will display previews of discord message links.
 Requires message content intent.
 
-### Minor Feature 2 - Button Stripping
+### Minor Feature 2 - Strip Buttons
 
 Due to the main Tickets bot not facilitating permissions check withthe 'Close' and 'Close with Reason' buttons this bot will strip the buttons enabling the use of / command perms to limit access.
 Toggle with /setting stripbuttons.
