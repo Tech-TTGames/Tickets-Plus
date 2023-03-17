@@ -4,11 +4,13 @@ Those are various non-cog extensions used throughout the bot.
 Currently, this module contains the following extensions:
     - tickets_plus.ext.checks
     - tickets_plus.ext.exceptions
+    - tickets_plus.ext.views
 
 Typical usage example:
     ```py
     from tickets_plus.ext import checks
     from tickets_plus.ext import exceptions
+    from tickets_plus.ext import views
     ...
     ```
 """

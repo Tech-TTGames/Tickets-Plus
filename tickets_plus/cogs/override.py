@@ -30,7 +30,7 @@ from discord.ext import commands
 
 from tickets_plus import bot, cogs
 from tickets_plus.database import statvars
-from tickets_plus.ext import checks
+from tickets_plus.ext import checks, views
 
 _CNFG = statvars.MiniConfig()
 """Submodule private global constant for the config."""
@@ -119,7 +119,38 @@ class Overrides(commands.GroupCog,
         Args:
             ctx: The interaction context.
         """
-        await ctx.response.send_message("Pulling latest changes...")
+        confr = views.Confirm()
+        emd = discord.Embed(
+            title="Pull from git",
+            description=(
+                "Are you sure you want to pull from git?\n"
+                "This is a dangerous command, as it can break the bot.\n"
+                "If you are not sure what you are doing, abort now."),
+            color=discord.Color.red(),
+        )
+        await ctx.response.send_message(embed=emd, view=confr)
+        await confr.wait()
+        if confr.value is None:
+            emd = discord.Embed(
+                title="Pull from git",
+                description="Timed out.",
+                color=discord.Color.red(),
+            )
+            await ctx.response.edit_message(embed=emd)
+            return
+        if not confr.value:
+            emd = discord.Embed(title="Pull from git",
+                                description="Cancelled.",
+                                color=discord.Color.orange())
+            await ctx.response.edit_message(embed=emd)
+            return
+        emd = discord.Embed(
+            title="Pull from git",
+            description="Confirmed.",
+            color=discord.Color.green(),
+        )
+        await ctx.response.edit_message(embed=emd)
+        await ctx.followup.send("Pulling latest changes...")
         logging.info("Pulling latest changes...")
         pull = await asyncio.create_subprocess_shell(
             "git pull",
