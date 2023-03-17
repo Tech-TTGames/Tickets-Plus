@@ -36,11 +36,10 @@ jobs:
         uses: snok/install-poetry@v1
       - name: Install poetry requirements
         run: poetry install --with dev
-      - name: Activate Poetry venv
-        run: poetry shell
 
       # We use a custom build script for pdoc itself, ideally you just run `pdoc -o docs/ ...` here.
-      - run: pdoc tickets_plus -d google -e tickets_plus=https://github.com/Tech-TTGames/Tickets-Plus/tree/main/tickets_plus/ --footer-text "Tickets+ v0.1.0.0" -o ./docs/ --logo-link https://tickets-plus.techttgames.dev/ --logo https://raw.githubusercontent.com/Tech-TTGames/Tickets-Plus/main/branding/rounded.png -t ./pdoc/
+      - name: Build documentation (via Poetry & pdoc)
+        run: poetry run pdoc tickets_plus -d google -e tickets_plus=https://github.com/Tech-TTGames/Tickets-Plus/tree/main/tickets_plus/ --footer-text "Tickets+ v0.1.0.0" -o ./docs/ --logo-link https://tickets-plus.techttgames.dev/ --logo https://raw.githubusercontent.com/Tech-TTGames/Tickets-Plus/main/branding/rounded.png -t ./pdoc/
 
       - name: Prep Pages
         uses: actions/upload-pages-artifact@v1
