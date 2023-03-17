@@ -1,1 +1,4 @@
 discord.py~=2.2.2
+SQLAlchemy[asyncio]~=2.0.6
+alembic[tz]~=1.10.2
+asyncpg~=0.27.0

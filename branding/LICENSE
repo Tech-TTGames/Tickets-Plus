@@ -1,0 +1,41 @@
+Tickets+ Proprietary License v1.0
+
+Introduction:
+
+The Tickets+ project is licensed under the Eclipse Public License v2.0 ("EPL"). This license file pertains specifically to the branding resources included in the project, which are located in the .\branding directory. These resources include images, icons, logos, and other graphical elements used to represent the project.
+
+Exclusion from EPL-2.0:
+
+All files in the .\branding directory are excluded from the EPL and are considered proprietary to the Tickets+ project. This means that the terms of the EPL do not apply to these files, and they may not be modified, distributed, or used in any way that is not explicitly authorized by the Tickets+ project.
+
+Ownership and Copyright:
+
+Unless otherwise noted, the Tickets+ project retains all ownership and copyright of the branding resources in the .\branding directory. This includes all derivative works based on these resources. Any unauthorized use, reproduction, or distribution of these files is strictly prohibited and may be subject to legal action.
+
+Requesting Permission:
+
+If you wish to use any of the branding resources from the Tickets+ project, you must first request permission from the project team. To do so, please open a GitHub issue and describe your proposed use case. The Tickets+ project reserves the right to grant or deny permission at its sole discretion.
+
+Limitations:
+
+This license applies solely to the files in the .\branding directory and its subdirectories, and does not apply to any other files in the project. Any use of the branding resources must be in compliance with this license and any other applicable laws or regulations.
+
+Disclaimer of Warranty:
+
+The branding resources in the .\branding directory are provided "as is" without warranty of any kind, either expressed or implied, including, but not limited to, the implied warranties of merchantability and fitness for a particular purpose. The entire risk as to the quality and performance of the branding resources is with you. Should the branding resources prove defective, you assume the cost of all necessary servicing, repair or correction.
+
+Limitation of Liability:
+
+In no event unless required by applicable law or agreed to in writing will any copyright holder, or any other party who may modify and/or redistribute the branding resources as permitted above, be liable to you for damages, including any general, special, incidental or consequential damages arising out of the use or inability to use the branding resources (including but not limited to loss of data or data being rendered inaccurate or losses sustained by you or third parties or a failure of the branding resources to operate with any other programs), even if such holder or other party has been advised of the possibility of such damages.
+
+Entire Agreement:
+
+This license constitutes the entire agreement between the parties with respect to the branding resources in the .\branding directory and supersedes all prior or contemporaneous communications and proposals, whether oral or written, between the parties with respect to such subject matter.
+
+Modification:
+
+This license may be modified with notice in any release of the main project. Any change to this license requires a change in version identifier.
+
+Governing Law:
+
+This license shall be governed by and construed in accordance with the laws of Finland.
