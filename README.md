@@ -58,7 +58,7 @@ Here are the steps to host your copy of [this bot.](https://github.com/Tech-TTGa
 
 ### Database Documentation
 
-* [Database Documentation](docs/database_info.html)
+* [Database Documentation](https://tickets-plus.techttgames.dev/database_info.html)
 
 [^1]: This bot is not affiliated with the TicketsBot team.  When a feature is added to the main bot any feature that is no longer needed will be discontinued here.
 [^0]: [Tech-TTGames](https:\\github.com\Tech-TTGames), I'm the only one here right now. I had some help in general but I'm the only one who has done any coding. More people are welcome to join. I had help with organization and checking my code from [kk5dire](https://github.com/kk5dire) and [Ben Foster](https://github.com/benfoster04) with hosting and some documentation changes.
