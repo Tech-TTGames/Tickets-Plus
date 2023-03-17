@@ -82,6 +82,10 @@ class Secret:
             self.token: str = self.secrets["token"]
         except FileNotFoundError:
             logging.warning("Running in dry-run mode.")
+            self._file = pathlib.Path(PROG_DIR, "example_secret.json")
+            with open(self._file, encoding="utf-8", mode="r") as secret_f:
+                self.secrets = json.load(secret_f)
+            self.token: str = self.secrets["token"]
 
     def __repr__(self) -> str:
         return "[OBFUSCATED]"
@@ -107,6 +111,9 @@ class MiniConfig:
                 self._config: dict = json.load(config_f)
         except FileNotFoundError:
             logging.warning("Running in dry-run mode.")
+            self._file = pathlib.Path(PROG_DIR, "example_config.json")
+            with open(self._file, encoding="utf-8", mode="r") as config_f:
+                self._config: dict = json.load(config_f)
 
     def __dict__(self) -> dict:
         return self._config
