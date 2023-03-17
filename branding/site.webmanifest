@@ -1,0 +1,20 @@
+{
+    "name": "Tickets+",
+    "short_name": "Tickets+",
+    "icons": [
+        {
+            "src": "https://raw.githubusercontent.com/Tech-TTGames/Tickets-Plus/main/branding/android-chrome-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "https://raw.githubusercontent.com/Tech-TTGames/Tickets-Plus/main/branding/android-chrome-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "theme_color": "#00ecff",
+    "background_color": "#00ecff",
+    "start_url": "https://tickets-plus.techttgames.dev/",
+    "display": "standalone"
+}
