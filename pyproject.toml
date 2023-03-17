@@ -6,6 +6,7 @@ authors = ["Tech. TTGames <50541739+Tech-TTGames@users.noreply.github.com>"]
 license = "EPL-2.0"
 readme = "README.md"
 packages = [{include = "tickets_plus"}]
+exclude = ["branding"]
 
 [tool.poetry.dependencies]
 python = "^3.11"
