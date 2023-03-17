@@ -5,6 +5,8 @@
 [![CodeQL](https://github.com/Tech-TTGames/Tickets-Plus/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/Tech-TTGames/Tickets-Plus/actions/workflows/codeql.yml) [![Pylint](https://github.com/Tech-TTGames/Tickets-Plus/actions/workflows/pylint.yml/badge.svg?branch=main)](https://github.com/Tech-TTGames/Tickets-Plus/actions/workflows/pylint.yml) [![DeepSource](https://deepsource.io/gh/Tech-TTGames/Tickets-Plus.svg/?label=active+issues&show_trend=true&token=ourUeg696DFMDcZDoZi0ZqGn)](https://deepsource.io/gh/Tech-TTGames/Tickets-Plus/?ref=repository-badge)
 
 A Discord bot that adds extensions to the [Tickets](https://github.com/TicketsBot) discord bot.[^1]
+Made by the Tickets+ team, a group of volunteers[^0] who want to add features to the Tickets bot. But didn't know rust.
+
 With this bot you can add staff notes, staff responses, and community support to your server.
 This bot acts as a supplimentary, seperate bot[^2] to the main Tickets bot.
 
@@ -59,6 +61,7 @@ Here are the steps to host your copy of [this bot.](https://github.com/Tech-TTGa
 * [Database Documentation](docs/database_info.html)
 
 [^1]: This bot is not affiliated with the TicketsBot team.  When a feature is added to the main bot any feature that is no longer needed will be discontinued here.
+[^0]: [Tech-TTGames](https:\\github.com\Tech-TTGames), I'm the only one here right now. I had some help in general but I'm the only one who has done any coding. more people are welcome to join. I had help with organization and checking my code from [kk5dire](https://github.com/kk5dire) and [Ben Foster](https://github.com/benfoster04) with hosting and some documentation changes.
 [^2]: This setup assumes you have the main bot added to the server and configured, Support will not be provided to those who do not assume a likewise configuraton.
 [^3]: Staff role defined in per-server settings.
 [^4]: Community roles defined in per-server settings.
