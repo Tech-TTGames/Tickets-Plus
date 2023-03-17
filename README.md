@@ -54,7 +54,3 @@ Toggle with /setting stripbuttons.
 6. Fill out config.json based on the information about your server. (Refer to example_config.json)
 7. Start your bot!
     1. Probably add a background service that will restart the bot on boot. I use systemctl for my bots.
-
-### Copyright notice
-
- The logo.jpg file is not under the LICENSE agreement and is to be considered to belong to Tech. TTGames.
