@@ -18,19 +18,32 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4
         with:
           python-version: '3.11'
 
-      - uses: snok/install-poetry@v1
-      - run: poetry install --with dev
-      - run: poetry shell
+      - name: Load cached Poetry installation
+        id: cached-poetry
+        uses: actions/cache@v3
+        with:
+          path: ~/.local  # the path depends on the OS
+          key: poetry-0  # increment to reset cache
+      - name: Install Poetry
+        if: steps.cached-poetry.outputs.cache-hit != 'true'
+        uses: snok/install-poetry@v1
+      - name: Install poetry requirements
+        run: poetry install --with dev
+      - name: Activate Poetry venv
+        run: poetry shell
 
       # We use a custom build script for pdoc itself, ideally you just run `pdoc -o docs/ ...` here.
       - run: pdoc tickets_plus -d google -e tickets_plus=https://github.com/Tech-TTGames/Tickets-Plus/tree/main/tickets_plus/ --footer-text "Tickets+ v0.1.0.0" -o ./docs/ --logo-link https://tickets-plus.techttgames.dev/ --logo https://raw.githubusercontent.com/Tech-TTGames/Tickets-Plus/main/branding/rounded.png -t ./pdoc/
 
-      - uses: actions/upload-pages-artifact@v1
+      - name: Prep Pages
+        uses: actions/upload-pages-artifact@v1
         with:
           path: docs/
 
