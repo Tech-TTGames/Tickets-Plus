@@ -24,7 +24,7 @@ import logging
 import pathlib
 import string
 from logging import handlers
-from typing import TYPE_CHECKING, Any, Literal
+from typing import Any, Literal
 
 import discord
 import sqlalchemy
@@ -76,13 +76,9 @@ class Secret:
         We also store the token in self.token for easy access.
         """
         self._file = pathlib.Path(PROG_DIR, "secret.json")
-        if not TYPE_CHECKING:
-            with open(self._file, encoding="utf-8", mode="r") as secret_f:
-                self.secrets = json.load(secret_f)
-            self.token: str = self.secrets["token"]
-        else:
-            self.secrets = {}
-            self.token = ""
+        with open(self._file, encoding="utf-8", mode="r") as secret_f:
+            self.secrets = json.load(secret_f)
+        self.token: str = self.secrets["token"]
 
     def __repr__(self) -> str:
         return "[OBFUSCATED]"
@@ -103,11 +99,8 @@ class MiniConfig:
 
     def __init__(self) -> None:
         self._file = pathlib.Path(PROG_DIR, "config.json")
-        if not TYPE_CHECKING:
-            with open(self._file, encoding="utf-8", mode="r") as config_f:
-                self._config: dict = json.load(config_f)
-        else:
-            self._config: dict = {}
+        with open(self._file, encoding="utf-8", mode="r") as config_f:
+            self._config: dict = json.load(config_f)
 
     def __dict__(self) -> dict:
         return self._config
