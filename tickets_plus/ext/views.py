@@ -6,7 +6,7 @@ Note that these are not cogs, but rather discord.py views.
 Typical usage example:
     ```py
     from tickets_plus.ext import views
-    
+
     @bot.command()
     async def example(ctx):
         await ctx.send("Example", view=views.ExampleView())
@@ -37,14 +37,24 @@ class Confirm(discord.ui.View):
     value: bool | None
 
     def __init__(self):
-        """Initialises the view."""
+        """Initialises the view.
+
+        We prep the button and set return value to None.
+        """
         super().__init__()
         self.value = None
 
     @discord.ui.button(label="Confirm", style=discord.ButtonStyle.green)
     async def confirm(self, interaction: discord.Interaction,
                       button: discord.ui.Button):
-        """The confirm button."""
+        """The confirm button was pressed.
+
+        We set the return value to True, disable the button and stop the view.
+
+        Args:
+            interaction: The interaction that triggered the button.
+            button: The button that was pressed.
+        """
         await interaction.response.send_message("Confirmed", ephemeral=True)
         self.value = True
         button.disabled = True
@@ -53,7 +63,14 @@ class Confirm(discord.ui.View):
     @discord.ui.button(label="Cancel", style=discord.ButtonStyle.red)
     async def cancel(self, interaction: discord.Interaction,
                      button: discord.ui.Button):
-        """The cancel button."""
+        """The cancel button.
+
+        We set the return value to False, disable the button and stop the view.
+
+        Args:
+            interaction: The interaction that triggered the button.
+            button: The button that was pressed.
+        """
         await interaction.response.send_message("Cancelled", ephemeral=True)
         self.value = False
         button.disabled = True
