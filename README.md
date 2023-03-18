@@ -47,37 +47,37 @@ Here are the steps to host your copy of [this bot.](https://github.com/Tech-TTGa
 2. Use `git clone https://github.com/Tech-TTGames/Tickets-Plus.git` or download and unpack [the repo](https://github.com/Tech-TTGames/Tickets-Plus/archive/refs/heads/main.zip).
 3. Ensure that python3.11 is installed and available, same for pip.
 4. Run `pip install poetry`.
-    4.1. Change some poetry settings as-needed. You can add the `--local' flag to set those settings only to the current directory
-        4.1.1. `poetry config virtualenvs.in-project true` installs the virtual environment in project not in a poetry-specific location (reccomended).
-        4.1.2. `poetry config virtualenvs.create false` if you don't want poetry to use a venv (not reccomended).
+    - Change some poetry settings as-needed. You can add the `--local' flag to set those settings only to the current directory
+        + `poetry config virtualenvs.in-project true` installs the virtual environment in project not in a poetry-specific location (reccomended).
+        + `poetry config virtualenvs.create false` if you don't want poetry to use a venv (not reccomended).
 5. Run `poetry install`
-    5.1. Depending on DB used add `-E pgsql` or `-E sqlite`
-    5.2. If you want development packages add `--with dev`
+    - Depending on DB used add `-E pgsql` or `-E sqlite`
+    - If you want development packages add `--with dev`
 6. Install PostgreSQL. [Guide Here](https://www.postgresql.org/download/)
-    6.1. Set up automatic postgres startup [Linux](https://www.postgresql.org/docs/current/server-start.html) and for windows just start it via `services.msc`
-    6.2. Set up user and database for bot. <FIELD> are required and to be repalced with your own stuff. [FIELD] are optional and can be ignored.
-        6.2.1. Linux:
-            6.2.1.1. `sudo -u postgres -i`
-            6.2.1.2. `createuser <dbuser> --pwprompt` The prompt will ask you for password for new user - <dbpass>
-            6.2.1.3. `createdb <dbname> [comment] -E UTF8 -O <dbuser>` <dbuser> being the same as in previous step.
-        6.2.2. Windows:
-            6.2.2.1. If the installed postgres bin isn't in PATH use `cd` to go to the instalaltion bin.
-            6.2.2.2. `createuser <dbuser> --pwprompt -U postgres`. The prompt will ask you for password to postgres and password for new user - <dbpass>.
-            6.2.2.3. `createdb <dbname> [comment] -E UTF8 -O <dbuser> -U postgres` <dbuser> being the same as in previous step.
-    6.3. Fill out config.json based on the database config environment. (refer to example_config.json)
-        6.3.1. Don't change "dbtype" unless you're using sqlite.
-        6.3.2. Unless you are using remote server/changed config don't touch "dbhost" and "dbport".
-        6.3.3. Otherwise all parameters are named *here* and in example_config.json the same
+    1. Set up automatic postgres startup [Linux](https://www.postgresql.org/docs/current/server-start.html) and for windows just start it via `services.msc`
+    2. Set up user and database for bot. <FIELD> are required and to be repalced with your own stuff. [FIELD] are optional and can be ignored.
+        - Linux:
+            1. `sudo -u postgres -i`
+            2. `createuser <dbuser> --pwprompt` The prompt will ask you for password for new user - <dbpass>
+            3. `createdb <dbname> [comment] -E UTF8 -O <dbuser>` <dbuser> being the same as in previous step.
+        - Windows:
+            1. If the installed postgres bin isn't in PATH use `cd` to go to the instalaltion bin.
+            2. `createuser <dbuser> --pwprompt -U postgres`. The prompt will ask you for password to postgres and password for new user - <dbpass>.
+            3. `createdb <dbname> [comment] -E UTF8 -O <dbuser> -U postgres` <dbuser> being the same as in previous step.
+    3. Fill out config.json based on the database config environment. (refer to example_config.json)
+        - Don't change "dbtype" unless you're using sqlite.
+        - Unless you are using remote server/changed config don't touch "dbhost" and "dbport".
+        - Otherwise all parameters are named *here* and in example_config.json the same
 5. Create the bot on [Discord Developers](https://discord.com/developers/applications).
     7.1. Create application however you want.
     7.2. Create a bot.
     7.3. Turn on the 'Message Content' privileged intent. Probably disable 'Public Bot'.
     7.4. Input your bot token to secret.json. (Refer to example_secret.json)
     7.5. Invite the bot to your server! Replace the <CLIENT_ID> in the below invites with numbers from https://discord.com/developers/applications/<CLIENT_ID>/
-        7.5.1. The ***easy link*** https://discord.com/api/oauth2/authorize?client_id=<CLIENT_ID>&permissions=8&scope=bot%20applications.commands
-        7.5.2. The *safer link* https://discord.com/api/oauth2/authorize?client_id=<CLIENT_ID>&permissions=535059492048&scope=bot%20applications.commands
+        - The ***easy link*** https://discord.com/api/oauth2/authorize?client_id=<CLIENT_ID>&permissions=8&scope=bot%20applications.commands
+        - The *safer link* https://discord.com/api/oauth2/authorize?client_id=<CLIENT_ID>&permissions=535059492048&scope=bot%20applications.commands
 6. Start your bot! Use `poetry run start` or after activating venv (if present) `python3 
-    6.1. Probably add a background service that will restart the bot on boot. *I use systemctl for my bots.*
+    - Probably add a background service that will restart the bot on boot. *I use systemctl for my bots.*
 
 ### Database Documentation
 
