@@ -48,8 +48,8 @@ Here are the steps to host your copy of [this bot.](https://github.com/Tech-TTGa
 3. Ensure that python3.11 is installed and available, same for pip.
 4. Run `pip install poetry`.
     - Change some poetry settings as-needed. You can add the `--local` flag to set those settings only to the current directory
-        + `poetry config virtualenvs.in-project true` installs the virtual environment in project not in a poetry-specific location (reccomended).
-        + `poetry config virtualenvs.create false` if you don't want poetry to use a venv (not reccomended).
+        - `poetry config virtualenvs.in-project true` installs the virtual environment in project not in a poetry-specific location (reccomended).
+        - `poetry config virtualenvs.create false` if you don't want poetry to use a venv (not reccomended).
 5. Run `poetry install`
     - Depending on DB used add `-E pgsql` or `-E sqlite`
     - If you want development packages add `--with dev`
@@ -68,20 +68,20 @@ Here are the steps to host your copy of [this bot.](https://github.com/Tech-TTGa
         - Don't change "dbtype" unless you're using sqlite.
         - Unless you are using remote server/changed config don't touch "dbhost" and "dbport".
         - Otherwise all parameters are named *here* and in example_config.json the same
-5. Create the bot on [Discord Developers](https://discord.com/developers/applications).
-    7.1. Create application however you want.
-    7.2. Create a bot.
-    7.3. Turn on the 'Message Content' privileged intent. Probably disable 'Public Bot'.
-    7.4. Input your bot token to secret.json. (Refer to example_secret.json)
-    7.5. Invite the bot to your server! Replace the <CLIENT_ID> in the below invites with numbers from `https://discord.com/developers/applications/<CLIENT_ID>/`
+7. Create the bot on [Discord Developers](https://discord.com/developers/applications).
+    1. Create application however you want.
+    2. Create a bot.
+    3. Turn on the 'Message Content' privileged intent. Probably disable 'Public Bot'.
+    4. Input your bot token to secret.json. (Refer to example_secret.json)
+    5. Invite the bot to your server! Replace the <CLIENT_ID> in the below invites with numbers from `https://discord.com/developers/applications/<CLIENT_ID>/`
         - The ***easy link*** - `https://discord.com/api/oauth2/authorize?client_id=<CLIENT_ID>&permissions=8&scope=bot%20applications.commands`
         - The *safer link* - `https://discord.com/api/oauth2/authorize?client_id=<CLIENT_ID>&permissions=535059492048&scope=bot%20applications.commands`
-6. Start your bot! Use `poetry run start` or after activating venv (if present) `python3 
+8. Start your bot! Use `poetry run start` or after activating venv (if present) `python3 /tickets_plus/`
     - Probably add a background service that will restart the bot on boot. *I use systemctl for my bots.*
 
 ### Database Documentation
 
-* [Database Documentation](https://tickets-plus.techttgames.dev/database_info.html)
+- [Database Documentation](https://tickets-plus.techttgames.dev/database_info.html)
 
 [^1]: This bot is not affiliated with the TicketsBot team.  When a feature is added to the main bot any feature that is no longer needed will be discontinued here.
 [^0]: [Tech-TTGames](https:\\github.com\Tech-TTGames), I'm the only one here right now. I had some help in general but I'm the only one who has done any coding. More people are welcome to join. I had help with organization and checking my code from [kk5dire](https://github.com/kk5dire) and [Ben Foster](https://github.com/benfoster04) with hosting and some documentation changes.
