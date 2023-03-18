@@ -47,7 +47,7 @@ Here are the steps to host your copy of [this bot.](https://github.com/Tech-TTGa
 2. Use `git clone https://github.com/Tech-TTGames/Tickets-Plus.git` or download and unpack [the repo](https://github.com/Tech-TTGames/Tickets-Plus/archive/refs/heads/main.zip).
 3. Ensure that python3.11 is installed and available, same for pip.
 4. Run `pip install poetry`.
-    - Change some poetry settings as-needed. You can add the `--local' flag to set those settings only to the current directory
+    - Change some poetry settings as-needed. You can add the `--local` flag to set those settings only to the current directory
         + `poetry config virtualenvs.in-project true` installs the virtual environment in project not in a poetry-specific location (reccomended).
         + `poetry config virtualenvs.create false` if you don't want poetry to use a venv (not reccomended).
 5. Run `poetry install`
