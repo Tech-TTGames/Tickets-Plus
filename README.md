@@ -2,9 +2,7 @@
 
 <img align="left" src="https://raw.githubusercontent.com/Tech-TTGames/Tickets-Plus/main/branding/rounded.png" height="200" width="200"/>
 
-[![CodeQL](https://github.com/Tech-TTGames/Tickets-Plus/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/Tech-TTGames/Tickets-Plus/actions/workflows/codeql.yml) [![Pylint](https://github.com/Tech-TTGames/Tickets-Plus/actions/workflows/pylint.yml/badge.svg?branch=main)](https://github.com/Tech-TTGames/Tickets-Plus/actions/workflows/pylint.yml)
-
-[![DeepSource](https://deepsource.io/gh/Tech-TTGames/Tickets-Plus.svg/?label=active+issues&show_trend=true&token=ourUeg696DFMDcZDoZi0ZqGn)](https://deepsource.io/gh/Tech-TTGames/Tickets-Plus/?ref=repository-badge)
+[![CodeQL](https://github.com/Tech-TTGames/Tickets-Plus/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/Tech-TTGames/Tickets-Plus/actions/workflows/codeql.yml) [![Pylint](https://github.com/Tech-TTGames/Tickets-Plus/actions/workflows/pylint.yml/badge.svg?branch=main)](https://github.com/Tech-TTGames/Tickets-Plus/actions/workflows/pylint.yml) [![DeepSource](https://deepsource.io/gh/Tech-TTGames/Tickets-Plus.svg/?label=active+issues&show_trend=true&token=ourUeg696DFMDcZDoZi0ZqGn)](https://deepsource.io/gh/Tech-TTGames/Tickets-Plus/?ref=repository-badge)
 
 A Discord bot that adds extensions to the [Tickets](https://github.com/TicketsBot) discord bot.[^1]
 Made by the Tickets+ team, a group of volunteers[^0] who want to add features to the Tickets bot. But didn't know how to code in rust.
@@ -83,7 +81,7 @@ Here are the steps to host your copy of [this bot.](https://github.com/Tech-TTGa
 
 ### Database Documentation
 
- - [Database Documentation](https://tickets-plus.techttgames.dev/database_info.html)
+- [Database Documentation](https://tickets-plus.techttgames.dev/database_info.html)
 
 [^1]: This bot is not affiliated with the Tickets Bot team.  When a feature is added to the main bot, any feature that is no longer needed will be discontinued here.
 [^0]: [Tech-TTGames](https:\\github.com\Tech-TTGames), I'm the only one here right now. I had some help in general, but I'm the only one who has done any coding. More people are welcome to join. I had help with organization and checking my code from [kk5dire](https://github.com/kk5dire) and [Ben Foster](https://github.com/benfoster04) with hosting and some documentation changes.
