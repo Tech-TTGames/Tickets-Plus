@@ -30,7 +30,7 @@ import discord
 import sqlalchemy
 from discord.ext import commands
 
-VERSION = "v0.1.0.0"
+VERSION = "v0.1.0.0a"
 """The current version of the bot as a string.
 
 FORMAT:
@@ -42,7 +42,7 @@ PROG_DIR = pathlib.Path(__file__).parent.parent.parent.absolute()
 """The absolute path to the root directory of the bot."""
 INTENTS = discord.Intents.default()
 """The discord gateway intents that the bot uses."""
-INTENTS.members = True
+INTENTS.message_content = True
 HANDLER = handlers.RotatingFileHandler(
     filename=pathlib.Path(PROG_DIR, "log", "bot.log"),
     encoding="utf-8",
