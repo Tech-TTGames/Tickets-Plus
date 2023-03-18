@@ -73,7 +73,7 @@ Here are the steps to host your copy of [this bot.](https://github.com/Tech-TTGa
     7.2. Create a bot.
     7.3. Turn on the 'Message Content' privileged intent. Probably disable 'Public Bot'.
     7.4. Input your bot token to secret.json. (Refer to example_secret.json)
-    7.5. Invite the bot to your server! Replace the <CLIENT_ID> in the below invites with numbers from https://discord.com/developers/applications/<CLIENT_ID>/
+    7.5. Invite the bot to your server! Replace the <CLIENT_ID> in the below invites with numbers from `https://discord.com/developers/applications/<CLIENT_ID>/`
         - The ***easy link*** - `https://discord.com/api/oauth2/authorize?client_id=<CLIENT_ID>&permissions=8&scope=bot%20applications.commands`
         - The *safer link* - `https://discord.com/api/oauth2/authorize?client_id=<CLIENT_ID>&permissions=535059492048&scope=bot%20applications.commands`
 6. Start your bot! Use `poetry run start` or after activating venv (if present) `python3 
