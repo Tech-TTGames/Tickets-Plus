@@ -55,15 +55,15 @@ Here are the steps to host your copy of [this bot.](https://github.com/Tech-TTGa
     - If you want development packages add `--with dev`
 6. Install PostgreSQL. [Guide Here](https://www.postgresql.org/download/)
     1. Set up automatic postgres startup [Linux](https://www.postgresql.org/docs/current/server-start.html) and for windows just start it via `services.msc`
-    2. Set up user and database for bot. <FIELD> are required and to be repalced with your own stuff. [FIELD] are optional and can be ignored.
+    2. Set up user and database for bot. `<FIELD>` are required and to be repalced with your own stuff. [FIELD] are optional and can be ignored.
         - Linux:
             1. `sudo -u postgres -i`
-            2. `createuser <dbuser> --pwprompt` The prompt will ask you for password for new user - <dbpass>
-            3. `createdb <dbname> [comment] -E UTF8 -O <dbuser>` <dbuser> being the same as in previous step.
+            2. `createuser <dbuser> --pwprompt` The prompt will ask you for password for new user - `<dbpass>`.
+            3. `createdb <dbname> [comment] -E UTF8 -O <dbuser>` - `<dbuser>` being the same as in previous step.
         - Windows:
             1. If the installed postgres bin isn't in PATH use `cd` to go to the instalaltion bin.
-            2. `createuser <dbuser> --pwprompt -U postgres`. The prompt will ask you for password to postgres and password for new user - <dbpass>.
-            3. `createdb <dbname> [comment] -E UTF8 -O <dbuser> -U postgres` <dbuser> being the same as in previous step.
+            2. `createuser <dbuser> --pwprompt -U postgres`. The prompt will ask you for password to postgres and password for new user - `<dbpass>`.
+            3. `createdb <dbname> [comment] -E UTF8 -O <dbuser> -U postgres` - `<dbuser>` being the same as in previous step.
     3. Fill out config.json based on the database config environment. (refer to example_config.json)
         - Don't change "dbtype" unless you're using sqlite.
         - Unless you are using remote server/changed config don't touch "dbhost" and "dbport".
