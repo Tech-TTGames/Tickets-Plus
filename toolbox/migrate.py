@@ -92,9 +92,9 @@ def main():
             dbarch = input("What is the database type? (postgresql)\n")
             if dbarch == "":
                 dbarch = "postgresql"
-            dbdriver = input("What is the database driver? (psycopg)\n")
+            dbdriver = input("What is the database driver? (asyncpg)\n")
             if dbdriver == "":
-                dbdriver = "psycopg"
+                dbdriver = "asyncpg" 
             config["dbtype"] = dbarch + "+" + dbdriver
             dbhost = input("What is the database host? (localhost)\n")
             if dbhost == "":
