@@ -164,6 +164,7 @@ def main():
                 upld = input(
                     "Would you like to upload the old config file to the database? (Y/N)\n"  # pylint: disable=line-too-long
                 )
+                upld = upld.upper()
                 if upld == "Y":
                     print("Parsing old config file...")
                     dic = cnfg.cnfg()  # type: ignore
