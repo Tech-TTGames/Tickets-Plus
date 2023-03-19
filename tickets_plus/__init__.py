@@ -80,11 +80,11 @@ async def start_bot(stat_data: statvars.MiniConfig = statvars.MiniConfig()
 
     if os.environ.get("TICKETS_PLUS_VERBOSE", "false").lower() == "true":
         logging.info("Enabling verbose logging.")
-        Handler2 = logging.StreamHandler()
-        logging.root.addHandler(Handler2)
-        dscrd_logger.addHandler(Handler2)
-        sql_logger.addHandler(Handler2)
-        sql_pool_logger.addHandler(Handler2)
+        handler2 = logging.StreamHandler()
+        logging.root.addHandler(handler2)
+        dscrd_logger.addHandler(handler2)
+        sql_logger.addHandler(handler2)
+        sql_pool_logger.addHandler(handler2)
 
     # Set up bot
     logging.info("Creating engine...")
