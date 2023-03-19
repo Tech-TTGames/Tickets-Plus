@@ -30,7 +30,7 @@ import discord
 import sqlalchemy
 from discord.ext import commands
 
-VERSION = "v0.1.0.0a"
+VERSION = "v0.1.0.0b"
 """The current version of the bot as a string.
 
 FORMAT:

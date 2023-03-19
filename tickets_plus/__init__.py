@@ -28,6 +28,7 @@ Typical usage example:
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
 import logging
+import os
 
 import discord
 import sqlalchemy
@@ -76,6 +77,14 @@ async def start_bot(stat_data: statvars.MiniConfig = statvars.MiniConfig()
     logging.root.setLevel(logging.INFO)
     logging.root.addHandler(statvars.HANDLER)
     logging.info("Logging set up.")
+
+    if os.environ.get("TICKETS_PLUS_VERBOSE", "false").lower() == "true":
+        logging.info("Enabling verbose logging.")
+        Handler2 = logging.StreamHandler()
+        logging.root.addHandler(Handler2)
+        dscrd_logger.addHandler(Handler2)
+        sql_logger.addHandler(Handler2)
+        sql_pool_logger.addHandler(Handler2)
 
     # Set up bot
     logging.info("Creating engine...")

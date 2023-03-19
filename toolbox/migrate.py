@@ -116,10 +116,13 @@ def main():
             if dbpass == "":
                 dbpass = "password"
             config["dbpass"] = dbpass
-
-            print("This is the end of the database configuration.")
-            dev_guild_id = input("What is the developer guild ID?\n")
-            config["dev_guild_id"] = int(dev_guild_id)
+            if legacy:
+                config["dev_guild_id"] = cnfg.cnfg()["guild"]  # type: ignore
+            else:
+                dev_guild_id = input("What is the development guild ID? (0)\n")
+                if dev_guild_id == "":
+                    dev_guild_id = "0"
+                config["dev_guild_id"] = int(dev_guild_id)
 
             print("This is the end of the configuration.")
             print("The following is the configuration"
@@ -128,11 +131,13 @@ def main():
             print(configjson)
             write = input(
                 "Would you like to write this to the config file? (Y/N)\n")
+            write = write.upper()
             if write == "Y":
-                if new:
+                if legacy:
                     write = input(
                         "Would you like to overwrite the existing config file? (Y/N)\n"  # pylint: disable=line-too-long
                     )
+                    write = write.upper()
                 if write == "Y":
                     with open(pathlib.Path(_PROG_DIR, "config.json"),
                               "w",
@@ -142,7 +147,13 @@ def main():
             print(
                 "I will now create the database schema and tables if they do not exist."  # pylint: disable=line-too-long
             )
-            engine = create_engine(URL.create(**config))
+            engine = create_engine(
+                URL.create(drivername=config["dbtype"],
+                           username=config["dbuser"],
+                           password=config["dbpass"],
+                           host=config["dbhost"],
+                           port=config["dbport"],
+                           database=config["dbname"]))
             with engine.begin() as conn:
                 conn.execute(
                     schema.CreateSchema("tickets_plus", if_not_exists=True))
