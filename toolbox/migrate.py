@@ -81,6 +81,7 @@ def main():
         print("It will also load the config file into the database.")
         create = input("Would you like to create the"
                        " new config file? (Y/N)\n")
+        create = create.upper()
         if create == "Y":
             print("I will now guide you through the"
                   " creation of the new config file.")
