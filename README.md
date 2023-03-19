@@ -46,7 +46,7 @@ Here are the steps to host your copy of [this bot.](https://github.com/Tech-TTGa
 1. Open the directory you want the project to be placed in.
 2. Use `git clone https://github.com/Tech-TTGames/Tickets-Plus.git` or download and unpack [the repo](https://github.com/Tech-TTGames/Tickets-Plus/archive/refs/heads/main.zip).
 3. Ensure that python3.11 is installed and available, same for pip.
-4. Run `pip install poetry`.
+4. Run `curl -sSL https://install.python-poetry.org | python3 -`. And follow instructions provided there.
     - Change some poetry settings as-needed. You can add the `--local` flag to set those settings only to the current directory
         - `poetry config virtualenvs.in-project true` installs the virtual environment in the project, not in a poetry-specific location (recommended).
         - `poetry config virtualenvs.create false` if you don't want poetry to use a venv (not recommended).
@@ -58,12 +58,16 @@ Here are the steps to host your copy of [this bot.](https://github.com/Tech-TTGa
     2. Set up user and database for the bot. `<FIELD>` are required and to be replaced with your stuff. [FIELD] are optional and can be ignored.
         - Linux:
             1. `sudo -u postgres -i`
-            2. `createuser <dbuser> --pwprompt` The prompt will ask you for a password for new user - `<dbpass>`.
-            3. `createdb <dbname> [comment] -E UTF8 -O <dbuser>` - `<dbuser>` being the same as in the previous step.
+            2. `createuser <dbuser> --pwprompt`  
+                The prompt will ask you for a password for new user - `<dbpass>`.
+            3. `createdb <dbname> [comment] -E UTF8 -O <dbuser>`  
+                `<dbuser>` being the same as in the previous step.
         - Windows:
             1. If the installed PostgreSQL bin isn't in PATH, use `cd` to go to the installation bin.
-            2. `createuser <dbuser> --pwprompt -U postgres`. The prompt will ask you for the password of the postgres user and the password for the new user - `<dbpass>`.
-            3. `createdb <dbname> [comment] -E UTF8 -O <dbuser> -U postgres` - `<dbuser>` being the same as in the previous step.
+            2. `createuser <dbuser> --pwprompt -U postgres`  
+                The prompt will ask you for the password of the postgres user and the password for the new user - `<dbpass>`.
+            3. `createdb <dbname> [comment] -E UTF8 -O <dbuser> -U postgres`  
+                `<dbuser>` being the same as in the previous step.
     3. Fill out config.json based on the database config environment. (refer to example_config.json)
         - Don't change “dbtype” unless you're using SQLite.
         - Unless you are using a remote server/changed config, don't touch “dbhost” and “dbport”.
