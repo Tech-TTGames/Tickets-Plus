@@ -86,7 +86,7 @@ class ErrorHandling(commands.Cog, name="AppCommandErrorHandler"):
         """
         try:
             await ctx.response.defer()
-        except discord.HTTPException:
+        except discord.InteractionResponded:
             pass
         if isinstance(ctx.command, app_commands.Command):
             try:
