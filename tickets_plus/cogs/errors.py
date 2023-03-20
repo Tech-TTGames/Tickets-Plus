@@ -84,10 +84,8 @@ class ErrorHandling(commands.Cog, name="AppCommandErrorHandler"):
             ctx: The interaction that raised the error.
             error: The error that was raised.
         """
-        try:
-            await ctx.response.defer()
-        except discord.InteractionResponded:
-            pass
+        if not ctx.response.is_done():
+            await ctx.response.defer(ephemeral=True)
         if isinstance(ctx.command, app_commands.Command):
             try:
                 if ctx.command.on_error is not None:
