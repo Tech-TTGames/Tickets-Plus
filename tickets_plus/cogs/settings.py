@@ -68,6 +68,7 @@ class Settings(commands.GroupCog,
             ctx: The interaction context.
             user: The user to add/remove to ticket bots.
         """
+        await ctx.response.defer(ephemeral=True)
         async with self._bt.get_connection() as conn:
             new, ticket_user = await conn.get_ticket_bot(
                 user.id,
@@ -82,7 +83,7 @@ class Settings(commands.GroupCog,
                 emd.add_field(name="Added:", value=user.mention)
                 emd.color = discord.Color.green()
             await conn.commit()
-        await ctx.response.send_message(embed=emd, ephemeral=True)
+        await ctx.followup.send(embed=emd, ephemeral=True)
 
     @app_commands.command(name="staff", description="Change the staff roles.")
     @app_commands.describe(role="The role to add/remove from staff roles.")
@@ -98,6 +99,7 @@ class Settings(commands.GroupCog,
             ctx: The interaction context.
             role: The role to add/remove from staff roles.
         """
+        await ctx.response.defer(ephemeral=True)
         async with self._bt.get_connection() as conn:
             new, staff_role = await conn.get_staff_role(
                 role.id,
@@ -112,7 +114,7 @@ class Settings(commands.GroupCog,
                 emd.add_field(name="Added:", value=role.mention)
                 emd.color = discord.Color.green()
             await conn.commit()
-        await ctx.response.send_message(embed=emd, ephemeral=True)
+        await ctx.followup.send(embed=emd, ephemeral=True)
 
     @app_commands.command(name="observers",
                           description="Change the observers roles.")
@@ -130,6 +132,7 @@ class Settings(commands.GroupCog,
             ctx: The interaction context.
             role: The role to add/remove from observers roles.
         """
+        await ctx.response.defer(ephemeral=True)
         async with self._bt.get_connection() as conn:
             new, obsrvrs = await conn.get_observers_role(
                 role.id,
@@ -144,7 +147,7 @@ class Settings(commands.GroupCog,
                 emd.add_field(name="Added:", value=role.mention)
                 emd.color = discord.Color.green()
             await conn.commit()
-        await ctx.response.send_message(embed=emd, ephemeral=True)
+        await ctx.followup.send(embed=emd, ephemeral=True)
 
     @app_commands.command(name="communitysupport",
                           description="Change the community support roles.")
@@ -163,6 +166,7 @@ class Settings(commands.GroupCog,
             ctx: The interaction context.
             role: The role to add/remove from community support roles.
         """
+        await ctx.response.defer(ephemeral=True)
         async with self._bt.get_connection() as conn:
             new, comsup = await conn.get_community_role(
                 role.id,
@@ -177,7 +181,7 @@ class Settings(commands.GroupCog,
                 emd.add_field(name="Added:", value=role.mention)
                 emd.color = discord.Color.green()
             await conn.commit()
-        await ctx.response.send_message(embed=emd, ephemeral=True)
+        await ctx.followup.send(embed=emd, ephemeral=True)
 
     @app_commands.command(name="communityping",
                           description="Change the community ping roles.")
@@ -198,6 +202,7 @@ class Settings(commands.GroupCog,
             ctx: The interaction context.
             role: The role to add/remove from community ping roles.
         """
+        await ctx.response.defer(ephemeral=True)
         async with self._bt.get_connection() as conn:
             new, comsup = await conn.get_community_ping(
                 role.id,
@@ -212,7 +217,7 @@ class Settings(commands.GroupCog,
                 emd.add_field(name="Added:", value=role.mention)
                 emd.color = discord.Color.green()
             await conn.commit()
-        await ctx.response.send_message(embed=emd, ephemeral=True)
+        await ctx.followup.send(embed=emd, ephemeral=True)
 
     @app_commands.command(name="openmsg",
                           description="Change the open message.")
@@ -235,6 +240,7 @@ class Settings(commands.GroupCog,
             `tickets_plus.ext.exceptions.InvalidParameters`: Message too long.
                 Raised when the message is longer than 200 characters.
         """
+        await ctx.response.defer(ephemeral=True)
         if len(message) > 200:
             raise exceptions.InvalidParameters("The message must be less than"
                                                " 200 characters.")
@@ -247,7 +253,7 @@ class Settings(commands.GroupCog,
                             color=discord.Color.yellow())
         emd.add_field(name="Old message:", value=old)
         emd.add_field(name="New message:", value=message)
-        await ctx.response.send_message(embed=emd, ephemeral=True)
+        await ctx.followup.send(embed=emd, ephemeral=True)
 
     @app_commands.command(name="staffteamname",
                           description="Change the staff team's name.")
@@ -269,9 +275,8 @@ class Settings(commands.GroupCog,
             `tickets_plus.ext.exceptions.InvalidParameters`: Name too long.
                 Raised when the name is longer than 40 characters.
         """
+        await ctx.response.defer(ephemeral=True)
         if len(name) > 40:
-            await ctx.response.send_message(
-                "The name must be less than 40 characters.", ephemeral=True)
             raise exceptions.InvalidParameters("Name too long")
         async with self._bt.get_connection() as conn:
             guild = await conn.get_guild(ctx.guild.id)  # type: ignore
@@ -282,7 +287,7 @@ class Settings(commands.GroupCog,
                             color=discord.Color.yellow())
         emd.add_field(name="Old name:", value=old)
         emd.add_field(name="New name:", value=name)
-        await ctx.response.send_message(embed=emd, ephemeral=True)
+        await ctx.followup.send(embed=emd, ephemeral=True)
 
     @app_commands.command(name="autoclose",
                           description="Change the autoclose time.")
@@ -311,6 +316,7 @@ class Settings(commands.GroupCog,
             hours: The new autoclose time hours. Defaults to 0.
             minutes: The new autoclose time minutes. Defaults to 0.
         """
+        await ctx.response.defer(ephemeral=True)
         async with self._bt.get_connection() as conn:
             guild = await conn.get_guild(ctx.guild.id)  # type: ignore
             if guild.first_autoclose is None:
@@ -336,7 +342,7 @@ class Settings(commands.GroupCog,
                     emd.add_field(name="New autoclose time:",
                                   value=f"{str(newtime)}")
                 await conn.commit()
-        await ctx.response.send_message(embed=emd, ephemeral=True)
+        await ctx.followup.send(embed=emd, ephemeral=True)
 
     @app_commands.command(name="msgdiscovery",
                           description="Toggle message link discovery.")
@@ -351,6 +357,7 @@ class Settings(commands.GroupCog,
         Args:
             ctx: The interaction context.
         """
+        await ctx.response.defer(ephemeral=True)
         async with self._bt.get_connection() as conn:
             guild = await conn.get_guild(ctx.guild.id)  # type: ignore
             new_status = not guild.msg_discovery
@@ -360,7 +367,7 @@ class Settings(commands.GroupCog,
             title="Message Toggled",
             description=f"Message discovery is now {new_status}",
             color=discord.Color.green() if new_status else discord.Color.red())
-        await ctx.response.send_message(embed=emd, ephemeral=True)
+        await ctx.followup.send(embed=emd, ephemeral=True)
 
     @app_commands.command(name="stripbuttons",
                           description="Toggle button stripping.")
@@ -376,6 +383,7 @@ class Settings(commands.GroupCog,
         Args:
             ctx: The interaction context.
         """
+        await ctx.response.defer(ephemeral=True)
         async with self._bt.get_connection() as conn:
             guild = await conn.get_guild(ctx.guild.id)  # type: ignore
             new_status = not guild.strip_buttons
@@ -385,7 +393,7 @@ class Settings(commands.GroupCog,
             title="Button Stripping Toggled",
             description=f"Button stripping is now {new_status}",
             color=discord.Color.green() if new_status else discord.Color.red())
-        await ctx.response.send_message(embed=emd, ephemeral=True)
+        await ctx.followup.send(embed=emd, ephemeral=True)
 
 
 async def setup(bot_instance: bot.TicketsPlusBot) -> None:

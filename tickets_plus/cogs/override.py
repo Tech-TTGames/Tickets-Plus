@@ -88,6 +88,8 @@ class Overrides(commands.GroupCog,
         logging.info("Finished reloading cogs.")
         if sync:
             await self._bt.tree.sync()
+            dev_guild = self._bt.get_guild(_CNFG.getitem("dev_guild_id"))
+            await self._bt.tree.sync(guild=dev_guild)
             logging.info("Finished syncing tree.")
 
     @app_commands.command(name="close", description="Closes the bot.")
@@ -101,8 +103,8 @@ class Overrides(commands.GroupCog,
         Args:
             ctx: The interaction context.
         """
-        await ctx.response.send_message("Restarting...")
-        logging.info("Restarting...")
+        await ctx.response.send_message("Closing...")
+        logging.info("Closing...")
         await self._bt.close()
 
     @app_commands.command(
@@ -129,6 +131,7 @@ class Overrides(commands.GroupCog,
             color=discord.Color.red(),
         )
         await ctx.response.send_message(embed=emd, view=confr)
+        mgs = await ctx.original_response()
         await confr.wait()
         if confr.value is None:
             emd = discord.Embed(
@@ -136,20 +139,20 @@ class Overrides(commands.GroupCog,
                 description="Timed out.",
                 color=discord.Color.red(),
             )
-            await ctx.response.edit_message(embed=emd)
+            await ctx.followup.edit_message(mgs.id, embed=emd)
             return
         if not confr.value:
             emd = discord.Embed(title="Pull from git",
                                 description="Cancelled.",
                                 color=discord.Color.orange())
-            await ctx.response.edit_message(embed=emd)
+            await ctx.followup.edit_message(mgs.id, embed=emd)
             return
         emd = discord.Embed(
             title="Pull from git",
             description="Confirmed.",
             color=discord.Color.green(),
         )
-        await ctx.response.edit_message(embed=emd)
+        await ctx.followup.edit_message(mgs.id, embed=emd)
         await ctx.followup.send("Pulling latest changes...")
         logging.info("Pulling latest changes...")
         pull = await asyncio.create_subprocess_shell(
@@ -236,6 +239,8 @@ class Overrides(commands.GroupCog,
         await ctx.send("Syncing...")
         logging.info("Syncing...")
         await self._bt.tree.sync()
+        dev_guild = self._bt.get_guild(_CNFG.getitem("dev_guild_id"))
+        await self._bt.tree.sync(guild=dev_guild)
         await ctx.send("Synced.")
         logging.info("Synced.")
 

@@ -84,14 +84,14 @@ class ErrorHandling(commands.Cog, name="AppCommandErrorHandler"):
             ctx: The interaction that raised the error.
             error: The error that was raised.
         """
-        if hasattr(ctx, "command"):
-            if hasattr(ctx.command, "on_error"):
-                return
-
-            if hasattr(ctx.command, "parent"):
-                # Split up to avoid AttributeError
-                if hasattr(ctx.command.parent, "on_error"):  # type: ignore
+        if not ctx.response.is_done():
+            await ctx.response.defer(ephemeral=True)
+        if isinstance(ctx.command, app_commands.Command):
+            try:
+                if ctx.command.on_error is not None:
                     return
+            except AttributeError:
+                pass
 
         emd = discord.Embed(
             title="Tickets+ Error: 500 - Internal Server Error",
@@ -108,7 +108,7 @@ class ErrorHandling(commands.Cog, name="AppCommandErrorHandler"):
             emd.title = "Tickets+ Error: 404 - Command Not Found"
             emd.description = "The command you tried to use does not exist."
             emd.set_footer(text="If this error persists, please report it.")
-            await ctx.response.send_message(embed=emd, ephemeral=True)
+            await ctx.followup.send(embed=emd, ephemeral=True)
             return
 
         if isinstance(error, app_commands.CheckFailure):
@@ -122,36 +122,40 @@ class ErrorHandling(commands.Cog, name="AppCommandErrorHandler"):
                     f"{chr(92).join(error.missing_permissions)}")
                 emd.set_footer(text="If you are sure the bot has the "
                                "required permissions, please report this.")
-                await ctx.response.send_message(embed=emd, ephemeral=True)
+                await ctx.followup.send(embed=emd, ephemeral=True)
                 return
+
             if isinstance(error, app_commands.NoPrivateMessage):
                 emd.title = "Tickets+ Error: 405 - DMs Not Allowed"
                 emd.description = "This command cannot be used in DMs."
                 emd.set_footer(text="Please use this command in a server.")
-                await ctx.response.send_message(embed=emd, ephemeral=True)
+                await ctx.followup.send(embed=emd, ephemeral=True)
                 return
+
             if isinstance(error, app_commands.CommandOnCooldown):
                 emd.title = "Tickets+ Error: 429 - Command On Cooldown"
                 emd.description = (
                     "This command is on cooldown.\n"
                     f"Please try again in {error.retry_after} seconds.")
                 emd.set_footer(text="Thank you for using Tickets+!")
-                await ctx.response.send_message(embed=emd, ephemeral=True)
+                await ctx.followup.send(embed=emd, ephemeral=True)
                 return
+
             emd.title = "Tickets+ Error: 403 - Forbidden"
             emd.description = "You do not have permission to use this command."
-            emd.set_footer(text=f"Error type: {type(error)}")
-            await ctx.response.send_message(embed=emd, ephemeral=True)
+            emd.set_footer(text=f"Error type: {type(error).__name__}")
+            await ctx.followup.send(embed=emd, ephemeral=True)
             return
+
+        if isinstance(error, exceptions.TicketsPlusCommandError):
+            emd.title = "Tickets+ Error: 400 - Bad Request"
+            emd.description = str(error)
+            emd.set_footer(text=f"Error type: {type(error).__name__}")
+            await ctx.followup.send(embed=emd, ephemeral=True)
+            return  # We don't want to log this error.
 
         if isinstance(error, app_commands.CommandInvokeError):
             underlying_error = error.original
-            if isinstance(underlying_error, exceptions.TicketsPlusCommandError):
-                emd.title = "Tickets+ Error: 400 - Bad Request"
-                emd.description = str(underlying_error)
-                emd.set_footer(text=f"Error type: {type(underlying_error)}")
-                await ctx.response.send_message(embed=emd, ephemeral=True)
-                return  # We don't want to log this error.
 
             if isinstance(underlying_error, SQLAlchemyError):
                 logging.error("An error occurred while accessing the database:",
@@ -164,13 +168,13 @@ class ErrorHandling(commands.Cog, name="AppCommandErrorHandler"):
                     "You can get the link to GitHub and support server by "
                     "using the /version command.")
                 emd.set_footer(text=f"Error type: {type(underlying_error)}")
-                await ctx.response.send_message(embed=emd, ephemeral=True)
+                await ctx.followup.send(embed=emd, ephemeral=True)
                 return
 
         logging.error("An unhadled error occurred while executing a command:",
                       exc_info=error)
-        emd.set_footer(text=f"Error type: {type(error)}")
-        await ctx.response.send_message(embed=emd, ephemeral=True)
+        emd.set_footer(text=f"Error type: {type(error).__name__}")
+        await ctx.followup.send(embed=emd, ephemeral=True)
 
 
 async def setup(bot_instance: bot.TicketsPlusBot) -> None:

@@ -112,6 +112,7 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
                 Raised if the command is used in a channel that is not a ticket
                 or a staff notes thread.
         """
+        await ctx.response.defer(ephemeral=True)
         async with self._bt.get_connection() as confg:
             guild = await confg.get_guild(
                 ctx.guild.id)  # type: ignore # checked in decorator
@@ -127,7 +128,7 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
                     raise exceptions.InvalidLocation(
                         "This channel is not the designated staff"
                         " notes thread.")
-                await ctx.response.send_message(
+                await ctx.followup.send(
                     f"Responding to ticket with message:\n{sanitized_message}")
                 await ctx.channel.parent.send(  # type: ignore
                     f"**{guild.staff_team_name}:** {sanitized_message}")
@@ -138,7 +139,7 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
                     raise exceptions.InvalidLocation(
                         "This channel is not a ticket."
                         " If it is, use /register.")
-                await ctx.response.send_message(
+                await ctx.followup.send(
                     f"Responding to ticket with message:\n{sanitized_message}",
                     ephemeral=True,
                 )
@@ -168,6 +169,7 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
             `tickets_plus.ext.exceptions.ReferenceNotFound`: Thread missing.
                 Raised if the staff notes thread is missing.
         """
+        await ctx.response.defer(ephemeral=True)
         async with self._bt.get_connection() as confg:
             # We don't need account for DMs here, due to the guild_only.
             ticket = await confg.fetch_ticket(ctx.channel.id)  # type: ignore
@@ -188,7 +190,7 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
                 description="You have joined the staff notes thread.",
                 color=discord.Color.green())
             await thred.add_user(ctx.user)
-            await ctx.response.send_message(embed=emd, ephemeral=True)
+            await ctx.followup.send(embed=emd, ephemeral=True)
 
     @app_commands.command(name="anonymize",
                           description="Toggle anonymous staff responses.")
@@ -207,6 +209,7 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
             `tickets_plus.ext.exceptions.InvalidLocation`: Wrong location.
                 Raised if the command is used in a channel that is not a ticket.
         """
+        await ctx.response.defer(ephemeral=True)
         async with self._bt.get_connection() as confg:
             # Checked by discord in decorator
             ticket = await confg.fetch_ticket(ctx.channel.id)  # type: ignore
@@ -220,7 +223,7 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
             title="Success!",
             description=f"Anonymous staff responses are now {status}.",
             color=discord.Color.green() if status else discord.Color.red())
-        await ctx.response.send_message(embed=emd, ephemeral=True)
+        await ctx.followup.send(embed=emd, ephemeral=True)
 
     @app_commands.command(
         name="register",
@@ -245,6 +248,7 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
                 If the channel is already a ticket.
                 Or the execution space is not a text channel.
         """
+        await ctx.response.defer(ephemeral=True)
         if isinstance(ctx.channel, discord.TextChannel):
             channel = ctx.channel
             async with self._bt.get_connection() as confg:
@@ -272,7 +276,7 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
             emd = discord.Embed(title="Success!",
                                 description="Registered channel as a ticket.",
                                 color=discord.Color.green())
-            await ctx.response.send_message(embed=emd, ephemeral=True)
+            await ctx.followup.send(embed=emd, ephemeral=True)
             return
         raise exceptions.InvalidLocation("Invalid command execution space.")
 
