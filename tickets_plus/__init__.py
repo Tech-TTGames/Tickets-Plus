@@ -117,6 +117,7 @@ async def start_bot(stat_data: statvars.MiniConfig = statvars.MiniConfig()
         await conn.execute(
             sqlalchemy.schema.CreateSchema("tickets_plus", if_not_exists=True))
         await conn.run_sync(models.Base.metadata.create_all)
+        await conn.commit()
     logging.info("Tables ensured. Starting bot...")
     try:
         await bot_instance.start(statvars.Secret().token)

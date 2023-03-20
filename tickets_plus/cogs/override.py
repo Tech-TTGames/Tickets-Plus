@@ -80,7 +80,8 @@ class Overrides(commands.GroupCog,
             ctx: The interaction context.
             sync: Whether to sync the tree after reloading cogs.
         """
-        await ctx.response.send_message("Reloading cogs...")
+        await ctx.response.defer()
+        await ctx.followup.send("Reloading cogs...")
         logging.info("Reloading cogs...")
         for extension in cogs.EXTENSIONS:
             await self._bt.reload_extension(extension)
@@ -88,6 +89,8 @@ class Overrides(commands.GroupCog,
         logging.info("Finished reloading cogs.")
         if sync:
             await self._bt.tree.sync()
+            dev_guild = self._bt.get_guild(_CNFG.getitem("dev_guild_id"))
+            await self._bt.tree.sync(guild=dev_guild)
             logging.info("Finished syncing tree.")
 
     @app_commands.command(name="close", description="Closes the bot.")
@@ -101,7 +104,8 @@ class Overrides(commands.GroupCog,
         Args:
             ctx: The interaction context.
         """
-        await ctx.response.send_message("Restarting...")
+        await ctx.response.defer()
+        await ctx.followup.send("Restarting...")
         logging.info("Restarting...")
         await self._bt.close()
 
@@ -119,6 +123,7 @@ class Overrides(commands.GroupCog,
         Args:
             ctx: The interaction context.
         """
+        await ctx.response.defer()
         confr = views.Confirm()
         emd = discord.Embed(
             title="Pull from git",
@@ -128,7 +133,7 @@ class Overrides(commands.GroupCog,
                 "If you are not sure what you are doing, abort now."),
             color=discord.Color.red(),
         )
-        await ctx.response.send_message(embed=emd, view=confr)
+        mgs = await ctx.followup.send(embed=emd, view=confr, wait=True)
         await confr.wait()
         if confr.value is None:
             emd = discord.Embed(
@@ -136,20 +141,20 @@ class Overrides(commands.GroupCog,
                 description="Timed out.",
                 color=discord.Color.red(),
             )
-            await ctx.response.edit_message(embed=emd)
+            await ctx.followup.edit_message(mgs.id, embed=emd)
             return
         if not confr.value:
             emd = discord.Embed(title="Pull from git",
                                 description="Cancelled.",
                                 color=discord.Color.orange())
-            await ctx.response.edit_message(embed=emd)
+            await ctx.followup.edit_message(mgs.id, embed=emd)
             return
         emd = discord.Embed(
             title="Pull from git",
             description="Confirmed.",
             color=discord.Color.green(),
         )
-        await ctx.response.edit_message(embed=emd)
+        await ctx.followup.edit_message(mgs.id, embed=emd)
         await ctx.followup.send("Pulling latest changes...")
         logging.info("Pulling latest changes...")
         pull = await asyncio.create_subprocess_shell(
@@ -236,6 +241,8 @@ class Overrides(commands.GroupCog,
         await ctx.send("Syncing...")
         logging.info("Syncing...")
         await self._bt.tree.sync()
+        dev_guild = self._bt.get_guild(_CNFG.getitem("dev_guild_id"))
+        await self._bt.tree.sync(guild=dev_guild)
         await ctx.send("Synced.")
         logging.info("Synced.")
 
