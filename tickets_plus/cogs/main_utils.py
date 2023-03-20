@@ -65,7 +65,7 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
                              description=f"The bot is online.\nPing: "
                              f"{str(round(self._bt.latency * 1000))}ms",
                              color=discord.Color.green())
-        await ctx.followup.send(embed=embd)
+        await ctx.response.send_message(embed=embd)
 
     @app_commands.command(name="version", description="Get the bot's version.")
     async def version(self, ctx: discord.Interaction) -> None:
@@ -89,7 +89,7 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
         )
         # .add_field(name="Get Support:",
         #            value="[Join the support server](<NO SUPPORT SERVER YET>)")
-        await ctx.followup.send(embed=emd)
+        await ctx.response.send_message(embed=emd)
 
     @app_commands.command(name="respond",
                           description="Respond to a ticket as the bot.")
