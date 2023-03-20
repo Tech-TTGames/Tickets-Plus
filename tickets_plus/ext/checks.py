@@ -65,6 +65,7 @@ def is_owner_check():
         """
         app = await interaction.client.application_info()
         if app.team:
+            # Split to avoid errors ie AttributeError
             if interaction.user.id in app.team.members:
                 return True
         if interaction.user.id == app.owner.id:
@@ -112,6 +113,7 @@ def is_staff_check():
             return False
         app = await interaction.client.application_info()
         if app.team:
+            # Bot owners are always staff, split to avoid errors
             if interaction.user.id in app.team.members:
                 return True
         if interaction.user.id == app.owner.id:

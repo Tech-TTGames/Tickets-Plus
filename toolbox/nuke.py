@@ -72,7 +72,7 @@ def main():
 
 async def throwaway(engine: sa_asyncio.AsyncEngine):
     """Runs everything that needs async.
-    
+
     This is a throwaway function to run the async stuff.
     """
     print("Safety toggle enabled. Connecting to DB...")
