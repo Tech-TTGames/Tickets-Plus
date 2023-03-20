@@ -63,7 +63,11 @@ def is_owner_check():
                 Raised if the user is not owner. This is according to the
                 discord.py convention.
         """
-        if interaction.user.id in interaction.client.owner_ids:  # type: ignore
+        app = await interaction.client.application_info()
+        if app.team:
+            if interaction.user.id in app.team.members:
+                return True
+        if interaction.user.id == app.owner.id:
             return True
         raise exceptions.TicketsCheckFailure(
             "You do not have permission to do this.")
@@ -105,10 +109,12 @@ def is_staff_check():
                 discord.py convention.
         """
         if interaction.guild is None:
-            raise exceptions.TicketsCheckFailure("This command can only"
-                                                 " be used in a guild."
-                                                 " (DMs are not supported)")
-        if interaction.user.id in interaction.client.owner_ids:  # type: ignore
+            return False
+        app = await interaction.client.application_info()
+        if app.team:
+            if interaction.user.id in app.team.members:
+                return True
+        if interaction.user.id == app.owner.id:
             return True
         async with interaction.client.get_connection() as conn:  # type: ignore
             staff_roles = await conn.get_all_staff_roles(interaction.guild.id)
