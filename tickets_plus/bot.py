@@ -83,10 +83,6 @@ class TicketsPlusBot(commands.AutoShardedBot):
             except commands.ExtensionError as err:
                 logging.error("Failed to load cog %s: %s", extension, err)
         logging.info("Finished loading cogs.")
-        if self.stat_confg.getitem("dev_guild_id"):
-            guild = discord.Object(self.stat_confg.getitem("dev_guild_id"))
-            self.tree.copy_global_to(guild=guild)
-            await self.tree.sync(guild=guild)
 
     def get_connection(self) -> layer.OnlineConfig:
         """Gets a connection from the database pool.
