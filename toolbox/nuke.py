@@ -16,17 +16,18 @@ Typical usage example:
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
+import asyncio
 import pathlib
 import sys
 
-from sqlalchemy import create_engine, schema
+from sqlalchemy import schema
+from sqlalchemy.ext import asyncio as sa_asyncio
 
 _PROG_DIR = pathlib.Path(__file__).parent.parent.absolute()
 sys.path.append(str(_PROG_DIR))
 
 # pylint: disable=wrong-import-position
 # pylint: disable=import-error # It works, I promise.
-from tickets_plus.database.models import Base  # isort:skip
 from tickets_plus.database.statvars import MiniConfig  # isort:skip
 
 _SAFETY_TOGGLE = False
@@ -41,7 +42,7 @@ def main():
     Leave the safety toggle enabled unless you know what you're doing.
     Like, really know what you're doing.
     """
-    engine = create_engine(MiniConfig().get_url())
+    engine = sa_asyncio.create_async_engine(MiniConfig().get_url())
     print("This script will drop all tables in the database."
           " This is a destructive operation and"
           " should only be used in development.")
@@ -56,17 +57,7 @@ def main():
         confrm = input("Are you REALLY sure? (Y/N)\n")
         if confrm == "Y":
             if _SAFETY_TOGGLE:
-                print("Safety toggle enabled. Connecting to DB...")
-                conn = engine.connect()
-                print("Engine started. Dropping schema...")
-                conn.execute(
-                    schema.DropSchema("tickets_plus",
-                                      cascade=True,
-                                      if_exists=True))
-                print("Schema dropped. Dropping tables...")
-                Base.metadata.drop_all(conn)
-                print("Tables dropped. Closing connection...")
-                conn.close()
+                asyncio.run(throwaway(engine))
                 print("Connection closed. Exiting...")
             else:
                 print("Safety toggle not enabled."
@@ -77,6 +68,21 @@ def main():
             print("Aborting.")
     else:
         print("Aborting.")
+
+
+async def throwaway(engine: sa_asyncio.AsyncEngine):
+    """Runs everything that needs async.
+    
+    This is a throwaway function to run the async stuff.
+    """
+    print("Safety toggle enabled. Connecting to DB...")
+    conn = await engine.connect()
+    print("Engine started. Dropping schema...")
+    await conn.execute(
+        schema.DropSchema("tickets_plus", cascade=True, if_exists=True))
+    await conn.commit()
+    print("Tables dropped. Closing connection...")
+    await conn.close()
 
 
 if __name__ == "__main__":

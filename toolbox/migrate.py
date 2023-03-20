@@ -17,12 +17,13 @@ Typical usage example:
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
+import asyncio
 import json
 import pathlib
 import sys
 
-from sqlalchemy import URL, create_engine, schema
-from sqlalchemy.orm import create_session
+from sqlalchemy import URL, schema
+from sqlalchemy.ext import asyncio as sa_asyncio
 
 _PROG_DIR = pathlib.Path(__file__).parent.parent.absolute()
 sys.path.append(str(_PROG_DIR))
@@ -148,60 +149,17 @@ def main():
             print(
                 "I will now create the database schema and tables if they do not exist."  # pylint: disable=line-too-long
             )
-            engine = create_engine(
+            engine = sa_asyncio.create_async_engine(
                 URL.create(drivername=config["dbtype"],
                            username=config["dbuser"],
                            password=config["dbpass"],
                            host=config["dbhost"],
                            port=config["dbport"],
                            database=config["dbname"]))
-            with engine.begin() as conn:
-                conn.execute(
-                    schema.CreateSchema("tickets_plus", if_not_exists=True))
-                Base.metadata.create_all(engine, checkfirst=True)
-                print("Database schema and tables created.")
             if legacy:
-                upld = input(
-                    "Would you like to upload the old config file to the database? (Y/N)\n"  # pylint: disable=line-too-long
-                )
-                upld = upld.upper()
-                if upld == "Y":
-                    print("Parsing old config file...")
-                    dic = cnfg.cnfg()  # type: ignore
-                    print("Uploading old config file to database...")
-                    with create_session(engine) as session:
-                        data = Guild(
-                            guild_id=dic["guild_id"],
-                            open_message=dic["open_msg"],
-                            staff_team_name=dic["staff_team"],
-                            msg_discovery=dic["msg_discovery"],
-                            strip_buttons=dic["strip_buttons"],
-                        )
-                        session.add(data)
-                        tusers = []
-                        for tusers in dic["ticket_users"]:
-                            tusers.append(TicketBot(user_id=tusers, guild=data))
-                        session.add_all(tusers)
-                        data.ticket_bots = tusers
-                        staff = []
-                        for staff in dic["staff"]:
-                            staff.append(StaffRole(role_id=staff, guild=data))
-                        session.add_all(staff)
-                        data.staff_roles = staff
-                        obsr = []
-                        for obsr in dic["observers"]:
-                            obsr.append(ObserversRole(role_id=obsr, guild=data))
-                        session.add_all(obsr)
-                        data.observers_roles = obsr
-                        croles = []
-                        for croles in dic["community_roles"]:
-                            croles.append(
-                                CommunityRole(role_id=croles, guild=data))
-                        session.add_all(croles)
-                        data.community_roles = croles
-                        session.commit()
-                        print("Old config file uploaded to database.")
-                        session.close()
+                asyncio.run(throwaway(engine, legacy, cnfg))  # type: ignore
+            asyncio.run(throwaway(engine, new))
+
     else:
         print("A valid v0.1 config file was found.")
         print(
@@ -210,12 +168,8 @@ def main():
         print(
             "I will now create the database schema and tables if they do not exist."  # pylint: disable=line-too-long
         )
-        engine = create_engine(cnfg.get_url())  # type: ignore
-        with engine.begin() as conn:
-            conn.execute(schema.CreateSchema("tickets_plus",
-                                             if_not_exists=True))
-            Base.metadata.create_all(engine, checkfirst=True)
-            print("Database schema and tables created.")
+        engine = sa_asyncio.create_async_engine(cnfg.get_url())  # type: ignore
+        asyncio.run(throwaway2(engine))
 
     data = input(
         "This script has finished, enter ev to enter an interactive eval.\n")
@@ -231,6 +185,73 @@ def main():
             except Exception as e:
                 print(e)
     print("Goodbye!")
+
+
+async def throwaway(engine: sa_asyncio.AsyncEngine, legacy, cnfg=None) -> None:
+    """Throwaway function to run asyncpg.
+
+    Does nothing more just allows asyncpg to be used.
+    """
+    async with engine.begin() as conn:
+        await conn.execute(
+            schema.CreateSchema("tickets_plus", if_not_exists=True))
+        await conn.run_sync(Base.metadata.create_all, checkfirst=True)
+        await conn.commit()
+        print("Database schema and tables created.")
+    if legacy:
+        upld = input(
+            "Would you like to upload the old config file to the database? (Y/N)\n"  # pylint: disable=line-too-long
+        )
+        upld = upld.upper()
+        if upld == "Y":
+            print("Parsing old config file...")
+            dic = cnfg.cnfg()  # type: ignore
+            print("Uploading old config file to database...")
+            async with sa_asyncio.AsyncSession(engine) as session:
+                data = Guild(
+                    guild_id=dic["guild_id"],
+                    open_message=dic["open_msg"],
+                    staff_team_name=dic["staff_team"],
+                    msg_discovery=dic["msg_discovery"],
+                    strip_buttons=dic["strip_buttons"],
+                )
+                session.add(data)
+                tusers = []
+                for tusers in dic["ticket_users"]:
+                    tusers.append(TicketBot(user_id=tusers, guild=data))
+                session.add_all(tusers)
+                data.ticket_bots = tusers
+                staff = []
+                for staff in dic["staff"]:
+                    staff.append(StaffRole(role_id=staff, guild=data))
+                session.add_all(staff)
+                data.staff_roles = staff
+                obsr = []
+                for obsr in dic["observers"]:
+                    obsr.append(ObserversRole(role_id=obsr, guild=data))
+                session.add_all(obsr)
+                data.observers_roles = obsr
+                croles = []
+                for croles in dic["community_roles"]:
+                    croles.append(CommunityRole(role_id=croles, guild=data))
+                session.add_all(croles)
+                data.community_roles = croles
+                await session.commit()
+                print("Old config file uploaded to database.")
+                await session.close()
+
+
+async def throwaway2(engine: sa_asyncio.AsyncEngine) -> None:
+    """Throwaway function to run asyncpg.
+
+    Does nothing more just allows asyncpg to be used.
+    """
+    async with engine.begin() as conn:
+        await conn.execute(
+            schema.CreateSchema("tickets_plus", if_not_exists=True))
+        await conn.run_sync(Base.metadata.create_all, checkfirst=True)
+        print("Database schema and tables created.")
+        await conn.commit()
 
 
 if __name__ == "__main__":
