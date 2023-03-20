@@ -111,7 +111,6 @@ class ErrorHandling(commands.Cog, name="AppCommandErrorHandler"):
             emd.description = "The command you tried to use does not exist."
             emd.set_footer(text="If this error persists, please report it.")
             await ctx.followup.send(embed=emd, ephemeral=True)
-            print("CommandNotFound")
             return
 
         if isinstance(error, app_commands.CheckFailure):
@@ -126,15 +125,15 @@ class ErrorHandling(commands.Cog, name="AppCommandErrorHandler"):
                 emd.set_footer(text="If you are sure the bot has the "
                                "required permissions, please report this.")
                 await ctx.followup.send(embed=emd, ephemeral=True)
-                print("BotMissingPermissions")
                 return
+
             if isinstance(error, app_commands.NoPrivateMessage):
                 emd.title = "Tickets+ Error: 405 - DMs Not Allowed"
                 emd.description = "This command cannot be used in DMs."
                 emd.set_footer(text="Please use this command in a server.")
                 await ctx.followup.send(embed=emd, ephemeral=True)
-                print("NoPrivateMessage")
                 return
+
             if isinstance(error, app_commands.CommandOnCooldown):
                 emd.title = "Tickets+ Error: 429 - Command On Cooldown"
                 emd.description = (
@@ -142,8 +141,8 @@ class ErrorHandling(commands.Cog, name="AppCommandErrorHandler"):
                     f"Please try again in {error.retry_after} seconds.")
                 emd.set_footer(text="Thank you for using Tickets+!")
                 await ctx.followup.send(embed=emd, ephemeral=True)
-                print("CommandOnCooldown")
                 return
+
             emd.title = "Tickets+ Error: 403 - Forbidden"
             emd.description = "You do not have permission to use this command."
             emd.set_footer(text=f"Error type: {type(error).__name__}")
