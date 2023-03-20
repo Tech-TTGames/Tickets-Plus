@@ -27,6 +27,8 @@ Typical usage example:
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
+import signal
+import sys
 import logging
 import os
 
@@ -38,6 +40,16 @@ from sqlalchemy.ext import asyncio as sa_asyncio
 
 from tickets_plus import bot
 from tickets_plus.database import models, statvars
+
+
+# pylint: disable=unused-argument
+def sigint_handler(sign, frame):
+    """Handles SIGINT (Ctrl+C)"""
+    logging.info("SIGINT received. Exiting.")
+    sys.exit(0)
+
+
+signal.signal(signal.SIGINT, sigint_handler)
 
 
 async def start_bot(stat_data: statvars.MiniConfig = statvars.MiniConfig()
