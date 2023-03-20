@@ -61,7 +61,6 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
         Args:
             ctx: The interaction context.
         """
-        await ctx.response.defer()
         embd = discord.Embed(title="Pong!",
                              description=f"The bot is online.\nPing: "
                              f"{str(round(self._bt.latency * 1000))}ms",
@@ -77,7 +76,6 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
         Args:
             ctx: The interaction context.
         """
-        await ctx.response.defer()
         emd = discord.Embed(
             title="Tickets+",
             description=f"Bot version: {statvars.VERSION}\n"

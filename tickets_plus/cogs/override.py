@@ -80,8 +80,7 @@ class Overrides(commands.GroupCog,
             ctx: The interaction context.
             sync: Whether to sync the tree after reloading cogs.
         """
-        await ctx.response.defer()
-        await ctx.followup.send("Reloading cogs...")
+        await ctx.response.send_message("Reloading cogs...")
         logging.info("Reloading cogs...")
         for extension in cogs.EXTENSIONS:
             await self._bt.reload_extension(extension)
@@ -104,9 +103,8 @@ class Overrides(commands.GroupCog,
         Args:
             ctx: The interaction context.
         """
-        await ctx.response.defer()
-        await ctx.followup.send("Restarting...")
-        logging.info("Restarting...")
+        await ctx.response.send_message("Closing...")
+        logging.info("Closing...")
         await self._bt.close()
 
     @app_commands.command(
@@ -123,7 +121,6 @@ class Overrides(commands.GroupCog,
         Args:
             ctx: The interaction context.
         """
-        await ctx.response.defer()
         confr = views.Confirm()
         emd = discord.Embed(
             title="Pull from git",
@@ -133,7 +130,8 @@ class Overrides(commands.GroupCog,
                 "If you are not sure what you are doing, abort now."),
             color=discord.Color.red(),
         )
-        mgs = await ctx.followup.send(embed=emd, view=confr, wait=True)
+        await ctx.response.send_message(embed=emd, view=confr)
+        mgs = await ctx.original_response()
         await confr.wait()
         if confr.value is None:
             emd = discord.Embed(
