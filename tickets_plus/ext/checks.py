@@ -68,7 +68,7 @@ def is_owner_check():
             # Split to avoid errors ie AttributeError
             if interaction.user in app.team.members:
                 return True
-        if interaction.user.id == app.owner.id:
+        if interaction.user == app.owner:
             return True
         raise exceptions.TicketsCheckFailure(
             "You do not have permission to do this.")
@@ -116,7 +116,7 @@ def is_staff_check():
             # Bot owners are always staff, split to avoid errors
             if interaction.user in app.team.members:
                 return True
-        if interaction.user.id == app.owner.id:
+        if interaction.user == app.owner:
             return True
         async with interaction.client.get_connection() as conn:  # type: ignore
             staff_roles = await conn.get_all_staff_roles(interaction.guild.id)

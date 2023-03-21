@@ -128,7 +128,7 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
                 # Split to avoid errors ie AttributeError
                 if ctx.user in app.team.members:
                     flg = True
-            if ctx.user.id == app.owner.id:
+            if ctx.user == app.owner:
                 flg = True
             if flg:
                 emd = discord.Embed(
