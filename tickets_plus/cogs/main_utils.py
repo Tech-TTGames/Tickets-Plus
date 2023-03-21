@@ -126,7 +126,7 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
             flg = False
             if app.team:
                 # Split to avoid errors ie AttributeError
-                if ctx.user.id in app.team.members:
+                if ctx.user in app.team.members:
                     flg = True
             if ctx.user.id == app.owner.id:
                 flg = True
