@@ -91,6 +91,62 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
         #            value="[Join the support server](<NO SUPPORT SERVER YET>)")
         await ctx.response.send_message(embed=emd)
 
+    @app_commands.command(name="invite",
+                          description="Invite the bot to a server.")
+    async def invite(self, ctx: discord.Interaction) -> None:
+        """Invite the bot to a server.
+
+        This command is used to invite the bot to a server.
+        It responds with a link to invite the bot to a server.
+
+        Args:
+            ctx: The interaction context.
+        """
+        app = await ctx.client.application_info()
+        admn_perms = discord.Permissions(8)
+        safe_perms = discord.Permissions(535059492048)
+        if app.bot_public:
+            emd = discord.Embed(
+                title="Tickets+",
+                description="Invite the bot to your server with this links:\n",
+                color=discord.Color.from_str("0x00FFFF"))
+            emd.add_field(
+                name="Admin Permissions:",
+                value=
+                f"[Click Here!]({utils.oauth_url(app.id,permissions=admn_perms)})" # pylint: disable=line-too-long # skipcq: PYL-W0511, FLK-W505
+            )
+            emd.add_field(
+                name="Safe Permissions:",
+                value=
+                f"[Click Here!]({utils.oauth_url(app.id,permissions=safe_perms)})" # pylint: disable=line-too-long # skipcq: PYL-W0511, FLK-W505
+            )
+        else:
+            flg = False
+            if app.team:
+                # Split to avoid errors ie AttributeError
+                if ctx.user.id in app.team.members:
+                    flg = True
+            if ctx.user.id == app.owner.id:
+                flg = True
+            if flg:
+                emd = discord.Embed(
+                    title="Tickets+",
+                    description="Welcome back authorised user!\n"
+                    "Invite the bot to your server with this link:\n",
+                    color=discord.Color.from_str("0x00FFFF"))
+                emd.add_field(
+                    name="Invite Link:",
+                    value=
+                    f"[Click Here!]({utils.oauth_url(app.id,permissions=admn_perms)})" # pylint: disable=line-too-long # skipcq: PYL-W0511, FLK-W505
+                )
+            else:
+                emd = discord.Embed(
+                    title="Tickets+",
+                    description="Sorry! This instance of the bot is not public."
+                    " You can't invite it to your server.",
+                    color=discord.Color.red())
+        await ctx.response.send_message(embed=emd)
+
     @app_commands.command(name="respond",
                           description="Respond to a ticket as the bot.")
     @app_commands.guild_only()
