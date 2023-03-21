@@ -1,0 +1,12 @@
+{
+	"name": "Poetry Basic",
+	"image": "mcr.microsoft.com/devcontainers/python:3.11-bullseye",
+	"features": {
+		"ghcr.io/devcontainers/features/git:1": {},
+		"ghcr.io/devcontainers-contrib/features/poetry:2": {},
+		"ghcr.io/devcontainers/features/git-lfs:1": {},
+		"ghcr.io/devcontainers/features/github-cli:1": {},
+		"ghcr.io/devcontainers/features/python:1": {}
+	},
+	"postCreateCommand": "poetry install --with dev;"
+}
