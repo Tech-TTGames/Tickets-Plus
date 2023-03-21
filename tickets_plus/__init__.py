@@ -66,74 +66,100 @@ async def start_bot(stat_data: statvars.MiniConfig = statvars.MiniConfig()
             If None, a new one will be created.
     """
     print("Setting up bot...")
-    # Set up logging
-    dt_fmr = "%Y-%m-%d %H:%M:%S"
-    statvars.HANDLER.setFormatter(
-        logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s",
-                          dt_fmr))
+    try:
+        # Set up logging
+        dt_fmr = "%Y-%m-%d %H:%M:%S"
+        statvars.HANDLER.setFormatter(
+            logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s",
+                              dt_fmr))
 
-    # Set up discord.py logging
-    dscrd_logger = logging.getLogger("discord")
-    dscrd_logger.setLevel(logging.INFO)
-    dscrd_logger.addHandler(statvars.HANDLER)
+        # Set up bot logging
+        logging.root.setLevel(logging.INFO)
+        logging.root.addHandler(statvars.HANDLER)
 
-    # Set up sqlalchemy logging
-    sql_logger = logging.getLogger("sqlalchemy.engine")
-    sql_logger.setLevel(logging.WARNING)
-    sql_logger.addHandler(statvars.HANDLER)
+        # Set up discord.py logging
+        dscrd_logger = logging.getLogger("discord")
+        dscrd_logger.setLevel(logging.INFO)
+        dscrd_logger.addHandler(statvars.HANDLER)
 
-    sql_pool_logger = logging.getLogger("sqlalchemy.pool")
-    sql_pool_logger.setLevel(logging.WARNING)
-    sql_pool_logger.addHandler(statvars.HANDLER)
+        # Set up sqlalchemy logging
+        sql_logger = logging.getLogger("sqlalchemy.engine")
+        sql_logger.setLevel(logging.WARNING)
+        sql_logger.addHandler(statvars.HANDLER)
 
-    # Set up bot logging
-    logging.root.setLevel(logging.INFO)
-    logging.root.addHandler(statvars.HANDLER)
+        sql_pool_logger = logging.getLogger("sqlalchemy.pool")
+        sql_pool_logger.setLevel(logging.WARNING)
+        sql_pool_logger.addHandler(statvars.HANDLER)
 
-    if os.environ.get("TICKETS_PLUS_VERBOSE", "false").lower() == "true":
-        logging.info("Enabling verbose logging.")
-        handler2 = logging.StreamHandler()
-        logging.root.addHandler(handler2)
-        dscrd_logger.addHandler(handler2)
-        sql_logger.addHandler(handler2)
-        sql_pool_logger.addHandler(handler2)
-    logging.info("Logging set up.")
+        if os.environ.get("TICKETS_PLUS_VERBOSE", "false").lower() == "true":
+            logging.info("Enabling verbose logging.")
+            handler2 = logging.StreamHandler()
+            logging.root.addHandler(handler2)
+            dscrd_logger.addHandler(handler2)
+            sql_logger.addHandler(handler2)
+            sql_pool_logger.addHandler(handler2)
+        logging.info("Logging set up.")
+    # pylint: disable=broad-exception-caught # skipcq: PYL-W0718
+    except Exception as exc:
+        logging.exception("Logging setup failed. Aborting startup.")
+        print("Logging: FAILED")
+        print(f"Error: {exc}")
+        print("Aborting...")
+        return
     print("Logging: OK")
 
     # Set up bot
-    logging.info("Creating engine...")
-    if "asyncpg" in stat_data.getitem("dbtype"):
-        engine = sa_asyncio.create_async_engine(
-            stat_data.get_url(),
-            pool_size=10,
-            max_overflow=-1,
-            pool_recycle=600,
-            connect_args={"server_settings": {
-                "jit": "off"
-            }})
-    else:
-        engine = sa_asyncio.create_async_engine(
-            stat_data.get_url(),
-            pool_size=10,
-            max_overflow=-1,
-            pool_recycle=600,
-        )
-    bot_instance = bot.TicketsPlusBot(
-        db_engine=engine,
-        intents=statvars.INTENTS,
-        command_prefix=commands.when_mentioned,
-        status=discord.Status.online,
-        activity=discord.Activity(type=discord.ActivityType.playing,
-                                  name="with tickets"),
-    )
-    logging.info("Engine created. Ensuring tables...")
-    async with engine.begin() as conn:
-        await conn.execute(
-            sqlalchemy.schema.CreateSchema("tickets_plus", if_not_exists=True))
-        await conn.run_sync(models.Base.metadata.create_all)
-        await conn.commit()
-    logging.info("Tables ensured. Starting bot...")
+    try:
+        logging.info("Creating engine...")
+        if "asyncpg" in stat_data.getitem("dbtype"):
+            engine = sa_asyncio.create_async_engine(
+                stat_data.get_url(),
+                pool_size=10,
+                max_overflow=-1,
+                pool_recycle=600,
+                connect_args={"server_settings": {
+                    "jit": "off"
+                }})
+        else:
+            engine = sa_asyncio.create_async_engine(
+                stat_data.get_url(),
+                pool_size=10,
+                max_overflow=-1,
+                pool_recycle=600,
+            )
+        logging.info("Engine created. Ensuring tables...")
+        async with engine.begin() as conn:
+            await conn.execute(
+                sqlalchemy.schema.CreateSchema("tickets_plus",
+                                               if_not_exists=True))
+            await conn.run_sync(models.Base.metadata.create_all)
+            await conn.commit()
+        logging.info("Tables ensured. Starting bot...")
+    # pylint: disable=broad-exception-caught # skipcq: PYL-W0718
+    except Exception as exc:
+        logging.exception("Database setup failed. Aborting startup.")
+        print("Database: FAILED")
+        print(f"Error: {exc}")
+        print("Aborting...")
+        return
     print("Database: OK")
+    try:
+        bot_instance = bot.TicketsPlusBot(
+            db_engine=engine,
+            intents=statvars.INTENTS,
+            command_prefix=commands.when_mentioned,
+            status=discord.Status.online,
+            activity=discord.Activity(type=discord.ActivityType.playing,
+                                      name="with tickets"),
+        )
+    # pylint: disable=broad-exception-caught # skipcq: PYL-W0718
+    except Exception as exc:
+        logging.exception("Bot setup failed. Exiting.")
+        print("Bot: FAILED")
+        print(f"Error: {exc}")
+        print("Exiting...")
+        return
+    print("Bot: OK")
     try:
         print("ALL OK. Starting bot...")
         await bot_instance.start(statvars.Secret().token)
