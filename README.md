@@ -41,7 +41,11 @@ Toggle with /setting stripbuttons.
 
 ## Setup
 
-Here are the steps to host your copy of [this bot.](https://github.com/Tech-TTGames/Tickets-Plus)[^6]:
+You can add the public instance of the bot using the links here:
+- [Admin Perms](https://discord.com/oauth2/authorize?client_id=1079422909812047953&scope=bot+applications.commands&permissions=8)
+- [Safe Perms](https://discord.com/oauth2/authorize?client_id=1079422909812047953&scope=bot+applications.commands&permissions=535059492048)
+
+Here are the steps to host your copy of [this bot.](https://github.com/Tech-TTGames/Tickets-Plus):
 
 1. Open the directory you want the project to be placed in.
 2. Use `git clone https://github.com/Tech-TTGames/Tickets-Plus.git` or download and unpack [the repo](https://github.com/Tech-TTGames/Tickets-Plus/archive/refs/heads/main.zip).
@@ -92,4 +96,3 @@ Here are the steps to host your copy of [this bot.](https://github.com/Tech-TTGa
 [^3]: Staff role defined in per-server settings.
 [^4]: Community roles defined in per-server settings.
 [^5]: Tickets bot defined in per-server settings.
-[^6]: Note that there is no publicly hosted instance of the bot at this time. One may be added in the future.
