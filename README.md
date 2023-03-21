@@ -49,7 +49,6 @@ Here are the steps to host your copy of [this bot.](https://github.com/Tech-TTGa
 4. Run `curl -sSL https://install.python-poetry.org | python3 -`. And follow instructions provided there.
     - Change some poetry settings as-needed. You can add the `--local` flag to set those settings only to the current directory
         - `poetry config virtualenvs.in-project true` installs the virtual environment in the project, not in a poetry-specific location (recommended).
-        - `poetry config virtualenvs.create false` if you don't want poetry to use a venv (not recommended).
 5. Run `poetry install`
     - Depending on the DB used, add `-E pgsql` or `-E sqlite`
     - If you want development packages, add `--with dev`
