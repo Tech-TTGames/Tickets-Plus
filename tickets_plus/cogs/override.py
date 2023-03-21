@@ -190,7 +190,7 @@ class Overrides(commands.GroupCog,
         """
         await ctx.response.defer(thinking=True)
         logging.info("Sending logs to %s...", str(ctx.user))
-        filename = f"discord.log{'.'+str(id_no) if id_no else ''}"
+        filename = f"bot.log{'.'+str(id_no) if id_no else ''}"
         file_path = os.path.join(statvars.PROG_DIR, "log", filename)
         try:
             await ctx.user.send(file=discord.File(fp=file_path))
@@ -204,7 +204,7 @@ class Overrides(commands.GroupCog,
     @app_commands.command(name="config", description="Sends the guild config.")
     @checks.is_owner_check()
     @app_commands.describe(guid="Guild ID")
-    async def config(self, ctx: discord.Interaction, guid: int) -> None:
+    async def config(self, ctx: discord.Interaction, guid: str) -> None:
         """Sends the config.
 
         This command sends the config to the user who invoked the command.
@@ -216,11 +216,24 @@ class Overrides(commands.GroupCog,
             ctx: The interaction context.
             guid: The guild ID.
         """
+        guid_id = int(guid)
         await ctx.response.defer(thinking=True)
         logging.info("Sending config to %s...", str(ctx.user))
         async with self._bt.get_connection() as conn:
-            guild_confg = await conn.get_guild(guid)
-            await ctx.user.send(str(guild_confg))  # Eh. This is not tested.
+            guild_confg = await conn.get_guild(guid_id)
+            emd = discord.Embed(
+                title="OVERRIDE: Config",
+                description=f"CONFIG FOR GUILD: {guid_id}",
+                color=discord.Color.random(),
+            )
+            emd.add_field(name="OPEN MESSAGE", value=guild_confg.open_message)
+            emd.add_field(name="STAFF TEAM NAME",
+                          value=guild_confg.staff_team_name)
+            emd.add_field(name="FIRST AUTOCLOSE",
+                          value=guild_confg.first_autoclose)
+            emd.add_field(name="MSG DISCOVERY", value=guild_confg.msg_discovery)
+            emd.add_field(name="STRIP BUTTONS", value=guild_confg.strip_buttons)
+        await ctx.user.send(embed=emd)
         await ctx.followup.send("Sent config.")
         logging.info("Config sent.")
 
