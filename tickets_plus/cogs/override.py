@@ -225,7 +225,7 @@ class Overrides(commands.GroupCog,
         logging.info("Config sent.")
 
     @commands.command(name="sync", description="Syncs the tree.")
-    @checks.is_owner_check()
+    @commands.is_owner()
     async def sync(self, ctx: commands.Context) -> None:
         """Syncs the tree.
 
