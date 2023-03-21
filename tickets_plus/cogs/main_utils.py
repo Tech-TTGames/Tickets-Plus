@@ -112,13 +112,15 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
                 color=discord.Color.from_str("0x00FFFF"))
             emd.add_field(
                 name="Admin Permissions:",
-                value=
-                f"[Click Here!]({utils.oauth_url(app.id,permissions=admn_perms)})" # pylint: disable=line-too-long # skipcq: PYL-W0511, FLK-W505
+                value=(
+                    f"[Click Here!]({utils.oauth_url(app.id,permissions=admn_perms)})"  # pylint: disable=line-too-long # skipcq: PYL-W0511, FLK-W505
+                ),
             )
             emd.add_field(
                 name="Safe Permissions:",
-                value=
-                f"[Click Here!]({utils.oauth_url(app.id,permissions=safe_perms)})" # pylint: disable=line-too-long # skipcq: PYL-W0511, FLK-W505
+                value=(
+                    f"[Click Here!]({utils.oauth_url(app.id,permissions=safe_perms)})"  # pylint: disable=line-too-long # skipcq: PYL-W0511, FLK-W505
+                ),
             )
         else:
             flg = False
@@ -136,8 +138,9 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
                     color=discord.Color.from_str("0x00FFFF"))
                 emd.add_field(
                     name="Invite Link:",
-                    value=
-                    f"[Click Here!]({utils.oauth_url(app.id,permissions=admn_perms)})" # pylint: disable=line-too-long # skipcq: PYL-W0511, FLK-W505
+                    value=(
+                        f"[Click Here!]({utils.oauth_url(app.id,permissions=admn_perms)})"  # pylint: disable=line-too-long # skipcq: PYL-W0511, FLK-W505
+                    ),
                 )
             else:
                 emd = discord.Embed(
