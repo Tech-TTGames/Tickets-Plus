@@ -65,6 +65,7 @@ async def start_bot(stat_data: statvars.MiniConfig = statvars.MiniConfig()
             And the get_url method.
             If None, a new one will be created.
     """
+    print("Setting up bot...")
     # Set up logging
     dt_fmr = "%Y-%m-%d %H:%M:%S"
     statvars.HANDLER.setFormatter(
@@ -88,7 +89,6 @@ async def start_bot(stat_data: statvars.MiniConfig = statvars.MiniConfig()
     # Set up bot logging
     logging.root.setLevel(logging.INFO)
     logging.root.addHandler(statvars.HANDLER)
-    logging.info("Logging set up.")
 
     if os.environ.get("TICKETS_PLUS_VERBOSE", "false").lower() == "true":
         logging.info("Enabling verbose logging.")
@@ -97,6 +97,8 @@ async def start_bot(stat_data: statvars.MiniConfig = statvars.MiniConfig()
         dscrd_logger.addHandler(handler2)
         sql_logger.addHandler(handler2)
         sql_pool_logger.addHandler(handler2)
+    logging.info("Logging set up.")
+    print("Logging: OK")
 
     # Set up bot
     logging.info("Creating engine...")
@@ -131,16 +133,20 @@ async def start_bot(stat_data: statvars.MiniConfig = statvars.MiniConfig()
         await conn.run_sync(models.Base.metadata.create_all)
         await conn.commit()
     logging.info("Tables ensured. Starting bot...")
+    print("Database: OK")
     try:
+        print("ALL OK. Starting bot...")
         await bot_instance.start(statvars.Secret().token)
     except KeyboardInterrupt:
         logging.info("Keyboard interrupt detected. Shutting down...")
-        # We print this because there was a keyboard interrupt.
         print("Keyboard interrupt detected. Shutting down...")
         await bot_instance.close()
     except SystemExit as exc:
         logging.info("System exit code: %s detected. Closing bot...", exc.code)
+        print(f"System exit code: {exc.code} detected. Closing bot...")
         await bot_instance.close()
     else:
+        print("Internal bot shutdown. (/close was used.)")
         logging.info("Bot shutdown gracefully.")
     logging.info("Bot shutdown complete.")
+    print("Thanks for using Tickets+!")
