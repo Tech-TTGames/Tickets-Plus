@@ -319,29 +319,31 @@ class Settings(commands.GroupCog,
         await ctx.response.defer(ephemeral=True)
         async with self._bt.get_connection() as conn:
             guild = await conn.get_guild(ctx.guild.id)  # type: ignore
-            if guild.first_autoclose is None:
-                emd = discord.Embed(title="Autoclose is already disabled.",
-                                    color=discord.Color.orange())
-            else:
+            prev = None
+            if guild.first_autoclose is not None:
                 prev = datetime.timedelta(minutes=int(guild.first_autoclose))
-                if days + hours + minutes == 0:
-                    guild.first_autoclose = None
+            if days + hours + minutes == 0:
+                guild.first_autoclose = None
+                if prev is not None:
                     emd = discord.Embed(title="Autoclose Disabled",
                                         color=discord.Color.red())
                     emd.add_field(name="Previous autoclose time:",
                                   value=f"{str(prev)}")
                 else:
-                    newtime = datetime.timedelta(days=days,
-                                                 hours=hours,
-                                                 minutes=minutes)
-                    guild.first_autoclose = int(newtime.total_seconds() / 60)
-                    emd = discord.Embed(title="Autoclose Changed",
-                                        color=discord.Color.yellow())
-                    emd.add_field(name="Previous autoclose time:",
-                                  value=f"{str(prev)}")
-                    emd.add_field(name="New autoclose time:",
-                                  value=f"{str(newtime)}")
-                await conn.commit()
+                    emd = discord.Embed(title="Autoclose Already Disabled",
+                                        color=discord.Color.orange())
+            else:
+                newtime = datetime.timedelta(days=days,
+                                             hours=hours,
+                                             minutes=minutes)
+                guild.first_autoclose = int(newtime.total_seconds() / 60)
+                emd = discord.Embed(title="Autoclose Changed",
+                                    color=discord.Color.yellow())
+                emd.add_field(name="Previous autoclose time:",
+                              value=f"{str(prev)}")
+                emd.add_field(name="New autoclose time:",
+                              value=f"{str(newtime)}")
+            await conn.commit()
         await ctx.followup.send(embed=emd, ephemeral=True)
 
     @app_commands.command(name="msgdiscovery",
