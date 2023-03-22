@@ -87,11 +87,11 @@ class ErrorHandling(commands.Cog, name="AppCommandErrorHandler"):
         if not ctx.response.is_done():
             await ctx.response.defer(ephemeral=True)
         if isinstance(ctx.command, app_commands.Command):
-            try:
+            # Splitting cuz we don't want AttributeError
+            if hasattr(ctx.command, "on_error"):
+                # Same as above
                 if ctx.command.on_error is not None:
                     return
-            except AttributeError:
-                pass
 
         emd = discord.Embed(
             title="Tickets+ Error: 500 - Internal Server Error",

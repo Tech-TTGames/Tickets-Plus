@@ -21,9 +21,9 @@ Typical usage example:
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
 import json
 import logging
+import logging.handlers
 import pathlib
 import string
-from logging import handlers
 from typing import Any, Literal
 
 import discord
@@ -43,7 +43,7 @@ PROG_DIR = pathlib.Path(__file__).parent.parent.parent.absolute()
 INTENTS = discord.Intents.default()
 """The discord gateway intents that the bot uses."""
 INTENTS.message_content = True
-HANDLER = handlers.RotatingFileHandler(
+HANDLER = logging.handlers.RotatingFileHandler(
     filename=pathlib.Path(PROG_DIR, "log", "bot.log"),
     encoding="utf-8",
     mode="w",

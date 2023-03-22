@@ -157,8 +157,10 @@ class OnlineConfig:
             guild_conf = await self._session.scalar(
                 sql.select(models.Guild).where(
                     models.Guild.guild_id == guild_id).options(*options))
-        guild_conf = await self._session.scalar(
-            sql.select(models.Guild).where(models.Guild.guild_id == guild_id))
+        else:
+            guild_conf = await self._session.scalar(
+                sql.select(
+                    models.Guild).where(models.Guild.guild_id == guild_id))
         if guild_conf is None:
             guild_conf = models.Guild(guild_id=guild_id)
             self._session.add(guild_conf)
@@ -193,8 +195,9 @@ class OnlineConfig:
             user = await self._session.scalar(
                 sql.select(models.User).where(
                     models.User.user_id == user_id).options(*options))
-        user = await self._session.scalar(
-            sql.select(models.User).where(models.User.user_id == user_id))
+        else:
+            user = await self._session.scalar(
+                sql.select(models.User).where(models.User.user_id == user_id))
         if user is None:
             user = models.User(user_id=user_id)
             self._session.add(user)

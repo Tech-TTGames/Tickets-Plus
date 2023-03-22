@@ -110,17 +110,14 @@ class Events(commands.Cog, name="Events"):
                             overwrite.embed_links = True
                             overwrite.use_application_commands = True
                             for role in comm_roles:
-                                try:
-                                    rle = gld.get_role(role.role_id)
-                                    if not rle:
-                                        continue
-                                    await channel.set_permissions(
-                                        rle,
-                                        overwrite=overwrite,
-                                        reason="Community Support",
-                                    )
-                                except (TypeError, discord.NotFound):
-                                    pass
+                                rle = gld.get_role(role.role_id)
+                                if rle is None:
+                                    continue
+                                await channel.set_permissions(
+                                    rle,
+                                    overwrite=overwrite,
+                                    reason="Community Support Access",
+                                )
                         if guild.community_pings:
                             comm_pings = await confg.get_all_community_pings(
                                 gld.id)
