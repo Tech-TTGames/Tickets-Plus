@@ -355,6 +355,10 @@ class Settings(commands.GroupCog,
                               value=f"{str(prev)}")
                 emd.add_field(name="New autoclose time:",
                               value=f"{str(newtime)}")
+            if category:
+                guild.any_autoclose = changed_close
+            else:
+                guild.first_autoclose = changed_close
             await conn.commit()
         await ctx.followup.send(embed=emd, ephemeral=True)
 

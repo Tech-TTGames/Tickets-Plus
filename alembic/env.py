@@ -1,6 +1,5 @@
 # pylint: skip-file
 import asyncio
-import sys
 from logging.config import fileConfig
 
 from sqlalchemy import pool
