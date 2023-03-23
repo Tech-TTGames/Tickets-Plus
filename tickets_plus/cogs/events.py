@@ -163,6 +163,54 @@ class Events(commands.Cog, name="Events"):
                     logging.info("Deleted ticket %s", channel.name)
                     await confg.commit()
 
+    @commands.Cog.listener(name="on_member_join")
+    async def on_member_join(self, member: discord.Member) -> None:
+        """Ensures penalty roles are sticky.
+
+        This just ensures that if a user has a penalty role,
+        it is reapplied when they join the server.
+
+        Args:
+            member: The member that joined.
+        """
+        async with self._bt.get_connection() as cnfg:
+            actv_member = await cnfg.get_member(member.id, member.guild.id)
+            if actv_member.status:
+                if actv_member.status_till is not None:
+                    # Split this up to avoid None comparison.
+                    # pylint: disable=line-too-long
+                    if actv_member.status_till <= datetime.datetime.now(
+                    ):  # type: ignore
+                        # Check if the penalty has expired.
+                        actv_member.status = 0
+                        actv_member.status_till = None
+                        await cnfg.commit()
+                        return
+                if actv_member.status == 1:
+                    # Status 1 is a support block.
+                    if actv_member.guild.support_block is None:
+                        # If the role is unset, pardon the user.
+                        actv_member.status = 0
+                        actv_member.status_till = None
+                        await cnfg.commit()
+                        return
+                    role = member.guild.get_role(
+                        actv_member.guild.support_block)
+                    if role is not None:
+                        await member.add_roles(role)
+                elif actv_member.status == 2:
+                    # Status 2 is a helping block.
+                    if actv_member.guild.helping_block is None:
+                        # If the role is unset, pardon the user.
+                        actv_member.status = 0
+                        actv_member.status_till = None
+                        await cnfg.commit()
+                        return
+                    role = member.guild.get_role(
+                        actv_member.guild.helping_block)
+                    if role is not None:
+                        await member.add_roles(role)
+
     @commands.Cog.listener(name="on_message")
     async def on_message(self, message: discord.Message) -> None:
         """Handles all message-related features.
