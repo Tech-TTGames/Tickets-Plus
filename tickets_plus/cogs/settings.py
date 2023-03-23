@@ -292,12 +292,18 @@ class Settings(commands.GroupCog,
     @app_commands.command(name="autoclose",
                           description="Change the autoclose time.")
     @app_commands.describe(
+        category="The category of autoclose time to change.",
         days="The new autoclose time days.",
         hours="The new autoclose time hours.",
         minutes="The new autoclose time minutes.",
     )
+    @app_commands.choices(category=[
+        app_commands.Choice(name="First Response", value=0),
+        app_commands.Choice(name="Last Response", value=1),
+    ])
     async def change_autoclose(self,
                                ctx: discord.Interaction,
+                               category: app_commands.Choice[int],
                                days: int = 0,
                                hours: int = 0,
                                minutes: int = 0) -> None:
@@ -320,10 +326,16 @@ class Settings(commands.GroupCog,
         async with self._bt.get_connection() as conn:
             guild = await conn.get_guild(ctx.guild.id)  # type: ignore
             prev = None
-            if guild.first_autoclose is not None:
-                prev = datetime.timedelta(minutes=int(guild.first_autoclose))
+            if category:
+                changed_close = guild.any_autoclose
+                category_txt = "Last Response"
+            else:
+                changed_close = guild.first_autoclose
+                category_txt = "First Response"
+            if changed_close is not None:
+                prev = datetime.timedelta(minutes=int(changed_close))
             if days + hours + minutes == 0:
-                guild.first_autoclose = None
+                changed_close = None
                 if prev is not None:
                     emd = discord.Embed(title="Autoclose Disabled",
                                         color=discord.Color.red())
@@ -336,8 +348,8 @@ class Settings(commands.GroupCog,
                 newtime = datetime.timedelta(days=days,
                                              hours=hours,
                                              minutes=minutes)
-                guild.first_autoclose = int(newtime.total_seconds() / 60)
-                emd = discord.Embed(title="Autoclose Changed",
+                changed_close = int(newtime.total_seconds() / 60)
+                emd = discord.Embed(title=f"{category_txt} Autoclose Changed",
                                     color=discord.Color.yellow())
                 emd.add_field(name="Previous autoclose time:",
                               value=f"{str(prev)}")
