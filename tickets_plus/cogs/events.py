@@ -137,7 +137,7 @@ class Events(commands.Cog, name="Events"):
                                  "Opened at "
                                  f"<t:{int(channel.created_at.timestamp())}:f>")
                         if guild.first_autoclose:
-                            descr += f"\nCloses at <t:{int((channel.created_at + datetime.timedelta(minutes=guild.first_autoclose)).timestamp())}:R>"  # skipcq: FLK-E501 # pylint: disable=line-too-long
+                            descr += f"\nCloses <t:{int((channel.created_at + datetime.timedelta(minutes=guild.first_autoclose)).timestamp())}:R>"  # skipcq: FLK-E501 # pylint: disable=line-too-long
                             descr += "If no one responds, the ticket will be closed automatically. Thank you for your patience!"  # skipcq: FLK-E501 # pylint: disable=line-too-long
                         await channel.edit(
                             topic=descr,

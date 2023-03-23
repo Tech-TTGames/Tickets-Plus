@@ -28,7 +28,7 @@ Typical usage example:
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
-from types import TracebackType
+import types
 from typing import Sequence, Tuple, Type
 
 from discord.ext import commands
@@ -74,7 +74,7 @@ class OnlineConfig:
 
     async def __aexit__(self, exc_type: Type[BaseException] | None,
                         exc_value: BaseException | None,
-                        traceback: TracebackType | None) -> None:
+                        traceback: types.TracebackType | None) -> None:
         """Exit the async with statement.
 
         This method is called when exiting the async with statement.

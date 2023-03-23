@@ -24,7 +24,7 @@ import logging
 import discord
 from discord import app_commands
 from discord.ext import commands
-from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy import exc
 
 from tickets_plus import bot
 from tickets_plus.ext import exceptions
@@ -157,7 +157,7 @@ class ErrorHandling(commands.Cog, name="AppCommandErrorHandler"):
         if isinstance(error, app_commands.CommandInvokeError):
             underlying_error = error.original
 
-            if isinstance(underlying_error, SQLAlchemyError):
+            if isinstance(underlying_error, exc.SQLAlchemyError):
                 logging.error("An error occurred while accessing the database:",
                               exc_info=underlying_error)
                 emd.title = "Tickets+ Error: 500 - Database Error"
