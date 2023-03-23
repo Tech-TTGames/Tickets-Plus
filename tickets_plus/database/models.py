@@ -150,11 +150,12 @@ class Guild(Base):
     helping_block: orm.Mapped[int | None] = orm.mapped_column(
         sqlalchemy.BigInteger(),
         nullable=True,
-        comment=
-        ("Role to apply to users who are blocked from helping in tickets"
-         " I would reccomend also preventing the users from obtaining"
-         " any other support roles. Using permissions checks in reaction bots."
-         " If not set, considered disabled."))
+        comment=(
+            "Role to apply to users who are blocked from helping in tickets"
+            " I would reccomend also preventing the users from obtaining"
+            " any other support roles."
+            " Using permissions checks in reaction bots."
+            " If not set, considered disabled."))
 
     # Toggles
     msg_discovery: orm.Mapped[bool] = orm.mapped_column(

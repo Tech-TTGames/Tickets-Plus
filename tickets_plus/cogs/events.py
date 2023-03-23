@@ -153,8 +153,10 @@ class Events(commands.Cog, name="Events"):
                                  "Opened at "
                                  f"<t:{int(channel.created_at.timestamp())}:f>")
                         if guild.first_autoclose:
-                            descr += f"\nCloses <t:{int((channel.created_at + datetime.timedelta(minutes=guild.first_autoclose)).timestamp())}:R>"  # skipcq: FLK-E501 # pylint: disable=line-too-long
-                            descr += "If no one responds, the ticket will be closed automatically. Thank you for your patience!"  # skipcq: FLK-E501 # pylint: disable=line-too-long
+                            # skipcq: FLK-E501 # pylint: disable=line-too-long
+                            descr += f"\nCloses <t:{int((channel.created_at + datetime.timedelta(minutes=guild.first_autoclose)).timestamp())}:R>"
+                            # skipcq: FLK-E501 # pylint: disable=line-too-long
+                            descr += "If no one responds, the ticket will be closed automatically. Thank you for your patience!"
                         await channel.edit(
                             topic=descr,
                             reason="More information for the ticket.")
@@ -312,12 +314,14 @@ class Events(commands.Cog, name="Events"):
                     if crrnt is None:
                         crrnt = (
                             f"Ticket: {chan.name}\n"
-                            f"Closes at: <t:{int((message.created_at + datetime.timedelta(minutes=guild.any_autoclose)).timestamp())}:R>" # skipcq: FLK-E501 # pylint: disable=line-too-long
+                            # skipcq: FLK-E501 # pylint: disable=line-too-long
+                            f"Closes at: <t:{int((message.created_at + datetime.timedelta(minutes=guild.any_autoclose)).timestamp())}:R>"
                         )
                     else:
                         re.sub(
                             r"<t:[0-9]*?:R>",
-                            f"<t:{int((message.created_at + datetime.timedelta(minutes=guild.any_autoclose)).timestamp())}:R>", # skipcq: FLK-E501 # pylint: disable=line-too-long
+                            # skipcq: FLK-E501 # pylint: disable=line-too-long
+                            f"<t:{int((message.created_at + datetime.timedelta(minutes=guild.any_autoclose)).timestamp())}:R>",
                             crrnt)
                     await chan.edit(topic=crrnt)
 

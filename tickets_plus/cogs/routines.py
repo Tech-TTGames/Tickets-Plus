@@ -49,7 +49,7 @@ class Routines(commands.Cog):
     @tasks.loop(minutes=1)
     async def clean_status(self):
         """Remove all status roles from users whose status has expired.
-        
+
         This task runs every minute, and checks if any users have a
         status role that has expired. If so, it removes the role from
         the user.
