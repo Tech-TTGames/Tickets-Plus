@@ -306,7 +306,8 @@ class Events(commands.Cog, name="Events"):
                     )
                     await message.delete()
                 chan = message.channel
-                if isinstance(chan, discord.TextChannel) and guild.any_autoclose:
+                if isinstance(chan,
+                              discord.TextChannel) and guild.any_autoclose:
                     crrnt = chan.topic
                     if crrnt is None:
                         crrnt = (
@@ -314,7 +315,10 @@ class Events(commands.Cog, name="Events"):
                             f"Closes at: <t:{int((message.created_at + datetime.timedelta(minutes=guild.any_autoclose)).timestamp())}:R>"
                         )
                     else:
-                        re.sub(r"<t:[0-9]*?:R>", f"<t:{int((message.created_at + datetime.timedelta(minutes=guild.any_autoclose)).timestamp())}:R>", crrnt)
+                        re.sub(
+                            r"<t:[0-9]*?:R>",
+                            f"<t:{int((message.created_at + datetime.timedelta(minutes=guild.any_autoclose)).timestamp())}:R>",
+                            crrnt)
                     await chan.edit(topic=crrnt)
 
 
