@@ -312,12 +312,12 @@ class Events(commands.Cog, name="Events"):
                     if crrnt is None:
                         crrnt = (
                             f"Ticket: {chan.name}\n"
-                            f"Closes at: <t:{int((message.created_at + datetime.timedelta(minutes=guild.any_autoclose)).timestamp())}:R>"
+                            f"Closes at: <t:{int((message.created_at + datetime.timedelta(minutes=guild.any_autoclose)).timestamp())}:R>" # skipcq: FLK-E501 # pylint: disable=line-too-long
                         )
                     else:
                         re.sub(
                             r"<t:[0-9]*?:R>",
-                            f"<t:{int((message.created_at + datetime.timedelta(minutes=guild.any_autoclose)).timestamp())}:R>",
+                            f"<t:{int((message.created_at + datetime.timedelta(minutes=guild.any_autoclose)).timestamp())}:R>", # skipcq: FLK-E501 # pylint: disable=line-too-long
                             crrnt)
                     await chan.edit(topic=crrnt)
 
