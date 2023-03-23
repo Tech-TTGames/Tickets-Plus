@@ -30,6 +30,7 @@ Typical usage example:
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
 import types
 from typing import Sequence, Tuple, Type
+import datetime
 
 from discord.ext import commands
 from sqlalchemy import sql
@@ -230,6 +231,20 @@ class OnlineConfig:
             member_conf = models.Member(user=user, guild=guild)
             self._session.add(member_conf)
         return member_conf
+
+    async def get_expired_members(self) -> Sequence[models.Member]:
+        """Get expired members from the database.
+
+        Fetches all members with expired status from the database.
+        Used to clean up the roles.
+
+        Returns:
+            Sequence[models.Member]: The members with expired status.
+        """
+        time = datetime.datetime.utcnow()
+        expr_members = await self._session.scalars(
+            sql.select(models.Member).where(models.Member.status_till <= time))
+        return expr_members.all()
 
     async def get_ticket_bot(self, user_id: int,
                              guild_id: int) -> Tuple[bool, models.TicketBot]:
