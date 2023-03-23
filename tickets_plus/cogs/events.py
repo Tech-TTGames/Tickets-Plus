@@ -97,6 +97,22 @@ class Events(commands.Cog, name="Events"):
                                 f"<@&{role.role_id}>" for role in observer_ids
                             ]))
                             await inv.delete()
+                        if guild.helping_block:
+                            overwrite = discord.PermissionOverwrite()
+                            overwrite.view_channel = False
+                            overwrite.add_reactions = False
+                            overwrite.send_messages = False
+                            overwrite.read_messages = False
+                            overwrite.read_message_history = False
+                            rol = gld.get_role(guild.helping_block)
+                            if rol is None:
+                                guild.helping_block = None
+                            else:
+                                await channel.set_permissions(
+                                    rol,
+                                    overwrite=overwrite,
+                                    reason="Penalty Enforcmement",
+                                )
                         if guild.community_roles:
                             comm_roles = await confg.get_all_community_roles(
                                 gld.id)
