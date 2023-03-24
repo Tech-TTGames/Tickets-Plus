@@ -326,7 +326,7 @@ class Settings(commands.GroupCog,
         async with self._bt.get_connection() as conn:
             guild = await conn.get_guild(ctx.guild.id)  # type: ignore
             prev = None
-            if category:
+            if category.value:
                 changed_close = guild.any_autoclose
                 category_txt = "Last Response"
             else:
@@ -355,7 +355,7 @@ class Settings(commands.GroupCog,
                               value=f"{str(prev)}")
                 emd.add_field(name="New autoclose time:",
                               value=f"{str(newtime)}")
-            if category:
+            if category.value:
                 guild.any_autoclose = changed_close
             else:
                 guild.first_autoclose = changed_close
