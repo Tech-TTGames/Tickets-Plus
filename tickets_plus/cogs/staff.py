@@ -303,6 +303,13 @@ class StaffCmmd(commands.Cog, name="StaffCommands"):
                                                       minutes=minutes)
                     member.status_till = utils.utcnow() + penalty_time
                 if status.value == 1:
+                    if member.guild.support_block is None:
+                        raise exceptions.InvalidParameters(
+                            "The support block role has not been set.\n"
+                            "This may be intentional.\n"
+                            "If not please set it up using the /settings.")
+                    await target.add_roles(
+                        discord.Object(member.guild.support_block))
                     emd = discord.Embed(
                         title="Success!",
                         description=(
@@ -316,6 +323,13 @@ class StaffCmmd(commands.Cog, name="StaffCommands"):
                             f" {target.guild.name} for {str(penalty_time)}."),
                         color=discord.Color.red())
                 else:
+                    if member.guild.helping_block is None:
+                        raise exceptions.InvalidParameters(
+                            "The helping block role has not been set.\n"
+                            "This may be intentional.\n"
+                            "If not please set it up using the /settings.")
+                    await target.add_roles(
+                        discord.Object(member.guild.helping_block))
                     emd = discord.Embed(
                         title="Success!",
                         description=(

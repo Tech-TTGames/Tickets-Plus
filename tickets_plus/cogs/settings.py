@@ -255,6 +255,42 @@ class Settings(commands.GroupCog,
         emd.add_field(name="New message:", value=message)
         await ctx.followup.send(embed=emd, ephemeral=True)
 
+    @app_commands.command(name="penrole",
+                          description="Change the penalty roles.")
+    @app_commands.describe(role="The role to set as a penalty role.")
+    @app_commands.choices(penal=[
+        app_commands.Choice(name="Support Block", value=0),
+        app_commands.Choice(name="Helping Block", value=1),
+    ])
+    async def change_penrole(self, ctx: discord.Interaction, role: discord.Role,
+                             penal: app_commands.Choice[int]) -> None:
+        """Change the penalty roles.
+
+        Adjusts the penalty roles. These roles are used to block users from
+        creating tickets or helping in tickets.
+
+        Args:
+            ctx: The interaction context.
+            role: The role to set as a penalty role.
+            penal: The penalty for which to set the role.
+        """
+        await ctx.response.defer(ephemeral=True)
+        async with self._bt.get_connection() as conn:
+            guild = await conn.get_guild(ctx.guild.id)  # type: ignore
+            if penal.value == 0:
+                old = guild.support_block
+                guild.support_block = role.id
+            else:
+                old = guild.helping_block
+                guild.helping_block = role.id
+            await conn.commit()
+        emd = discord.Embed(title="Penalty Role Changed",
+                            description=f"Penalty: {penal.name}",
+                            color=discord.Color.yellow())
+        emd.add_field(name="Old role:", value=f"<@&{old}>")
+        emd.add_field(name="New role:", value=role.mention)
+        await ctx.followup.send(embed=emd, ephemeral=True)
+
     @app_commands.command(name="staffteamname",
                           description="Change the staff team's name.")
     @app_commands.describe(name="The new staff team's name.")
