@@ -325,6 +325,7 @@ class Events(commands.Cog, name="Events"):
                             crrnt)
                     await chan.edit(topic=crrnt)
                     ticket.last_response = utils.utcnow()
+                    await cnfg.commit()
 
 
 async def setup(bot_instance: bot.TicketsPlusBot) -> None:

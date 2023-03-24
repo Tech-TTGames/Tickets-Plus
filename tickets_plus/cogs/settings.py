@@ -362,54 +362,41 @@ class Settings(commands.GroupCog,
             await conn.commit()
         await ctx.followup.send(embed=emd, ephemeral=True)
 
-    @app_commands.command(name="msgdiscovery",
-                          description="Toggle message link discovery.")
-    async def toggle_msg_discovery(self, ctx: discord.Interaction) -> None:
-        """This command is used to toggle message link discovery.
+    @app_commands.command(name="toggle",
+                          description="Toggle a specified True/False value.")
+    @app_commands.describe(value="The value to toggle.")
+    @app_commands.choices(value=[
+        app_commands.Choice(name="Message Discovery", value=0),
+        app_commands.Choice(name="Button Stripping", value=1),
+        app_commands.Choice(name="Role Stripping", value=2),
+    ])
+    async def toggle_value(self, ctx: discord.Interaction,
+                           value: app_commands.Choice[int]) -> None:
+        """A generic toggle command.
 
-        This is the feature that makes the bot automatically
-        resolve message links to their content and reply with
-        the content of the message. This is useful for staff
-        to quickly see what a user is referring to.
+        A more space efficient way to implement the toggle commands.
+        This command is used to toggle the specified value.
 
         Args:
-            ctx: The interaction context.
+            ctx (discord.Interaction): _description_
+            value (app_commands.Choice[int]): _description_
         """
         await ctx.response.defer(ephemeral=True)
         async with self._bt.get_connection() as conn:
             guild = await conn.get_guild(ctx.guild.id)  # type: ignore
-            new_status = not guild.msg_discovery
-            guild.msg_discovery = new_status
+            if value.value == 0:
+                new_status = not guild.msg_discovery
+                guild.msg_discovery = new_status
+            elif value.value == 1:
+                new_status = not guild.strip_buttons
+                guild.strip_buttons = new_status
+            else:
+                new_status = not guild.strip_roles
+                guild.strip_roles = new_status
             await conn.commit()
         emd = discord.Embed(
-            title="Message Toggled",
-            description=f"Message discovery is now {new_status}",
-            color=discord.Color.green() if new_status else discord.Color.red())
-        await ctx.followup.send(embed=emd, ephemeral=True)
-
-    @app_commands.command(name="stripbuttons",
-                          description="Toggle button stripping.")
-    async def toggle_button_stripping(self, ctx: discord.Interaction) -> None:
-        """This command is used to toggle button stripping.
-
-        Button stripping is the feature that makes the bot
-        remove buttons from messages that are sent by the
-        ticket bots. This is useful for cleaning up the
-        ticket channel. Additionally, we may later use this
-        to filter out content from the ticket information.
-
-        Args:
-            ctx: The interaction context.
-        """
-        await ctx.response.defer(ephemeral=True)
-        async with self._bt.get_connection() as conn:
-            guild = await conn.get_guild(ctx.guild.id)  # type: ignore
-            new_status = not guild.strip_buttons
-            guild.strip_buttons = new_status
-            await conn.commit()
-        emd = discord.Embed(
-            title="Button Stripping Toggled",
-            description=f"Button stripping is now {new_status}",
+            title="Value Toggled",
+            description=f"{value.name} is now {new_status}",
             color=discord.Color.green() if new_status else discord.Color.red())
         await ctx.followup.send(embed=emd, ephemeral=True)
 
