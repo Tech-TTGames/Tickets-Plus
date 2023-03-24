@@ -197,7 +197,7 @@ class Events(commands.Cog, name="Events"):
                 if actv_member.status_till is not None:
                     # Split this up to avoid None comparison.
                     # pylint: disable=line-too-long
-                    if actv_member.status_till <= datetime.datetime.now(
+                    if actv_member.status_till <= utils.utcnow(
                     ):  # type: ignore
                         # Check if the penalty has expired.
                         actv_member.status = 0
@@ -324,6 +324,7 @@ class Events(commands.Cog, name="Events"):
                             f"<t:{int((message.created_at + datetime.timedelta(minutes=guild.any_autoclose)).timestamp())}:R>",
                             crrnt)
                     await chan.edit(topic=crrnt)
+                    ticket.last_response = utils.utcnow()
 
 
 async def setup(bot_instance: bot.TicketsPlusBot) -> None:

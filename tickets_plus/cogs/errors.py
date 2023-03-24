@@ -18,11 +18,10 @@ Typical usage example:
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
-import datetime
 import logging
 
 import discord
-from discord import app_commands
+from discord import app_commands, utils
 from discord.ext import commands
 from sqlalchemy import exc
 
@@ -101,7 +100,7 @@ class ErrorHandling(commands.Cog, name="AppCommandErrorHandler"):
                          "GitHub and support server by using "
                          "the /version command."),
             color=discord.Color.red(),
-            timestamp=datetime.datetime.utcnow(),
+            timestamp=utils.utcnow(),
         )
 
         if isinstance(error, app_commands.CommandNotFound):

@@ -30,8 +30,8 @@ Typical usage example:
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
 import types
 from typing import Sequence, Tuple, Type
-import datetime
 
+from discord import utils
 from discord.ext import commands
 from sqlalchemy import sql
 from sqlalchemy.ext import asyncio as sa_asyncio
@@ -241,7 +241,7 @@ class OnlineConfig:
         Returns:
             Sequence[models.Member]: The members with expired status.
         """
-        time = datetime.datetime.utcnow()
+        time = utils.utcnow()
         expr_members = await self._session.scalars(
             sql.select(models.Member).where(models.Member.status_till <= time))
         return expr_members.all()

@@ -19,6 +19,7 @@ Typical usage example:
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
+import datetime
 import sqlalchemy
 from sqlalchemy import orm, sql
 from sqlalchemy.ext import compiler as cmplr
@@ -273,13 +274,13 @@ class Ticket(Base):
         nullable=False,
         comment="Unique Guild ID of parent guild",
     )
-    date_created: orm.Mapped[sqlalchemy.DateTime] = orm.mapped_column(
+    date_created: orm.Mapped[datetime.datetime] = orm.mapped_column(
         sqlalchemy.DateTime(),
         nullable=False,
         comment="Date the ticket was created",
         server_default=UTCnow(),
     )
-    last_response: orm.Mapped[sqlalchemy.DateTime] = orm.mapped_column(
+    last_response: orm.Mapped[datetime.datetime] = orm.mapped_column(
         sqlalchemy.DateTime(),
         nullable=False,
         comment="Date the ticket was last responded to",
@@ -508,7 +509,7 @@ class Member(Base):
         comment=("The status of the member, 0 is normal, "
                  "1 is support-blocked, 2 is barred from providing support"),
     )
-    status_till: orm.Mapped[sqlalchemy.DateTime | None] = orm.mapped_column(
+    status_till: orm.Mapped[datetime.datetime | None] = orm.mapped_column(
         sqlalchemy.DateTime(),
         nullable=True,
         comment=("The time until the status is removed, "
