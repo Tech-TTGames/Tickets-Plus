@@ -28,6 +28,7 @@ Typical usage example:
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
+import datetime
 import types
 from typing import Sequence, Tuple, Type, Any
 
@@ -242,7 +243,7 @@ class OnlineConfig:
         Returns:
             Sequence[models.Member]: The members with expired status.
         """
-        time = utils.utcnow()
+        time = datetime.datetime.utcnow()
         expr_members = await self._session.scalars(
             sql.select(models.Member).where(models.Member.status_till <= time))
         return expr_members.all()
