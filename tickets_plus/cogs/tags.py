@@ -229,7 +229,7 @@ class TagUtils(commands.GroupCog,
         thumbnail="The thumbnail of the embed",
         author="The author of the embed",
     )
-    async def edit(self, ctx: discord.Interaction, tag_key: str,
+    async def edit(self, ctx: discord.Interaction, tag: str,
                    content: Optional[str], title: Optional[str],
                    url: Optional[str], color: Optional[str],
                    footer: Optional[str], image: Optional[str],
@@ -269,23 +269,23 @@ class TagUtils(commands.GroupCog,
             "thumbnail": thumbnail
         }
         async with self._bt.get_connection() as conn:
-            new, tag = await conn.get_tag(ctx.guild_id, tag_key)  # type: ignore
+            new, tag_data = await conn.get_tag(ctx.guild_id, tag)  # type: ignore
             if new:
                 raise exceptions.InvalidParameters("That tag doesn't exist!")
             if content:
-                tag.description = content
+                tag_data.description = content
             if title:
-                tag.title = title
-            if not tag.title and any(opt_params):
+                tag_data.title = title
+            if not tag_data.title and any(opt_params):
                 raise exceptions.InvalidParameters(
                     "You need to specify a title if"
                     " you want to use embed parameters!")
             for param, value in opt_params.items():
                 if value:
-                    setattr(tag, param, value)
+                    setattr(tag_data, param, value)
             await conn.commit()
         emd = discord.Embed(title="Tag edited!",
-                            description=f"Tag `{tag_key}` edited!",
+                            description=f"Tag `{tag}` edited!",
                             color=discord.Color.green())
         await ctx.response.send_message(embed=emd, ephemeral=True)
 
