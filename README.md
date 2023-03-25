@@ -61,13 +61,13 @@ Here are the steps to host your copy of [this bot.](https://github.com/Tech-TTGa
     2. Set up user and database for the bot. `<FIELD>` are required and to be replaced with your stuff. [FIELD] are optional and can be ignored.
         - Linux:
             1. `sudo -u postgres -i`
-            2. `createuser <dbuser> --pwprompt`  
+            2. `createuser --pwprompt <dbuser>`  
                 The prompt will ask you for a password for new user - `<dbpass>`.
             3. `createdb -E UTF8 -O <dbuser> <dbname> [comment]`  
                 `<dbuser>` being the same as in the previous step.
         - Windows:
             1. If the installed PostgreSQL bin isn't in PATH, use `cd` to go to the installation bin.
-            2. `createuser <dbuser> --pwprompt -U postgres`  
+            2. `createuser --pwprompt -U postgres <dbuser>`  
                 The prompt will ask you for the password of the postgres user and the password for the new user - `<dbpass>`.
             3. `createdb -E UTF8 -O <dbuser> -U postgres <dbname> [comment]`  
                 `<dbuser>` being the same as in the previous step.
