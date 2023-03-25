@@ -99,7 +99,7 @@ class TagUtils(commands.GroupCog,
             tag_data = await conn.fetch_tag(guild, tag.lower())  # type: ignore
             messg = ""
             if mention:
-                messg = mention.mention
+                messg = f"{mention.mention}\n"
             if tag_data is None:
                 raise exceptions.InvalidParameters("That tag doesn't exist!")
             if isinstance(tag_data, discord.Embed):
