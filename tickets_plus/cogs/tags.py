@@ -21,7 +21,7 @@ Typical usage example:
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
 import logging
 import types
-from typing import Optional, Tuple
+from typing import List, Optional, Tuple
 
 import discord
 from discord.ext import commands
@@ -56,6 +56,21 @@ class TagUtils(commands.GroupCog,
         super().__init__()
         logging.info("Loaded %s", self.__class__.__name__)
 
+    async def tag_autocomplete(self, ctx: discord.Interaction, arg: str) -> List[app_commands.Choice[str]]:
+        """Autocomplete for tags.
+        
+        This method is used to autocomplete tags.
+        It gets the tags from the database and returns them as a list of
+        choices.
+
+        Args:
+            ctx: The interaction context.
+            arg: The argument to autocomplete.
+        """
+        async with self._bt.get_connection() as conn:
+            tags = await conn.get_tags(ctx.guild_id)  # type: ignore
+        return [app_commands.Choice(name=tag.tag_name, value=tag.tag_name) for tag in tags if arg.lower() in tag.tag_name.lower()]
+
     async def prep_tag(
             self, guild: int, tag: str, mention: Optional[discord.User]
     ) -> Tuple[str, None | discord.Embed]:
@@ -76,7 +91,7 @@ class TagUtils(commands.GroupCog,
         """
         async with self._bt.get_connection() as conn:
             emd = None
-            tag_data = await conn.fetch_tag(guild, tag)  # type: ignore
+            tag_data = await conn.fetch_tag(guild, tag.lower())  # type: ignore
             messg = ""
             if mention:
                 messg = mention.mention
@@ -90,6 +105,7 @@ class TagUtils(commands.GroupCog,
 
     @app_commands.command(name="anosend", description="Send a tag anonymously")
     @app_commands.describe(tag="The tag to send", mention="The user to mention")
+    @app_commands.autocomplete(tag=tag_autocomplete)
     async def anosend(self, ctx: discord.Interaction, tag: str,
                       mention: Optional[discord.User]) -> None:
         """Sends an anonymous tag.
@@ -118,6 +134,7 @@ class TagUtils(commands.GroupCog,
 
     @app_commands.command(name="send", description="Send a tag")
     @app_commands.describe(tag="The tag to send", mention="The user to mention")
+    @app_commands.autocomplete(tag=tag_autocomplete)
     async def send(self, ctx: discord.Interaction, tag: str,
                    mention: Optional[discord.User]) -> None:
         """Sends a tag.
@@ -156,6 +173,7 @@ class TagUtils(commands.GroupCog,
         thumbnail="The thumbnail of the embed",
         author="The author of the embed",
     )
+    @app_commands.autocomplete(tag=tag_autocomplete)
     async def create(self, ctx: discord.Interaction, tag_name: str, content: str,
                      title: Optional[str], url: Optional[str],
                      color: Optional[str], footer: Optional[str],
@@ -202,7 +220,7 @@ class TagUtils(commands.GroupCog,
         async with self._bt.get_connection() as conn:
             new, tag_data = await conn.get_tag(
                 ctx.guild_id,  # type: ignore
-                tag_name,
+                tag_name.lower(),
                 content,
                 embed_args=opt_params)
             if new:
@@ -230,6 +248,7 @@ class TagUtils(commands.GroupCog,
         thumbnail="The thumbnail of the embed",
         author="The author of the embed",
     )
+    @app_commands.autocomplete(tag=tag_autocomplete)
     async def edit(self, ctx: discord.Interaction, tag: str,
                    content: Optional[str], title: Optional[str],
                    url: Optional[str], color: Optional[str],
@@ -271,7 +290,7 @@ class TagUtils(commands.GroupCog,
             "author": author
         }
         async with self._bt.get_connection() as conn:
-            new, tag_data = await conn.get_tag(ctx.guild_id, tag)  # type: ignore
+            new, tag_data = await conn.get_tag(ctx.guild_id, tag.lower())  # type: ignore
             if new:
                 raise exceptions.InvalidParameters("That tag doesn't exist!")
             if content:

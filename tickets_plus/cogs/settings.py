@@ -19,6 +19,7 @@ Typical usage example:
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
 import datetime
 import logging
+from typing import List
 
 import discord
 from discord import app_commands
@@ -53,6 +54,23 @@ class Settings(commands.GroupCog,
         self._bt = bot_instance
         super().__init__()
         logging.info("Loaded %s", self.__class__.__name__)
+
+    async def ticket_types_autocomplete(self, ctx: discord.Interaction, arg: str) -> List[app_commands.Choice[str]]:
+        """Autocomplete for ticket types.
+
+        This function is used to autocomplete the ticket types.
+        It is used in the ticket type commands.
+
+        Args:
+            ctx: The interaction context.
+            arg: The argument to autocomplete.
+
+        Returns:
+            A list of choices for the autocomplete.
+        """
+        async with self._bt.get_connection() as conn:
+            ticket_types = await conn.get_ticket_types(ctx.guild_id)  # type: ignore
+        return [app_commands.Choice(name=t.prefix, value=t.prefix) for t in ticket_types if arg in t.prefix]
 
     @app_commands.command(name="ticketbot",
                           description="Change the ticket bots for your server.")
@@ -449,6 +467,7 @@ class Settings(commands.GroupCog,
     @app_commands.rename(comping="communityping",
                          comaccs="communityaccess",
                          strpbuttns="stripbuttons")
+    @app_commands.autocomplete(name=ticket_types_autocomplete)
     async def create_ticket_type(self,
                                  ctx: discord.Interaction,
                                  name: str,
@@ -505,6 +524,7 @@ class Settings(commands.GroupCog,
     @app_commands.rename(comping="communityping",
                          comaccs="communityaccess",
                          strpbuttns="stripbuttons")
+    @app_commands.autocomplete(name=ticket_types_autocomplete)
     async def edit_ticket_type(self,
                                ctx: discord.Interaction,
                                name: str,

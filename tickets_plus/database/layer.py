@@ -479,6 +479,23 @@ class OnlineConfig:
             self._session.add(tag)
         return new, tag
 
+    async def get_tags(self, guild_id: int) -> Sequence[models.Tag]:
+        """Get tags from the database.
+
+        Fetches all tags from the database.
+        We also check if the guild exists and create it if it does not.
+
+        Args:
+            guild_id: The guild ID.
+
+        Returns:
+            Sequence[models.Tag]: The tags.
+        """
+        guild = await self.get_guild(guild_id)
+        tags = await self._session.scalars(
+            sql.select(models.Tag).where(models.Tag.guild == guild))
+        return tags.all()
+
     async def get_staff_role(self, role_id: int,
                              guild_id: int) -> Tuple[bool, models.StaffRole]:
         """Get or create the staff role from the database.
