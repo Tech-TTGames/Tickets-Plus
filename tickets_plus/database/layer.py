@@ -473,7 +473,7 @@ class OnlineConfig:
             if embed_args is None:
                 embed_args = {}
             tag = models.Tag(guild=guild,
-                             tag=tag_name,
+                             tag_name=tag_name,
                              description=description,
                              **embed_args)
             self._session.add(tag)
