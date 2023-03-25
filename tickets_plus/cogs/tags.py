@@ -173,7 +173,7 @@ class TagUtils(commands.GroupCog,
         thumbnail="The thumbnail of the embed",
         author="The author of the embed",
     )
-    @app_commands.autocomplete(tag=tag_autocomplete)
+    @app_commands.autocomplete(tag_name=tag_autocomplete)
     async def create(self, ctx: discord.Interaction, tag_name: str, content: str,
                      title: Optional[str], url: Optional[str],
                      color: Optional[str], footer: Optional[str],
