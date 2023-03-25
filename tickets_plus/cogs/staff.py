@@ -72,7 +72,7 @@ class StaffCmmd(commands.Cog, name="StaffCommands"):
         await ctx.response.defer(ephemeral=True)
         async with self._bt.get_connection() as confg:
             guild = await confg.get_guild(
-                ctx.guild.id)  # type: ignore # checked in decorator
+                ctx.guild_id)  # type: ignore # checked in decorator
             sanitized_message = utils.escape_mentions(message)
             if isinstance(ctx.channel, discord.Thread):
                 ticket = await confg.fetch_ticket(
@@ -211,7 +211,7 @@ class StaffCmmd(commands.Cog, name="StaffCommands"):
             channel = ctx.channel
             async with self._bt.get_connection() as confg:
                 guild = await confg.get_guild(
-                    ctx.guild.id)  # type: ignore # checked in decorator
+                    ctx.guild_id)  # type: ignore # checked in decorator
                 if thread is None:
                     thread = await channel.create_thread(
                         name="Staff Notes",
@@ -223,7 +223,7 @@ class StaffCmmd(commands.Cog, name="StaffCommands"):
                             channel=channel.mention))
                 new, ticket = await confg.get_ticket(
                     ctx.channel.id,
-                    ctx.guild.id,  # type: ignore
+                    ctx.guild_id,  # type: ignore
                     thread.id)
                 # Unused, we just want to check if it's new and commit it.
                 del ticket  # skipcq: PTC-W0043
@@ -277,7 +277,7 @@ class StaffCmmd(commands.Cog, name="StaffCommands"):
         async with self._bt.get_connection() as confg:
             member = await confg.get_member(
                 target.id,
-                interaction.guild.id  # type: ignore
+                interaction.guild_id  # type: ignore
             )
             member.status = status.value
             if status.value == 0:
@@ -344,7 +344,7 @@ class StaffCmmd(commands.Cog, name="StaffCommands"):
                         color=discord.Color.red())
                     if member.guild.strip_roles:
                         roles = await confg.get_all_community_roles(
-                            interaction.guild.id)  # type: ignore
+                            interaction.guild_id)  # type: ignore
                         unpck = [discord.Object(rle.role_id) for rle in roles]
                         await target.remove_roles(
                             *unpck, reason="Community Support Blocked")

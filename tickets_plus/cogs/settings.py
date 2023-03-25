@@ -72,7 +72,7 @@ class Settings(commands.GroupCog,
         async with self._bt.get_connection() as conn:
             new, ticket_user = await conn.get_ticket_bot(
                 user.id,
-                ctx.guild.id,  # type: ignore
+                ctx.guild_id,  # type: ignore
             )
             emd = discord.Embed(title="Ticket Bot List Edited")
             if not new:
@@ -103,7 +103,7 @@ class Settings(commands.GroupCog,
         async with self._bt.get_connection() as conn:
             new, staff_role = await conn.get_staff_role(
                 role.id,
-                ctx.guild.id,  # type: ignore
+                ctx.guild_id,  # type: ignore
             )
             emd = discord.Embed(title="Staff Role List Edited")
             if not new:
@@ -136,7 +136,7 @@ class Settings(commands.GroupCog,
         async with self._bt.get_connection() as conn:
             new, obsrvrs = await conn.get_observers_role(
                 role.id,
-                ctx.guild.id,  # type: ignore
+                ctx.guild_id,  # type: ignore
             )
             emd = discord.Embed(title="Observers Role List Edited")
             if not new:
@@ -170,7 +170,7 @@ class Settings(commands.GroupCog,
         async with self._bt.get_connection() as conn:
             new, comsup = await conn.get_community_role(
                 role.id,
-                ctx.guild.id,  # type: ignore
+                ctx.guild_id,  # type: ignore
             )
             emd = discord.Embed(title="Community Support Role List Edited")
             if not new:
@@ -206,7 +206,7 @@ class Settings(commands.GroupCog,
         async with self._bt.get_connection() as conn:
             new, comsup = await conn.get_community_ping(
                 role.id,
-                ctx.guild.id,  # type: ignore
+                ctx.guild_id,  # type: ignore
             )
             emd = discord.Embed(title="Community Ping Role List Edited")
             if not new:
@@ -245,7 +245,7 @@ class Settings(commands.GroupCog,
             raise exceptions.InvalidParameters("The message must be less than"
                                                " 200 characters.")
         async with self._bt.get_connection() as conn:
-            guild = await conn.get_guild(ctx.guild.id)  # type: ignore
+            guild = await conn.get_guild(ctx.guild_id)  # type: ignore
             old = guild.open_message
             guild.open_message = message
             await conn.commit()
@@ -276,7 +276,7 @@ class Settings(commands.GroupCog,
         """
         await ctx.response.defer(ephemeral=True)
         async with self._bt.get_connection() as conn:
-            guild = await conn.get_guild(ctx.guild.id)  # type: ignore
+            guild = await conn.get_guild(ctx.guild_id)  # type: ignore
             if penal.value == 0:
                 old = guild.support_block
                 guild.support_block = role.id
@@ -315,7 +315,7 @@ class Settings(commands.GroupCog,
         if len(name) > 40:
             raise exceptions.InvalidParameters("Name too long")
         async with self._bt.get_connection() as conn:
-            guild = await conn.get_guild(ctx.guild.id)  # type: ignore
+            guild = await conn.get_guild(ctx.guild_id)  # type: ignore
             old = guild.staff_team_name
             guild.staff_team_name = name
             await conn.commit()
@@ -360,7 +360,7 @@ class Settings(commands.GroupCog,
         """
         await ctx.response.defer(ephemeral=True)
         async with self._bt.get_connection() as conn:
-            guild = await conn.get_guild(ctx.guild.id)  # type: ignore
+            guild = await conn.get_guild(ctx.guild_id)  # type: ignore
             prev = None
             if category.value:
                 changed_close = guild.any_autoclose
@@ -419,7 +419,7 @@ class Settings(commands.GroupCog,
         """
         await ctx.response.defer(ephemeral=True)
         async with self._bt.get_connection() as conn:
-            guild = await conn.get_guild(ctx.guild.id)  # type: ignore
+            guild = await conn.get_guild(ctx.guild_id)  # type: ignore
             if value.value == 0:
                 new_status = not guild.msg_discovery
                 guild.msg_discovery = new_status
