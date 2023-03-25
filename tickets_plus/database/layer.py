@@ -428,7 +428,7 @@ class OnlineConfig:
         guild = await self.get_guild(guild_id)
         embed = await self._session.scalar(
             sql.select(models.Tag).where(models.Tag.guild == guild,
-                                         models.Tag.tag == tag))
+                                         models.Tag.tag_name == tag))
         if embed is None:
             return None
         if embed.title:
@@ -462,7 +462,7 @@ class OnlineConfig:
         guild = await self.get_guild(guild_id)
         tag = await self._session.scalar(
             sql.select(models.Tag).where(models.Tag.guild == guild,
-                                         models.Tag.tag == tag_name))
+                                         models.Tag.tag_name == tag_name))
         new = False
         if tag is None:
             new = True

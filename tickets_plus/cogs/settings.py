@@ -443,8 +443,7 @@ class Settings(commands.GroupCog,
               " This should be the prefix you use for the ticket type."
               " ie. #<name>-<number>."),
         comping="Whether or not to ping the community role.",
-        comaccs=
-        "Whether or not to give the community role access to the ticket.",
+        comaccs="Whether or not to give the community role matched ticket.",
         strpbuttns="Whether or not to strip buttons from the ticket.")
     @app_commands.rename(comping="Community Ping",
                          comaccs="Community Access",
@@ -496,8 +495,7 @@ class Settings(commands.GroupCog,
               " This should be the prefix you use for the ticket type."
               " ie. #<name>-<number>."),
         comping="Whether or not to ping the community role.",
-        comaccs=
-        "Whether or not to give the community role access to the ticket.",
+        comaccs="Whether or not to give the community role matched ticket.",
         strpbuttns="Whether or not to strip buttons from the ticket.")
     @app_commands.rename(comping="Community Ping",
                          comaccs="Community Access",

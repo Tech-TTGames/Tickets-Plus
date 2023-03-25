@@ -255,8 +255,7 @@ class TagUtils(commands.GroupCog,
         """
         if not any([content, title, url, color, footer, image, thumbnail]):
             raise exceptions.InvalidParameters(
-                "You must specify at least one value to edit."
-            )
+                "You must specify at least one value to edit.")
         parsed_color = None
         if color:
             parsed_color = discord.Color.from_str(color).value
@@ -291,7 +290,7 @@ class TagUtils(commands.GroupCog,
 
 async def setup(bot_instance: bot.TicketsPlusBot) -> None:
     """Sets up the tag cog.
-    
+
     Sets the bot to use the cog properly.
 
     Args:

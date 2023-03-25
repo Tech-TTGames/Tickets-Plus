@@ -189,6 +189,8 @@ class Guild(Base):
         back_populates="guild", lazy="raise")
     tags: orm.Mapped[list["Tag"]] = orm.relationship(back_populates="guild",
                                                      lazy="raise")
+    ticket_types: orm.Mapped[list["TicketType"]] = orm.relationship(
+        back_populates="guild", lazy="raise")
     # Disabled for now gets sqlalchemy confused
     # pylint: disable=line-too-long
     # users: orm.Mapped[list["User"]] = orm.relationship(
@@ -360,11 +362,12 @@ class Ticket(Base):
 
 
 class Tag(Base):
-    """"Tags table.
+    """Tags table.
 
     Stores the tags for the guild.
     Tags are used to quickly respond to common questions.
-    Tags are stored in the database so they can be updated without restarting the bot.
+    Tags are stored in the database so they can be
+    updated without restarting the bot.
     Additionally, if additional columns besides "tag" and "content" are added,
     the tag is automatically interpreted as a embed.
 
@@ -392,7 +395,7 @@ class Tag(Base):
         nullable=False,
         comment="Unique Guild ID of parent guild",
         primary_key=True)
-    tag: orm.Mapped[str] = orm.mapped_column(sqlalchemy.String(32),
+    tag_name: orm.Mapped[str] = orm.mapped_column(sqlalchemy.String(32),
                                              nullable=False,
                                              comment="The 'key' of the tag",
                                              primary_key=True)
