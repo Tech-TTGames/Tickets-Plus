@@ -31,6 +31,7 @@ from tickets_plus import bot
 from tickets_plus.ext import exceptions, checks
 
 
+@commands.guild_only()
 class TagUtils(commands.GroupCog,
                name="tag",
                description="A for all your tagging needs!"):
@@ -88,7 +89,6 @@ class TagUtils(commands.GroupCog,
         return messg, emd
 
     @app_commands.command(name="anosend", description="Send a tag anonymously")
-    @commands.guild_only()
     @app_commands.describe(tag="The tag to send", mention="The user to mention")
     async def anosend(self, ctx: discord.Interaction, tag: str,
                       mention: Optional[discord.User]) -> None:
@@ -117,7 +117,6 @@ class TagUtils(commands.GroupCog,
         await ctx.followup.send("Sent!", ephemeral=True)
 
     @app_commands.command(name="send", description="Send a tag")
-    @commands.guild_only()
     @app_commands.describe(tag="The tag to send", mention="The user to mention")
     async def send(self, ctx: discord.Interaction, tag: str,
                    mention: Optional[discord.User]) -> None:
@@ -144,8 +143,7 @@ class TagUtils(commands.GroupCog,
         else:
             await ctx.followup.send(messg)
 
-    @app_commands.command(name="create", description="Create a tag")
-    @commands.guild_only()
+    @app_commands.command(name="create", description="Create/Delete a tag")
     @checks.is_staff_check()
     @app_commands.describe(
         tag="The tag to create",
@@ -162,11 +160,12 @@ class TagUtils(commands.GroupCog,
                      title: Optional[str], url: Optional[str],
                      color: Optional[str], footer: Optional[str],
                      image: Optional[str], thumbnail: Optional[str]) -> None:
-        """Creates a tag.
+        """Creates or deletes a tag.
 
         This command creates a tag, which is a snippet of text that can be
         called up with a command.
         If embed parameters are specified, it creates an embed.
+        if the tag already exists, it deletes it.
 
         Args:
             ctx: The interaction context.
@@ -204,44 +203,19 @@ class TagUtils(commands.GroupCog,
                 tag,
                 content,
                 embed_args=opt_params)
-            logging.debug("Tag data: %s", tag_data)
             if new:
-                await ctx.followup.send("Tag created!", ephemeral=True)
+                emd = discord.Embed(title="Tag created!",
+                                    description=f"Tag `{tag}` created!",
+                                    color=discord.Color.green())
             else:
-                raise exceptions.InvalidParameters("That tag already exists!")
+                await conn.delete(tag_data)
+                emd = discord.Embed(title="Tag deleted!",
+                                    description=f"Tag `{tag}` deleted!",
+                                    color=discord.Color.red())
             await conn.commit()
-
-    @app_commands.command(name="delete", description="Delete a tag")
-    @commands.guild_only()
-    @checks.is_staff_check()
-    @app_commands.describe(tag="The tag to delete")
-    async def delete(self, ctx: discord.Interaction, tag: str) -> None:
-        """Deletes a tag.
-
-        This command deletes a tag, which is a snippet of text that can be
-        called up with a command.
-
-        Args:
-            ctx: The interaction context.
-            tag: The tag to delete.
-
-        Raises:
-            InvalidParameters: The tag doesn't exist.
-        """
-        await ctx.response.defer(ephemeral=True)
-        async with self._bt.get_connection() as conn:
-            new, tag = await conn.get_tag(ctx.guild_id, tag)  # type: ignore
-            if new:
-                raise exceptions.InvalidParameters("That tag doesn't exist!")
-            await conn.delete(tag)
-            await conn.commit()
-        emd = discord.Embed(title="Tag deleted!",
-                            description=f"Tag `{tag}` deleted!",
-                            color=discord.Color.red())
         await ctx.followup.send(embed=emd, ephemeral=True)
 
     @app_commands.command(name="edit", description="Edit a tag")
-    @commands.guild_only()
     @checks.is_staff_check()
     @app_commands.describe(
         tag="The tag to edit",
