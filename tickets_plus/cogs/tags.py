@@ -159,7 +159,7 @@ class TagUtils(commands.GroupCog,
     async def create(self, ctx: discord.Interaction, tag: str, content: str,
                      title: Optional[str], url: Optional[str],
                      color: Optional[str], footer: Optional[str],
-                     image: Optional[str], thumbnail: Optional[str]) -> None:
+                     image: Optional[str], thumbnail: Optional[str], author: Optional[str]) -> None:
         """Creates or deletes a tag.
 
         This command creates a tag, which is a snippet of text that can be
@@ -177,6 +177,7 @@ class TagUtils(commands.GroupCog,
             footer: The footer of the embed.
             image: The image of the embed.
             thumbnail: The thumbnail of the embed.
+            author: The author of the embed.
 
         Raises:
             InvalidParameters: The tag already exists.
@@ -232,7 +233,7 @@ class TagUtils(commands.GroupCog,
                    content: Optional[str], title: Optional[str],
                    url: Optional[str], color: Optional[str],
                    footer: Optional[str], image: Optional[str],
-                   thumbnail: Optional[str]) -> None:
+                   thumbnail: Optional[str], author: Optional[str]) -> None:
         """Edits a tag.
 
         This command edits a tag, which is a snippet of text that can be
@@ -249,6 +250,7 @@ class TagUtils(commands.GroupCog,
             footer: The footer of the embed.
             image: The image of the embed.
             thumbnail: The thumbnail of the embed.
+            author: The author of the embed.
 
         Raises:
             InvalidParameters: The tag doesn't exist.
