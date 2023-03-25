@@ -243,6 +243,61 @@ class TicketBot(Base):
                                                   lazy="selectin")
 
 
+class TicketType(Base):
+    """Categorize tickets based on the prefix of the channel name
+
+    This is the table for the ticket types.
+    It contains the prefix of the ticket type.
+    It also contains the relationship to the Guild table.
+    And the foreign key to the guild ID.
+    And type-specific setting overrides.
+
+    Attributes:
+        prefix: The prefix of the ticket type. Also the, type name.
+        guild_id: The unique discord-provided guild ID
+        guild: The relationship to the Guild table
+        comping: Whether to ping the community roles when template matches
+        comaccs: Whether to ping the community roles when template matches
+        strpbuttns: Whether to strip buttons from open when template matches
+    """
+
+    __tablename__ = "ticket_types"
+    __table_args__ = {
+        "comment": "Ticket types are stored here. Each guild can have multiple."
+    }
+
+    # Simple columns
+    prefix: orm.Mapped[str] = orm.mapped_column(
+        sqlalchemy.String(20),
+        nullable=False,
+        comment="The prefix of the ticket type",
+        primary_key=True,
+    )
+    guild_id: orm.Mapped[int] = orm.mapped_column(
+        sqlalchemy.BigInteger(),
+        sqlalchemy.ForeignKey("general_configs.guild_id"),
+        nullable=False,
+        comment="The unique discord-provided guild ID",
+        primary_key=True,
+    )
+    comping: orm.Mapped[bool] = orm.mapped_column(
+        default=False,
+        nullable=False,
+        comment="Whether to ping the community roles when template matches")
+    comaccs: orm.Mapped[bool] = orm.mapped_column(
+        default=False,
+        nullable=False,
+        comment="Whether to add the community roles when template matches")
+    strpbuttns: orm.Mapped[bool] = orm.mapped_column(
+        default=False,
+        nullable=False,
+        comment="Whether to strip buttons from open when template matches")
+
+    # Relationships
+    guild: orm.Mapped["Guild"] = orm.relationship(back_populates="ticket_types",
+                                                  lazy="selectin")
+
+
 class Ticket(Base):
     """Ticket channels table
 

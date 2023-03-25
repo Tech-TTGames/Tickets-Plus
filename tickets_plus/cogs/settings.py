@@ -414,8 +414,8 @@ class Settings(commands.GroupCog,
         This command is used to toggle the specified value.
 
         Args:
-            ctx (discord.Interaction): _description_
-            value (app_commands.Choice[int]): _description_
+            ctx: The interaction context.
+            value: The value to toggle.
         """
         await ctx.response.defer(ephemeral=True)
         async with self._bt.get_connection() as conn:
@@ -434,6 +434,116 @@ class Settings(commands.GroupCog,
             title="Value Toggled",
             description=f"{value.name} is now {new_status}",
             color=discord.Color.green() if new_status else discord.Color.red())
+        await ctx.followup.send(embed=emd, ephemeral=True)
+
+    @app_commands.command(name="tickettype",
+                          description="Create/Delete a ticket type.")
+    @app_commands.describe(
+        name=("The name of the ticket type."
+              " This should be the prefix you use for the ticket type."
+              " ie. #<name>-<number>."),
+        comping="Whether or not to ping the community role.",
+        comaccs=
+        "Whether or not to give the community role access to the ticket.",
+        strpbuttns="Whether or not to strip buttons from the ticket.")
+    @app_commands.rename(comping="Community Ping",
+                         comaccs="Community Access",
+                         strpbuttns="Strip Buttons")
+    async def create_ticket_type(self,
+                                 ctx: discord.Interaction,
+                                 name: str,
+                                 comping: bool = False,
+                                 comaccs: bool = False,
+                                 strpbuttns: bool = False) -> None:
+        """Create/Delete a new ticket type.
+
+        This command is used to create a new ticket type.
+        A ticket type is a preset of overrides that are applied to
+        a ticket when it is created. This allows for some more
+        settings customization.
+
+        Args:
+            name: The name of the new ticket type.
+            comping: Whether or not to ping the community role.
+            comaccs: Whether or not to give the community role view tickets.
+            strpbuttns: Whether or not to strip buttons from the ticket.
+        """
+        await ctx.response.defer(ephemeral=True)
+        async with self._bt.get_connection() as conn:
+            new, tick_type = await conn.get_ticket_type(
+                ctx.guild_id,  # type: ignore
+                name=name,
+                comping=comping,
+                comaccs=comaccs,
+                strpbuttns=strpbuttns,
+            )
+            if new:
+                emd = discord.Embed(title="Ticket Type Created",
+                                    description=f"Ticket type {name} created.",
+                                    color=discord.Color.green())
+            else:
+                await conn.delete(tick_type)
+                emd = discord.Embed(title="Ticket Type Deleted",
+                                    description=f"Ticket type {name} deleted.",
+                                    color=discord.Color.red())
+            await conn.commit()
+        await ctx.followup.send(embed=emd, ephemeral=True)
+
+    @app_commands.command(name="edittickettype",
+                          description="Edit a ticket type.")
+    @app_commands.describe(
+        name=("The name of the ticket type."
+              " This should be the prefix you use for the ticket type."
+              " ie. #<name>-<number>."),
+        comping="Whether or not to ping the community role.",
+        comaccs=
+        "Whether or not to give the community role access to the ticket.",
+        strpbuttns="Whether or not to strip buttons from the ticket.")
+    @app_commands.rename(comping="Community Ping",
+                         comaccs="Community Access",
+                         strpbuttns="Strip Buttons")
+    async def edit_ticket_type(self,
+                               ctx: discord.Interaction,
+                               name: str,
+                               comping: bool | None = None,
+                               comaccs: bool | None = None,
+                               strpbuttns: bool | None = None) -> None:
+        """Edit a ticket type.
+
+        This command is used to edit a ticket type.
+        A ticket type is a preset of overrides that are applied to
+        a ticket when it is created. This allows for some more
+        settings customization.
+
+        Args:
+            name: The name of the ticket type.
+            comping: Whether or not to ping the community role.
+            comaccs: Whether or not to give the community role view tickets.
+            strpbuttns: Whether or not to strip buttons from the ticket.
+        """
+        if not any([comping, comaccs, strpbuttns]):
+            raise exceptions.InvalidParameters(
+                "You must specify at least one value to edit.")
+        await ctx.response.defer(ephemeral=True)
+        async with self._bt.get_connection() as conn:
+            new, tick_type = await conn.get_ticket_type(
+                ctx.guild_id,  # type: ignore
+                name=name,
+            )
+            if new:
+                raise exceptions.InvalidParameters(
+                    "Ticket type does not exist.")
+            else:
+                if comping is not None:
+                    tick_type.comping = comping
+                if comaccs is not None:
+                    tick_type.comaccs = comaccs
+                if strpbuttns is not None:
+                    tick_type.strpbuttns = strpbuttns
+                emd = discord.Embed(title="Ticket Type Edited",
+                                    description=f"Ticket type {name} edited.",
+                                    color=discord.Color.green())
+            await conn.commit()
         await ctx.followup.send(embed=emd, ephemeral=True)
 
 

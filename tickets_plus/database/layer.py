@@ -298,6 +298,66 @@ class OnlineConfig:
                 models.TicketBot.guild_id == guild_id))
         return ticket_user is not None
 
+    async def get_ticket_type(
+            self,
+            guild_id: int,
+            name: str,
+            comping: bool = False,
+            comaccs: bool = False,
+            strpbuttns: bool = False) -> Tuple[bool, models.TicketType]:
+        """Get or create a ticket type from the database.
+
+        Fetches a ticket type from the database.
+        If the ticket type does not exist, it will be created.
+        We also check if the guild exists and create it if it does not.
+
+        Args:
+            guild_id: The guild ID.
+            name: The ticket type name.
+            comping: The comping flag.
+            comaccs: The comaccs flag.
+            strpbuttns: The strpbuttns flag.
+
+        Returns:
+            Tuple[bool, models.TicketType]: A tuple containing a boolean
+                indicating if the ticket type was created, and the ticket type.
+                Relationships are loaded.
+        """
+        guild = await self.get_guild(guild_id)
+        ticket_type = await self._session.scalar(
+            sql.select(models.TicketType).where(
+                models.TicketType.guild == guild,
+                models.TicketType.prefix == name))
+        new = False
+        if ticket_type is None:
+            new = True
+            ticket_type = models.TicketType(guild=guild,
+                                            prefix=name,
+                                            comping=comping,
+                                            comaccs=comaccs,
+                                            strpbuttns=strpbuttns)
+            self._session.add(ticket_type)
+        return new, ticket_type
+
+    async def get_ticket_types(self,
+                               guild_id: int) -> Sequence[models.TicketType]:
+        """Get ticket types from the database.
+
+        Fetches all ticket types from the database.
+        We also check if the guild exists and create it if it does not.
+
+        Args:
+            guild_id: The guild ID.
+
+        Returns:
+            Sequence[models.TicketType]: The ticket types.
+        """
+        guild = await self.get_guild(guild_id)
+        ticket_types = await self._session.scalars(
+            sql.select(
+                models.TicketType).where(models.TicketType.guild == guild))
+        return ticket_types.all()
+
     async def fetch_ticket(self, channel_id: int) -> models.Ticket | None:
         """Fetch a ticket from the database.
 
