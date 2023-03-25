@@ -146,7 +146,7 @@ class TagUtils(commands.GroupCog,
     @app_commands.command(name="create", description="Create/Delete a tag")
     @checks.is_staff_check()
     @app_commands.describe(
-        tag="The tag to create",
+        tag_name="The tag to create",
         content="The content of the tag",
         title="The title of the embed",
         url="The url of the embed",
@@ -156,7 +156,7 @@ class TagUtils(commands.GroupCog,
         thumbnail="The thumbnail of the embed",
         author="The author of the embed",
     )
-    async def create(self, ctx: discord.Interaction, tag: str, content: str,
+    async def create(self, ctx: discord.Interaction, tag_name: str, content: str,
                      title: Optional[str], url: Optional[str],
                      color: Optional[str], footer: Optional[str],
                      image: Optional[str], thumbnail: Optional[str], author: Optional[str]) -> None:
@@ -195,23 +195,24 @@ class TagUtils(commands.GroupCog,
             "color": parsed_color,
             "footer": footer,
             "image": image,
-            "thumbnail": thumbnail
+            "thumbnail": thumbnail,
+            "author": author
         }
         await ctx.response.defer(ephemeral=True)
         async with self._bt.get_connection() as conn:
             new, tag_data = await conn.get_tag(
                 ctx.guild_id,  # type: ignore
-                tag,
+                tag_name,
                 content,
                 embed_args=opt_params)
             if new:
                 emd = discord.Embed(title="Tag created!",
-                                    description=f"Tag `{tag}` created!",
+                                    description=f"Tag `{tag_name}` created!",
                                     color=discord.Color.green())
             else:
                 await conn.delete(tag_data)
                 emd = discord.Embed(title="Tag deleted!",
-                                    description=f"Tag `{tag}` deleted!",
+                                    description=f"Tag `{tag_name}` deleted!",
                                     color=discord.Color.red())
             await conn.commit()
         await ctx.followup.send(embed=emd, ephemeral=True)
@@ -266,7 +267,8 @@ class TagUtils(commands.GroupCog,
             "color": parsed_color,
             "footer": footer,
             "image": image,
-            "thumbnail": thumbnail
+            "thumbnail": thumbnail,
+            "author": author
         }
         async with self._bt.get_connection() as conn:
             new, tag_data = await conn.get_tag(ctx.guild_id, tag)  # type: ignore
