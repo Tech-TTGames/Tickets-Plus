@@ -446,9 +446,9 @@ class Settings(commands.GroupCog,
         comaccs="Whether or not to give the community role matched ticket.",
         strpbuttns="Whether or not to strip buttons from the ticket.",
         ignore="Whether or not to ignore the ticket type.")
-    @app_commands.rename(comping="Community Ping",
-                         comaccs="Community Access",
-                         strpbuttns="Strip Buttons")
+    @app_commands.rename(comping="communityping",
+                         comaccs="communityaccess",
+                         strpbuttns="stripbuttons")
     async def create_ticket_type(self,
                                  ctx: discord.Interaction,
                                  name: str,
@@ -502,9 +502,9 @@ class Settings(commands.GroupCog,
         comaccs="Whether or not to give the community role matched ticket.",
         strpbuttns="Whether or not to strip buttons from the ticket.",
         ignore="Whether or not to ignore the ticket type.")
-    @app_commands.rename(comping="Community Ping",
-                         comaccs="Community Access",
-                         strpbuttns="Strip Buttons")
+    @app_commands.rename(comping="communityping",
+                         comaccs="communityaccess",
+                         strpbuttns="stripbuttons")
     async def edit_ticket_type(self,
                                ctx: discord.Interaction,
                                name: str,
