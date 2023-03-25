@@ -395,10 +395,11 @@ class Tag(Base):
         nullable=False,
         comment="Unique Guild ID of parent guild",
         primary_key=True)
-    tag_name: orm.Mapped[str] = orm.mapped_column(sqlalchemy.String(32),
-                                             nullable=False,
-                                             comment="The 'key' of the tag",
-                                             primary_key=True)
+    tag_name: orm.Mapped[str] = orm.mapped_column(
+        sqlalchemy.String(32),
+        nullable=False,
+        comment="The 'key' of the tag",
+        primary_key=True)
     title: orm.Mapped[str] = orm.mapped_column(sqlalchemy.String(256),
                                                nullable=True,
                                                comment="The title of the embed")
