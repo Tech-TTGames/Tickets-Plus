@@ -59,7 +59,7 @@ class TagUtils(commands.GroupCog,
     async def tag_autocomplete(self, ctx: discord.Interaction,
                                arg: str) -> List[app_commands.Choice[str]]:
         """Autocomplete for tags.
-        
+
         This method is used to autocomplete tags.
         It gets the tags from the database and returns them as a list of
         choices.
