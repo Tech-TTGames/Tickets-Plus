@@ -156,7 +156,7 @@ class Events(commands.Cog, name="Events"):
                             # skipcq: FLK-E501 # pylint: disable=line-too-long
                             descr += f"\nCloses <t:{int((channel.created_at + datetime.timedelta(minutes=guild.first_autoclose)).timestamp())}:R>"
                             # skipcq: FLK-E501 # pylint: disable=line-too-long
-                            descr += "If no one responds, the ticket will be closed automatically. Thank you for your patience!"
+                            descr += "\nIf no one responds, the ticket will be closed automatically. Thank you for your patience!"
                         await channel.edit(
                             topic=descr,
                             reason="More information for the ticket.")
@@ -315,7 +315,7 @@ class Events(commands.Cog, name="Events"):
                         crrnt = (
                             f"Ticket: {chan.name}\n"
                             # skipcq: FLK-E501 # pylint: disable=line-too-long
-                            f"Closes at: <t:{int((message.created_at + datetime.timedelta(minutes=guild.any_autoclose)).timestamp())}:R>"
+                            f"Closes: <t:{int((message.created_at + datetime.timedelta(minutes=guild.any_autoclose)).timestamp())}:R>"
                         )
                     else:
                         re.sub(
