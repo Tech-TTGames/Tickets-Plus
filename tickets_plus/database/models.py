@@ -283,17 +283,21 @@ class TicketType(Base):
         primary_key=True,
     )
     comping: orm.Mapped[bool] = orm.mapped_column(
-        default=False,
+        default=True,
         nullable=False,
         comment="Whether to ping the community roles when template matches")
     comaccs: orm.Mapped[bool] = orm.mapped_column(
-        default=False,
+        default=True,
         nullable=False,
         comment="Whether to add the community roles when template matches")
     strpbuttns: orm.Mapped[bool] = orm.mapped_column(
-        default=False,
+        default=True,
         nullable=False,
         comment="Whether to strip buttons from open when template matches")
+    ignore: orm.Mapped[bool] = orm.mapped_column(
+        default=False,
+        nullable=False,
+        comment="Whether to ignore this ticket type")
 
     # Relationships
     guild: orm.Mapped["Guild"] = orm.relationship(back_populates="ticket_types",

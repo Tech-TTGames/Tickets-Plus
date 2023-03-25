@@ -444,7 +444,8 @@ class Settings(commands.GroupCog,
               " ie. #<name>-<number>."),
         comping="Whether or not to ping the community role.",
         comaccs="Whether or not to give the community role matched ticket.",
-        strpbuttns="Whether or not to strip buttons from the ticket.")
+        strpbuttns="Whether or not to strip buttons from the ticket.",
+        ignore="Whether or not to ignore the ticket type.")
     @app_commands.rename(comping="Community Ping",
                          comaccs="Community Access",
                          strpbuttns="Strip Buttons")
@@ -453,7 +454,8 @@ class Settings(commands.GroupCog,
                                  name: str,
                                  comping: bool = False,
                                  comaccs: bool = False,
-                                 strpbuttns: bool = False) -> None:
+                                 strpbuttns: bool = False,
+                                 ignore: bool = False) -> None:
         """Create/Delete a new ticket type.
 
         This command is used to create a new ticket type.
@@ -466,6 +468,7 @@ class Settings(commands.GroupCog,
             comping: Whether or not to ping the community role.
             comaccs: Whether or not to give the community role view tickets.
             strpbuttns: Whether or not to strip buttons from the ticket.
+            ignore: Whether or not to ignore the ticket type.
         """
         await ctx.response.defer(ephemeral=True)
         async with self._bt.get_connection() as conn:
@@ -475,6 +478,7 @@ class Settings(commands.GroupCog,
                 comping=comping,
                 comaccs=comaccs,
                 strpbuttns=strpbuttns,
+                ignore=ignore
             )
             if new:
                 emd = discord.Embed(title="Ticket Type Created",
@@ -496,7 +500,8 @@ class Settings(commands.GroupCog,
               " ie. #<name>-<number>."),
         comping="Whether or not to ping the community role.",
         comaccs="Whether or not to give the community role matched ticket.",
-        strpbuttns="Whether or not to strip buttons from the ticket.")
+        strpbuttns="Whether or not to strip buttons from the ticket.",
+        ignore="Whether or not to ignore the ticket type.")
     @app_commands.rename(comping="Community Ping",
                          comaccs="Community Access",
                          strpbuttns="Strip Buttons")
@@ -505,7 +510,8 @@ class Settings(commands.GroupCog,
                                name: str,
                                comping: bool | None = None,
                                comaccs: bool | None = None,
-                               strpbuttns: bool | None = None) -> None:
+                               strpbuttns: bool | None = None,
+                               ignore: bool | None = None) -> None:
         """Edit a ticket type.
 
         This command is used to edit a ticket type.
@@ -518,6 +524,7 @@ class Settings(commands.GroupCog,
             comping: Whether or not to ping the community role.
             comaccs: Whether or not to give the community role view tickets.
             strpbuttns: Whether or not to strip buttons from the ticket.
+            ignore: Whether or not to ignore the ticket type.
         """
         if not any([comping, comaccs, strpbuttns]):
             raise exceptions.InvalidParameters(
@@ -538,6 +545,8 @@ class Settings(commands.GroupCog,
                     tick_type.comaccs = comaccs
                 if strpbuttns is not None:
                     tick_type.strpbuttns = strpbuttns
+                if ignore is not None:
+                    tick_type.ignore = ignore
                 emd = discord.Embed(title="Ticket Type Edited",
                                     description=f"Ticket type {name} edited.",
                                     color=discord.Color.green())

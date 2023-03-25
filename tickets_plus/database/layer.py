@@ -304,7 +304,8 @@ class OnlineConfig:
             name: str,
             comping: bool = False,
             comaccs: bool = False,
-            strpbuttns: bool = False) -> Tuple[bool, models.TicketType]:
+            strpbuttns: bool = False,
+            ignore: bool = False) -> Tuple[bool, models.TicketType]:
         """Get or create a ticket type from the database.
 
         Fetches a ticket type from the database.
@@ -317,6 +318,7 @@ class OnlineConfig:
             comping: The comping flag.
             comaccs: The comaccs flag.
             strpbuttns: The strpbuttns flag.
+            ignore: The ignore flag.
 
         Returns:
             Tuple[bool, models.TicketType]: A tuple containing a boolean
@@ -335,7 +337,8 @@ class OnlineConfig:
                                             prefix=name,
                                             comping=comping,
                                             comaccs=comaccs,
-                                            strpbuttns=strpbuttns)
+                                            strpbuttns=strpbuttns,
+                                            ignore=ignore)
             self._session.add(ticket_type)
         return new, ticket_type
 
