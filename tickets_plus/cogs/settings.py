@@ -55,7 +55,9 @@ class Settings(commands.GroupCog,
         super().__init__()
         logging.info("Loaded %s", self.__class__.__name__)
 
-    async def ticket_types_autocomplete(self, ctx: discord.Interaction, arg: str) -> List[app_commands.Choice[str]]:
+    async def ticket_types_autocomplete(
+            self, ctx: discord.Interaction,
+            arg: str) -> List[app_commands.Choice[str]]:
         """Autocomplete for ticket types.
 
         This function is used to autocomplete the ticket types.
@@ -69,8 +71,14 @@ class Settings(commands.GroupCog,
             A list of choices for the autocomplete.
         """
         async with self._bt.get_connection() as conn:
-            ticket_types = await conn.get_ticket_types(ctx.guild_id)  # type: ignore
-        return [app_commands.Choice(name=t.prefix, value=t.prefix) for t in ticket_types if arg in t.prefix]
+            ticket_types = await conn.get_ticket_types(
+                ctx.guild_id  # type: ignore
+            )
+        return [
+            app_commands.Choice(name=t.prefix, value=t.prefix)
+            for t in ticket_types
+            if arg in t.prefix
+        ]
 
     @app_commands.command(name="ticketbot",
                           description="Change the ticket bots for your server.")
@@ -497,8 +505,7 @@ class Settings(commands.GroupCog,
                 comping=comping,
                 comaccs=comaccs,
                 strpbuttns=strpbuttns,
-                ignore=ignore
-            )
+                ignore=ignore)
             if new:
                 emd = discord.Embed(title="Ticket Type Created",
                                     description=f"Ticket type {name} created.",

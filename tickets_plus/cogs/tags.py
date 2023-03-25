@@ -56,7 +56,8 @@ class TagUtils(commands.GroupCog,
         super().__init__()
         logging.info("Loaded %s", self.__class__.__name__)
 
-    async def tag_autocomplete(self, ctx: discord.Interaction, arg: str) -> List[app_commands.Choice[str]]:
+    async def tag_autocomplete(self, ctx: discord.Interaction,
+                               arg: str) -> List[app_commands.Choice[str]]:
         """Autocomplete for tags.
         
         This method is used to autocomplete tags.
@@ -69,7 +70,11 @@ class TagUtils(commands.GroupCog,
         """
         async with self._bt.get_connection() as conn:
             tags = await conn.get_tags(ctx.guild_id)  # type: ignore
-        return [app_commands.Choice(name=tag.tag_name, value=tag.tag_name) for tag in tags if arg.lower() in tag.tag_name.lower()]
+        return [
+            app_commands.Choice(name=tag.tag_name, value=tag.tag_name)
+            for tag in tags
+            if arg.lower() in tag.tag_name.lower()
+        ]
 
     async def prep_tag(
             self, guild: int, tag: str, mention: Optional[discord.User]
@@ -174,10 +179,11 @@ class TagUtils(commands.GroupCog,
         author="The author of the embed",
     )
     @app_commands.autocomplete(tag_name=tag_autocomplete)
-    async def create(self, ctx: discord.Interaction, tag_name: str, content: str,
-                     title: Optional[str], url: Optional[str],
+    async def create(self, ctx: discord.Interaction, tag_name: str,
+                     content: str, title: Optional[str], url: Optional[str],
                      color: Optional[str], footer: Optional[str],
-                     image: Optional[str], thumbnail: Optional[str], author: Optional[str]) -> None:
+                     image: Optional[str], thumbnail: Optional[str],
+                     author: Optional[str]) -> None:
         """Creates or deletes a tag.
 
         This command creates a tag, which is a snippet of text that can be
@@ -290,7 +296,8 @@ class TagUtils(commands.GroupCog,
             "author": author
         }
         async with self._bt.get_connection() as conn:
-            new, tag_data = await conn.get_tag(ctx.guild_id, tag.lower())  # type: ignore
+            new, tag_data = await conn.get_tag(ctx.guild_id,
+                                               tag.lower())  # type: ignore
             if new:
                 raise exceptions.InvalidParameters("That tag doesn't exist!")
             if content:
