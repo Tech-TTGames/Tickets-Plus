@@ -5,7 +5,7 @@ Revises:
 Create Date: 2023-03-23 18:03:24.062078+00:00
 
 """
-# pylint: disable=line-too-long
+# pylint: skip-file
 from alembic import op
 import sqlalchemy as sa
 
