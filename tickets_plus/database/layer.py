@@ -29,8 +29,9 @@ Typical usage example:
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
 import types
-from typing import Sequence, Tuple, Type
+from typing import Sequence, Tuple, Type, Any
 
+import discord
 from discord import utils
 from discord.ext import commands
 from sqlalchemy import sql
@@ -347,6 +348,72 @@ class OnlineConfig:
                                    staff_note_thread=staff_note)
             self._session.add(ticket)
         return new, ticket
+
+    async def fetch_tag(self, guild_id: int,
+                        tag: str) -> discord.Embed | str | None:
+        """Fetch a tag from the database.
+
+        Attempts to fetch a tag from the database.
+        If the tag does not exist, None is returned.
+        If you want to create an tag if it does not exist,
+        use get_tag instead.
+
+        Args:
+            guild_id: The guild ID.
+            tag: The tag.
+
+        Returns:
+            discord.Embed | str | None: The tag.
+        """
+        guild = await self.get_guild(guild_id)
+        embed = await self._session.scalar(
+            sql.select(models.Tag).where(models.Tag.guild == guild,
+                                         models.Tag.tag == tag))
+        if embed is None:
+            return None
+        if embed.title:
+            result = discord.Embed.from_dict(vars(embed))
+            result.timestamp = utils.utcnow()
+            return result
+        return embed.description
+
+    async def get_tag(
+        self,
+        guild_id: int,
+        tag_name: str,
+        description: str,
+        embed_args: dict[str, Any] | None = None,
+    ) -> Tuple[bool, models.Tag]:
+        """Get or create a tag from the database.
+
+        Fetches a tag from the database.
+        If the tag does not exist, it will be created.
+        We also check if the guild exists and create it if it does not.
+        If you want to check if a tag exists, use fetch_tag instead.
+
+        Args:
+            guild_id: The guild ID.
+            tag: The tag.
+            description: The description.
+            embed_args: The embed arguments.
+                Basically, the arguments to pass to discord.Embed,
+                when using discord.Embed.from_dict.
+        """
+        guild = await self.get_guild(guild_id)
+        tag = await self._session.scalar(
+            sql.select(models.Tag).where(models.Tag.guild == guild,
+                                         models.Tag.tag == tag_name))
+        new = False
+        if tag is None:
+            new = True
+            if embed_args is None:
+                embed_args = {}
+            tag = models.Tag(guild=guild,
+                             tag=tag_name,
+                             description=description,
+                             **embed_args)
+            self._session.add(tag)
+        return new, tag
 
     async def get_staff_role(self, role_id: int,
                              guild_id: int) -> Tuple[bool, models.StaffRole]:
