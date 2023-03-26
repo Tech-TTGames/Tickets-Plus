@@ -187,6 +187,10 @@ class Guild(Base):
         back_populates="guild", lazy="raise")
     members: orm.Mapped[list["Member"]] = orm.relationship(
         back_populates="guild", lazy="raise")
+    tags: orm.Mapped[list["Tag"]] = orm.relationship(back_populates="guild",
+                                                     lazy="raise")
+    ticket_types: orm.Mapped[list["TicketType"]] = orm.relationship(
+        back_populates="guild", lazy="raise")
     # Disabled for now gets sqlalchemy confused
     # pylint: disable=line-too-long
     # users: orm.Mapped[list["User"]] = orm.relationship(
@@ -238,6 +242,65 @@ class TicketBot(Base):
 
     # Relationships
     guild: orm.Mapped["Guild"] = orm.relationship(back_populates="ticket_bots",
+                                                  lazy="selectin")
+
+
+class TicketType(Base):
+    """Categorize tickets based on the prefix of the channel name
+
+    This is the table for the ticket types.
+    It contains the prefix of the ticket type.
+    It also contains the relationship to the Guild table.
+    And the foreign key to the guild ID.
+    And type-specific setting overrides.
+
+    Attributes:
+        prefix: The prefix of the ticket type. Also the, type name.
+        guild_id: The unique discord-provided guild ID
+        guild: The relationship to the Guild table
+        comping: Whether to ping the community roles when template matches
+        comaccs: Whether to ping the community roles when template matches
+        strpbuttns: Whether to strip buttons from open when template matches
+    """
+
+    __tablename__ = "ticket_types"
+    __table_args__ = {
+        "comment": "Ticket types are stored here. Each guild can have multiple."
+    }
+
+    # Simple columns
+    prefix: orm.Mapped[str] = orm.mapped_column(
+        sqlalchemy.String(20),
+        nullable=False,
+        comment="The prefix of the ticket type",
+        primary_key=True,
+    )
+    guild_id: orm.Mapped[int] = orm.mapped_column(
+        sqlalchemy.BigInteger(),
+        sqlalchemy.ForeignKey("general_configs.guild_id"),
+        nullable=False,
+        comment="The unique discord-provided guild ID",
+        primary_key=True,
+    )
+    comping: orm.Mapped[bool] = orm.mapped_column(
+        default=True,
+        nullable=False,
+        comment="Whether to ping the community roles when template matches")
+    comaccs: orm.Mapped[bool] = orm.mapped_column(
+        default=True,
+        nullable=False,
+        comment="Whether to add the community roles when template matches")
+    strpbuttns: orm.Mapped[bool] = orm.mapped_column(
+        default=True,
+        nullable=False,
+        comment="Whether to strip buttons from open when template matches")
+    ignore: orm.Mapped[bool] = orm.mapped_column(
+        default=False,
+        nullable=False,
+        comment="Whether to ignore this ticket type")
+
+    # Relationships
+    guild: orm.Mapped["Guild"] = orm.relationship(back_populates="ticket_types",
                                                   lazy="selectin")
 
 
@@ -300,6 +363,81 @@ class Ticket(Base):
     # Relationships
     guild: orm.Mapped["Guild"] = orm.relationship(back_populates="tickets",
                                                   lazy="selectin")
+
+
+class Tag(Base):
+    """Tags table.
+
+    Stores the tags for the guild.
+    Tags are used to quickly respond to common questions.
+    Tags are stored in the database so they can be
+    updated without restarting the bot.
+    Additionally, if additional columns besides "tag" and "content" are added,
+    the tag is automatically interpreted as a embed.
+
+    Attributes:
+        guild_id: The unique discord-provided guild ID.
+        tag: The 'key' of the tag.
+        title: The title of the embed.
+        description: The description of the embed.
+        url: The url of the embed.
+        color: The color of the embed.
+        footer: The footer of the embed.
+        image: The image of the embed.
+        thumbnail: The thumbnail of the embed.
+        author: The author of the embed.
+        guild: The relationship to the Guild table.
+    """
+
+    __tablename__ = "tags"
+    __table_args__ = {"comment": "Tags for the guilds."}
+
+    # Simple columns
+    guild_id: orm.Mapped[int] = orm.mapped_column(
+        sqlalchemy.BigInteger(),
+        sqlalchemy.ForeignKey("general_configs.guild_id"),
+        nullable=False,
+        comment="Unique Guild ID of parent guild",
+        primary_key=True)
+    tag_name: orm.Mapped[str] = orm.mapped_column(
+        sqlalchemy.String(32),
+        nullable=False,
+        comment="The 'key' of the tag",
+        primary_key=True)
+    title: orm.Mapped[str] = orm.mapped_column(sqlalchemy.String(256),
+                                               nullable=True,
+                                               comment="The title of the embed")
+    description: orm.Mapped[str] = orm.mapped_column(
+        sqlalchemy.String(4096),
+        nullable=False,
+        comment="The description of the embed")
+    url: orm.Mapped[str] = orm.mapped_column(sqlalchemy.String(256),
+                                             nullable=True,
+                                             comment="The url of the embed")
+    color: orm.Mapped[int] = orm.mapped_column(sqlalchemy.Integer(),
+                                               nullable=True,
+                                               comment="The color of the embed")
+    footer: orm.Mapped[str] = orm.mapped_column(
+        sqlalchemy.String(2048),
+        nullable=True,
+        comment="The footer of the embed")
+    image: orm.Mapped[str] = orm.mapped_column(sqlalchemy.String(256),
+                                               nullable=True,
+                                               comment="The image of the embed")
+    thumbnail: orm.Mapped[str] = orm.mapped_column(
+        sqlalchemy.String(256),
+        nullable=True,
+        comment="The thumbnail of the embed")
+    author: orm.Mapped[str] = orm.mapped_column(
+        sqlalchemy.String(256),
+        nullable=True,
+        comment="The author of the embed")
+
+    # Relationships
+    guild: orm.Mapped["Guild"] = orm.relationship(
+        back_populates="tags",
+        lazy="selectin",
+    )
 
 
 class StaffRole(Base):

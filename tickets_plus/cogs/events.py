@@ -65,20 +65,27 @@ class Events(commands.Cog, name="Events"):
         async with self._bt.get_connection() as confg:
             if isinstance(channel, discord.channel.TextChannel):
                 gld = channel.guild
+                guild = await confg.get_guild(
+                    gld.id,
+                    (
+                        orm.selectinload(models.Guild.observers_roles),
+                        orm.selectinload(models.Guild.community_roles),
+                        orm.selectinload(models.Guild.community_pings),
+                    ),
+                )
                 async for entry in gld.audit_logs(
                         limit=3, action=discord.AuditLogAction.channel_create):
                     if not entry.user:
                         continue
-                    guild = await confg.get_guild(
-                        gld.id,
-                        (
-                            orm.selectinload(models.Guild.observers_roles),
-                            orm.selectinload(models.Guild.community_roles),
-                            orm.selectinload(models.Guild.community_pings),
-                        ),
-                    )
                     if entry.target == channel and await confg.check_ticket_bot(
                             entry.user.id, gld.id):
+                        ttypes = await confg.get_ticket_types(gld.id)
+                        ticket_type = models.TicketType()
+                        for ttype in ttypes:
+                            if channel.name.startswith(ttype.prefix):
+                                ticket_type = ttype
+                        if ticket_type.ignore:
+                            return
                         nts_thrd: discord.Thread = await channel.create_thread(
                             name="Staff Notes",
                             reason=f"Staff notes for Ticket {channel.name}",
@@ -113,7 +120,7 @@ class Events(commands.Cog, name="Events"):
                                     overwrite=overwrite,
                                     reason="Penalty Enforcmement",
                                 )
-                        if guild.community_roles:
+                        if guild.community_roles and ticket_type.comaccs:
                             comm_roles = await confg.get_all_community_roles(
                                 gld.id)
                             overwrite = discord.PermissionOverwrite()
@@ -134,14 +141,14 @@ class Events(commands.Cog, name="Events"):
                                     overwrite=overwrite,
                                     reason="Community Support Access",
                                 )
-                        if guild.community_pings:
+                        if guild.community_pings and ticket_type.comping:
                             comm_pings = await confg.get_all_community_pings(
                                 gld.id)
                             inv = await channel.send(" ".join(
                                 [f"<@&{role.role_id}>" for role in comm_pings]))
                             await asyncio.sleep(0.25)
                             await inv.delete()
-                        if guild.strip_buttons:
+                        if guild.strip_buttons and ticket_type.strpbuttns:
                             await asyncio.sleep(1)
                             async for msg in channel.history(oldest_first=True,
                                                              limit=2):

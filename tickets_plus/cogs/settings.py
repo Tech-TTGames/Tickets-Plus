@@ -19,6 +19,7 @@ Typical usage example:
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
 import datetime
 import logging
+from typing import List
 
 import discord
 from discord import app_commands
@@ -54,6 +55,31 @@ class Settings(commands.GroupCog,
         super().__init__()
         logging.info("Loaded %s", self.__class__.__name__)
 
+    async def ticket_types_autocomplete(
+            self, ctx: discord.Interaction,
+            arg: str) -> List[app_commands.Choice[str]]:
+        """Autocomplete for ticket types.
+
+        This function is used to autocomplete the ticket types.
+        It is used in the ticket type commands.
+
+        Args:
+            ctx: The interaction context.
+            arg: The argument to autocomplete.
+
+        Returns:
+            A list of choices for the autocomplete.
+        """
+        async with self._bt.get_connection() as conn:
+            ticket_types = await conn.get_ticket_types(
+                ctx.guild_id  # type: ignore
+            )
+        return [
+            app_commands.Choice(name=t.prefix, value=t.prefix)
+            for t in ticket_types
+            if arg in t.prefix
+        ]
+
     @app_commands.command(name="ticketbot",
                           description="Change the ticket bots for your server.")
     @app_commands.describe(user="The user to add to ticket bots.")
@@ -72,7 +98,7 @@ class Settings(commands.GroupCog,
         async with self._bt.get_connection() as conn:
             new, ticket_user = await conn.get_ticket_bot(
                 user.id,
-                ctx.guild.id,  # type: ignore
+                ctx.guild_id,  # type: ignore
             )
             emd = discord.Embed(title="Ticket Bot List Edited")
             if not new:
@@ -103,7 +129,7 @@ class Settings(commands.GroupCog,
         async with self._bt.get_connection() as conn:
             new, staff_role = await conn.get_staff_role(
                 role.id,
-                ctx.guild.id,  # type: ignore
+                ctx.guild_id,  # type: ignore
             )
             emd = discord.Embed(title="Staff Role List Edited")
             if not new:
@@ -136,7 +162,7 @@ class Settings(commands.GroupCog,
         async with self._bt.get_connection() as conn:
             new, obsrvrs = await conn.get_observers_role(
                 role.id,
-                ctx.guild.id,  # type: ignore
+                ctx.guild_id,  # type: ignore
             )
             emd = discord.Embed(title="Observers Role List Edited")
             if not new:
@@ -170,7 +196,7 @@ class Settings(commands.GroupCog,
         async with self._bt.get_connection() as conn:
             new, comsup = await conn.get_community_role(
                 role.id,
-                ctx.guild.id,  # type: ignore
+                ctx.guild_id,  # type: ignore
             )
             emd = discord.Embed(title="Community Support Role List Edited")
             if not new:
@@ -206,7 +232,7 @@ class Settings(commands.GroupCog,
         async with self._bt.get_connection() as conn:
             new, comsup = await conn.get_community_ping(
                 role.id,
-                ctx.guild.id,  # type: ignore
+                ctx.guild_id,  # type: ignore
             )
             emd = discord.Embed(title="Community Ping Role List Edited")
             if not new:
@@ -245,7 +271,7 @@ class Settings(commands.GroupCog,
             raise exceptions.InvalidParameters("The message must be less than"
                                                " 200 characters.")
         async with self._bt.get_connection() as conn:
-            guild = await conn.get_guild(ctx.guild.id)  # type: ignore
+            guild = await conn.get_guild(ctx.guild_id)  # type: ignore
             old = guild.open_message
             guild.open_message = message
             await conn.commit()
@@ -276,7 +302,7 @@ class Settings(commands.GroupCog,
         """
         await ctx.response.defer(ephemeral=True)
         async with self._bt.get_connection() as conn:
-            guild = await conn.get_guild(ctx.guild.id)  # type: ignore
+            guild = await conn.get_guild(ctx.guild_id)  # type: ignore
             if penal.value == 0:
                 old = guild.support_block
                 guild.support_block = role.id
@@ -315,7 +341,7 @@ class Settings(commands.GroupCog,
         if len(name) > 40:
             raise exceptions.InvalidParameters("Name too long")
         async with self._bt.get_connection() as conn:
-            guild = await conn.get_guild(ctx.guild.id)  # type: ignore
+            guild = await conn.get_guild(ctx.guild_id)  # type: ignore
             old = guild.staff_team_name
             guild.staff_team_name = name
             await conn.commit()
@@ -360,7 +386,7 @@ class Settings(commands.GroupCog,
         """
         await ctx.response.defer(ephemeral=True)
         async with self._bt.get_connection() as conn:
-            guild = await conn.get_guild(ctx.guild.id)  # type: ignore
+            guild = await conn.get_guild(ctx.guild_id)  # type: ignore
             prev = None
             if category.value:
                 changed_close = guild.any_autoclose
@@ -414,12 +440,12 @@ class Settings(commands.GroupCog,
         This command is used to toggle the specified value.
 
         Args:
-            ctx (discord.Interaction): _description_
-            value (app_commands.Choice[int]): _description_
+            ctx: The interaction context.
+            value: The value to toggle.
         """
         await ctx.response.defer(ephemeral=True)
         async with self._bt.get_connection() as conn:
-            guild = await conn.get_guild(ctx.guild.id)  # type: ignore
+            guild = await conn.get_guild(ctx.guild_id)  # type: ignore
             if value.value == 0:
                 new_status = not guild.msg_discovery
                 guild.msg_discovery = new_status
@@ -434,6 +460,124 @@ class Settings(commands.GroupCog,
             title="Value Toggled",
             description=f"{value.name} is now {new_status}",
             color=discord.Color.green() if new_status else discord.Color.red())
+        await ctx.followup.send(embed=emd, ephemeral=True)
+
+    @app_commands.command(name="tickettype",
+                          description="Create/Delete a ticket type.")
+    @app_commands.describe(
+        name=("The name of the ticket type."
+              " This should be the prefix you use for the ticket type."
+              " ie. #<name>-<number>."),
+        comping="Whether or not to ping the community role.",
+        comaccs="Whether or not to give the community role matched ticket.",
+        strpbuttns="Whether or not to strip buttons from the ticket.",
+        ignore="Whether or not to ignore the ticket type.")
+    @app_commands.rename(comping="communityping",
+                         comaccs="communityaccess",
+                         strpbuttns="stripbuttons")
+    @app_commands.autocomplete(name=ticket_types_autocomplete)
+    async def create_ticket_type(self,
+                                 ctx: discord.Interaction,
+                                 name: str,
+                                 comping: bool = False,
+                                 comaccs: bool = False,
+                                 strpbuttns: bool = False,
+                                 ignore: bool = False) -> None:
+        """Create/Delete a new ticket type.
+
+        This command is used to create a new ticket type.
+        A ticket type is a preset of overrides that are applied to
+        a ticket when it is created. This allows for some more
+        settings customization.
+
+        Args:
+            name: The name of the new ticket type.
+            comping: Whether or not to ping the community role.
+            comaccs: Whether or not to give the community role view tickets.
+            strpbuttns: Whether or not to strip buttons from the ticket.
+            ignore: Whether or not to ignore the ticket type.
+        """
+        await ctx.response.defer(ephemeral=True)
+        async with self._bt.get_connection() as conn:
+            new, tick_type = await conn.get_ticket_type(
+                ctx.guild_id,  # type: ignore
+                name=name,
+                comping=comping,
+                comaccs=comaccs,
+                strpbuttns=strpbuttns,
+                ignore=ignore)
+            if new:
+                emd = discord.Embed(title="Ticket Type Created",
+                                    description=f"Ticket type {name} created.",
+                                    color=discord.Color.green())
+            else:
+                await conn.delete(tick_type)
+                emd = discord.Embed(title="Ticket Type Deleted",
+                                    description=f"Ticket type {name} deleted.",
+                                    color=discord.Color.red())
+            await conn.commit()
+        await ctx.followup.send(embed=emd, ephemeral=True)
+
+    @app_commands.command(name="edittickettype",
+                          description="Edit a ticket type.")
+    @app_commands.describe(
+        name=("The name of the ticket type."
+              " This should be the prefix you use for the ticket type."
+              " ie. #<name>-<number>."),
+        comping="Whether or not to ping the community role.",
+        comaccs="Whether or not to give the community role matched ticket.",
+        strpbuttns="Whether or not to strip buttons from the ticket.",
+        ignore="Whether or not to ignore the ticket type.")
+    @app_commands.rename(comping="communityping",
+                         comaccs="communityaccess",
+                         strpbuttns="stripbuttons")
+    @app_commands.autocomplete(name=ticket_types_autocomplete)
+    async def edit_ticket_type(self,
+                               ctx: discord.Interaction,
+                               name: str,
+                               comping: bool | None = None,
+                               comaccs: bool | None = None,
+                               strpbuttns: bool | None = None,
+                               ignore: bool | None = None) -> None:
+        """Edit a ticket type.
+
+        This command is used to edit a ticket type.
+        A ticket type is a preset of overrides that are applied to
+        a ticket when it is created. This allows for some more
+        settings customization.
+
+        Args:
+            name: The name of the ticket type.
+            comping: Whether or not to ping the community role.
+            comaccs: Whether or not to give the community role view tickets.
+            strpbuttns: Whether or not to strip buttons from the ticket.
+            ignore: Whether or not to ignore the ticket type.
+        """
+        if not any([comping, comaccs, strpbuttns]):
+            raise exceptions.InvalidParameters(
+                "You must specify at least one value to edit.")
+        await ctx.response.defer(ephemeral=True)
+        async with self._bt.get_connection() as conn:
+            new, tick_type = await conn.get_ticket_type(
+                ctx.guild_id,  # type: ignore
+                name=name,
+            )
+            if new:
+                raise exceptions.InvalidParameters(
+                    "Ticket type does not exist.")
+            else:
+                if comping is not None:
+                    tick_type.comping = comping
+                if comaccs is not None:
+                    tick_type.comaccs = comaccs
+                if strpbuttns is not None:
+                    tick_type.strpbuttns = strpbuttns
+                if ignore is not None:
+                    tick_type.ignore = ignore
+                emd = discord.Embed(title="Ticket Type Edited",
+                                    description=f"Ticket type {name} edited.",
+                                    color=discord.Color.green())
+            await conn.commit()
         await ctx.followup.send(embed=emd, ephemeral=True)
 
 

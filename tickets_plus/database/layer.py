@@ -28,9 +28,11 @@ Typical usage example:
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
+import datetime
 import types
-from typing import Sequence, Tuple, Type
+from typing import Sequence, Tuple, Type, Any
 
+import discord
 from discord import utils
 from discord.ext import commands
 from sqlalchemy import sql
@@ -241,7 +243,7 @@ class OnlineConfig:
         Returns:
             Sequence[models.Member]: The members with expired status.
         """
-        time = utils.utcnow()
+        time = datetime.datetime.utcnow()
         expr_members = await self._session.scalars(
             sql.select(models.Member).where(models.Member.status_till <= time))
         return expr_members.all()
@@ -297,6 +299,69 @@ class OnlineConfig:
                 models.TicketBot.guild_id == guild_id))
         return ticket_user is not None
 
+    async def get_ticket_type(
+            self,
+            guild_id: int,
+            name: str,
+            comping: bool = False,
+            comaccs: bool = False,
+            strpbuttns: bool = False,
+            ignore: bool = False) -> Tuple[bool, models.TicketType]:
+        """Get or create a ticket type from the database.
+
+        Fetches a ticket type from the database.
+        If the ticket type does not exist, it will be created.
+        We also check if the guild exists and create it if it does not.
+
+        Args:
+            guild_id: The guild ID.
+            name: The ticket type name.
+            comping: The comping flag.
+            comaccs: The comaccs flag.
+            strpbuttns: The strpbuttns flag.
+            ignore: The ignore flag.
+
+        Returns:
+            Tuple[bool, models.TicketType]: A tuple containing a boolean
+                indicating if the ticket type was created, and the ticket type.
+                Relationships are loaded.
+        """
+        guild = await self.get_guild(guild_id)
+        ticket_type = await self._session.scalar(
+            sql.select(models.TicketType).where(
+                models.TicketType.guild == guild,
+                models.TicketType.prefix == name))
+        new = False
+        if ticket_type is None:
+            new = True
+            ticket_type = models.TicketType(guild=guild,
+                                            prefix=name,
+                                            comping=comping,
+                                            comaccs=comaccs,
+                                            strpbuttns=strpbuttns,
+                                            ignore=ignore)
+            self._session.add(ticket_type)
+        return new, ticket_type
+
+    async def get_ticket_types(self,
+                               guild_id: int) -> Sequence[models.TicketType]:
+        """Get ticket types from the database.
+
+        Fetches all ticket types from the database.
+        We also check if the guild exists and create it if it does not.
+
+        Args:
+            guild_id: The guild ID.
+
+        Returns:
+            Sequence[models.TicketType]: The ticket types.
+        """
+        guild = await self.get_guild(guild_id)
+        ticket_types = await self._session.scalars(
+            sql.select(
+                models.TicketType).where(models.TicketType.guild == guild))
+        return ticket_types.all()
+
     async def fetch_ticket(self, channel_id: int) -> models.Ticket | None:
         """Fetch a ticket from the database.
 
@@ -347,6 +412,89 @@ class OnlineConfig:
                                    staff_note_thread=staff_note)
             self._session.add(ticket)
         return new, ticket
+
+    async def fetch_tag(self, guild_id: int,
+                        tag: str) -> discord.Embed | str | None:
+        """Fetch a tag from the database.
+
+        Attempts to fetch a tag from the database.
+        If the tag does not exist, None is returned.
+        If you want to create an tag if it does not exist,
+        use get_tag instead.
+
+        Args:
+            guild_id: The guild ID.
+            tag: The tag.
+
+        Returns:
+            discord.Embed | str | None: The tag.
+        """
+        guild = await self.get_guild(guild_id)
+        embed = await self._session.scalar(
+            sql.select(models.Tag).where(models.Tag.guild == guild,
+                                         models.Tag.tag_name == tag))
+        if embed is None:
+            return None
+        if embed.title:
+            result = discord.Embed.from_dict(vars(embed))
+            result.timestamp = utils.utcnow()
+            return result
+        return embed.description
+
+    async def get_tag(
+        self,
+        guild_id: int,
+        tag_name: str,
+        description: str,
+        embed_args: dict[str, Any] | None = None,
+    ) -> Tuple[bool, models.Tag]:
+        """Get or create a tag from the database.
+
+        Fetches a tag from the database.
+        If the tag does not exist, it will be created.
+        We also check if the guild exists and create it if it does not.
+        If you want to check if a tag exists, use fetch_tag instead.
+
+        Args:
+            guild_id: The guild ID.
+            tag: The tag.
+            description: The description.
+            embed_args: The embed arguments.
+                Basically, the arguments to pass to discord.Embed,
+                when using discord.Embed.from_dict.
+        """
+        guild = await self.get_guild(guild_id)
+        tag = await self._session.scalar(
+            sql.select(models.Tag).where(models.Tag.guild == guild,
+                                         models.Tag.tag_name == tag_name))
+        new = False
+        if tag is None:
+            new = True
+            if embed_args is None:
+                embed_args = {}
+            tag = models.Tag(guild=guild,
+                             tag_name=tag_name,
+                             description=description,
+                             **embed_args)
+            self._session.add(tag)
+        return new, tag
+
+    async def get_tags(self, guild_id: int) -> Sequence[models.Tag]:
+        """Get tags from the database.
+
+        Fetches all tags from the database.
+        We also check if the guild exists and create it if it does not.
+
+        Args:
+            guild_id: The guild ID.
+
+        Returns:
+            Sequence[models.Tag]: The tags.
+        """
+        guild = await self.get_guild(guild_id)
+        tags = await self._session.scalars(
+            sql.select(models.Tag).where(models.Tag.guild == guild))
+        return tags.all()
 
     async def get_staff_role(self, role_id: int,
                              guild_id: int) -> Tuple[bool, models.StaffRole]:

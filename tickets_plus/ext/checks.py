@@ -119,7 +119,7 @@ def is_staff_check():
         if interaction.user == app.owner:
             return True
         async with interaction.client.get_connection() as conn:  # type: ignore
-            staff_roles = await conn.get_all_staff_roles(interaction.guild.id)
+            staff_roles = await conn.get_all_staff_roles(interaction.guild_id)
             for role in staff_roles:
                 parsed_role = interaction.guild.get_role(role.role_id)
                 if parsed_role in interaction.user.roles:  # type: ignore
