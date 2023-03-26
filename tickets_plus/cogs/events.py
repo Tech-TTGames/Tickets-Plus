@@ -97,6 +97,22 @@ class Events(commands.Cog, name="Events"):
                                 f"<@&{role.role_id}>" for role in observer_ids
                             ]))
                             await inv.delete()
+                        if guild.helping_block:
+                            overwrite = discord.PermissionOverwrite()
+                            overwrite.view_channel = False
+                            overwrite.add_reactions = False
+                            overwrite.send_messages = False
+                            overwrite.read_messages = False
+                            overwrite.read_message_history = False
+                            rol = gld.get_role(guild.helping_block)
+                            if rol is None:
+                                guild.helping_block = None
+                            else:
+                                await channel.set_permissions(
+                                    rol,
+                                    overwrite=overwrite,
+                                    reason="Penalty Enforcmement",
+                                )
                         if guild.community_roles:
                             comm_roles = await confg.get_all_community_roles(
                                 gld.id)
@@ -137,8 +153,10 @@ class Events(commands.Cog, name="Events"):
                                  "Opened at "
                                  f"<t:{int(channel.created_at.timestamp())}:f>")
                         if guild.first_autoclose:
-                            descr += f"\nCloses at <t:{int((channel.created_at + datetime.timedelta(minutes=guild.first_autoclose)).timestamp())}:R>"  # skipcq: FLK-E501 # pylint: disable=line-too-long
-                            descr += "If no one responds, the ticket will be closed automatically. Thank you for your patience!"  # skipcq: FLK-E501 # pylint: disable=line-too-long
+                            # skipcq: FLK-E501 # pylint: disable=line-too-long
+                            descr += f"\nCloses <t:{int((channel.created_at + datetime.timedelta(minutes=guild.first_autoclose)).timestamp())}:R>"
+                            # skipcq: FLK-E501 # pylint: disable=line-too-long
+                            descr += "\nIf no one responds, the ticket will be closed automatically. Thank you for your patience!"
                         await channel.edit(
                             topic=descr,
                             reason="More information for the ticket.")
@@ -162,6 +180,54 @@ class Events(commands.Cog, name="Events"):
                     await confg.delete(ticket)
                     logging.info("Deleted ticket %s", channel.name)
                     await confg.commit()
+
+    @commands.Cog.listener(name="on_member_join")
+    async def on_member_join(self, member: discord.Member) -> None:
+        """Ensures penalty roles are sticky.
+
+        This just ensures that if a user has a penalty role,
+        it is reapplied when they join the server.
+
+        Args:
+            member: The member that joined.
+        """
+        async with self._bt.get_connection() as cnfg:
+            actv_member = await cnfg.get_member(member.id, member.guild.id)
+            if actv_member.status:
+                if actv_member.status_till is not None:
+                    # Split this up to avoid None comparison.
+                    # pylint: disable=line-too-long
+                    if actv_member.status_till <= utils.utcnow(
+                    ):  # type: ignore
+                        # Check if the penalty has expired.
+                        actv_member.status = 0
+                        actv_member.status_till = None
+                        await cnfg.commit()
+                        return
+                if actv_member.status == 1:
+                    # Status 1 is a support block.
+                    if actv_member.guild.support_block is None:
+                        # If the role is unset, pardon the user.
+                        actv_member.status = 0
+                        actv_member.status_till = None
+                        await cnfg.commit()
+                        return
+                    role = member.guild.get_role(
+                        actv_member.guild.support_block)
+                    if role is not None:
+                        await member.add_roles(role)
+                elif actv_member.status == 2:
+                    # Status 2 is a helping block.
+                    if actv_member.guild.helping_block is None:
+                        # If the role is unset, pardon the user.
+                        actv_member.status = 0
+                        actv_member.status_till = None
+                        await cnfg.commit()
+                        return
+                    role = member.guild.get_role(
+                        actv_member.guild.helping_block)
+                    if role is not None:
+                        await member.add_roles(role)
 
     @commands.Cog.listener(name="on_message")
     async def on_message(self, message: discord.Message) -> None:
@@ -241,6 +307,25 @@ class Events(commands.Cog, name="Events"):
                         embeds=message.embeds,
                     )
                     await message.delete()
+                chan = message.channel
+                if isinstance(chan,
+                              discord.TextChannel) and guild.any_autoclose:
+                    crrnt = chan.topic
+                    if crrnt is None:
+                        crrnt = (
+                            f"Ticket: {chan.name}\n"
+                            # skipcq: FLK-E501 # pylint: disable=line-too-long
+                            f"Closes: <t:{int((message.created_at + datetime.timedelta(minutes=guild.any_autoclose)).timestamp())}:R>"
+                        )
+                    else:
+                        re.sub(
+                            r"<t:[0-9]*?:R>",
+                            # skipcq: FLK-E501 # pylint: disable=line-too-long
+                            f"<t:{int((message.created_at + datetime.timedelta(minutes=guild.any_autoclose)).timestamp())}:R>",
+                            crrnt)
+                    await chan.edit(topic=crrnt)
+                    ticket.last_response = utils.utcnow()
+                    await cnfg.commit()
 
 
 async def setup(bot_instance: bot.TicketsPlusBot) -> None:

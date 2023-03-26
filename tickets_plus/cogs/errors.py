@@ -18,13 +18,12 @@ Typical usage example:
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
-import datetime
 import logging
 
 import discord
-from discord import app_commands
+from discord import app_commands, utils
 from discord.ext import commands
-from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy import exc
 
 from tickets_plus import bot
 from tickets_plus.ext import exceptions
@@ -101,7 +100,7 @@ class ErrorHandling(commands.Cog, name="AppCommandErrorHandler"):
                          "GitHub and support server by using "
                          "the /version command."),
             color=discord.Color.red(),
-            timestamp=datetime.datetime.utcnow(),
+            timestamp=utils.utcnow(),
         )
 
         if isinstance(error, app_commands.CommandNotFound):
@@ -157,7 +156,7 @@ class ErrorHandling(commands.Cog, name="AppCommandErrorHandler"):
         if isinstance(error, app_commands.CommandInvokeError):
             underlying_error = error.original
 
-            if isinstance(underlying_error, SQLAlchemyError):
+            if isinstance(underlying_error, exc.SQLAlchemyError):
                 logging.error("An error occurred while accessing the database:",
                               exc_info=underlying_error)
                 emd.title = "Tickets+ Error: 500 - Database Error"

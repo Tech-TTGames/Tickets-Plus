@@ -28,9 +28,10 @@ Typical usage example:
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
-from types import TracebackType
+import types
 from typing import Sequence, Tuple, Type
 
+from discord import utils
 from discord.ext import commands
 from sqlalchemy import sql
 from sqlalchemy.ext import asyncio as sa_asyncio
@@ -74,7 +75,7 @@ class OnlineConfig:
 
     async def __aexit__(self, exc_type: Type[BaseException] | None,
                         exc_value: BaseException | None,
-                        traceback: TracebackType | None) -> None:
+                        traceback: types.TracebackType | None) -> None:
         """Exit the async with statement.
 
         This method is called when exiting the async with statement.
@@ -230,6 +231,20 @@ class OnlineConfig:
             member_conf = models.Member(user=user, guild=guild)
             self._session.add(member_conf)
         return member_conf
+
+    async def get_expired_members(self) -> Sequence[models.Member]:
+        """Get expired members from the database.
+
+        Fetches all members with expired status from the database.
+        Used to clean up the roles.
+
+        Returns:
+            Sequence[models.Member]: The members with expired status.
+        """
+        time = utils.utcnow()
+        expr_members = await self._session.scalars(
+            sql.select(models.Member).where(models.Member.status_till <= time))
+        return expr_members.all()
 
     async def get_ticket_bot(self, user_id: int,
                              guild_id: int) -> Tuple[bool, models.TicketBot]:

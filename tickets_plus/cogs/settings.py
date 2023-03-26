@@ -255,6 +255,42 @@ class Settings(commands.GroupCog,
         emd.add_field(name="New message:", value=message)
         await ctx.followup.send(embed=emd, ephemeral=True)
 
+    @app_commands.command(name="penrole",
+                          description="Change the penalty roles.")
+    @app_commands.describe(role="The role to set as a penalty role.")
+    @app_commands.choices(penal=[
+        app_commands.Choice(name="Support Block", value=0),
+        app_commands.Choice(name="Helping Block", value=1),
+    ])
+    async def change_penrole(self, ctx: discord.Interaction, role: discord.Role,
+                             penal: app_commands.Choice[int]) -> None:
+        """Change the penalty roles.
+
+        Adjusts the penalty roles. These roles are used to block users from
+        creating tickets or helping in tickets.
+
+        Args:
+            ctx: The interaction context.
+            role: The role to set as a penalty role.
+            penal: The penalty for which to set the role.
+        """
+        await ctx.response.defer(ephemeral=True)
+        async with self._bt.get_connection() as conn:
+            guild = await conn.get_guild(ctx.guild.id)  # type: ignore
+            if penal.value == 0:
+                old = guild.support_block
+                guild.support_block = role.id
+            else:
+                old = guild.helping_block
+                guild.helping_block = role.id
+            await conn.commit()
+        emd = discord.Embed(title="Penalty Role Changed",
+                            description=f"Penalty: {penal.name}",
+                            color=discord.Color.yellow())
+        emd.add_field(name="Old role:", value=f"<@&{old}>")
+        emd.add_field(name="New role:", value=role.mention)
+        await ctx.followup.send(embed=emd, ephemeral=True)
+
     @app_commands.command(name="staffteamname",
                           description="Change the staff team's name.")
     @app_commands.describe(name="The new staff team's name.")
@@ -292,12 +328,18 @@ class Settings(commands.GroupCog,
     @app_commands.command(name="autoclose",
                           description="Change the autoclose time.")
     @app_commands.describe(
+        category="The category of autoclose time to change.",
         days="The new autoclose time days.",
         hours="The new autoclose time hours.",
         minutes="The new autoclose time minutes.",
     )
+    @app_commands.choices(category=[
+        app_commands.Choice(name="First Response", value=0),
+        app_commands.Choice(name="Last Response", value=1),
+    ])
     async def change_autoclose(self,
                                ctx: discord.Interaction,
+                               category: app_commands.Choice[int],
                                days: int = 0,
                                hours: int = 0,
                                minutes: int = 0) -> None:
@@ -320,10 +362,16 @@ class Settings(commands.GroupCog,
         async with self._bt.get_connection() as conn:
             guild = await conn.get_guild(ctx.guild.id)  # type: ignore
             prev = None
-            if guild.first_autoclose is not None:
-                prev = datetime.timedelta(minutes=int(guild.first_autoclose))
+            if category.value:
+                changed_close = guild.any_autoclose
+                category_txt = "Last Response"
+            else:
+                changed_close = guild.first_autoclose
+                category_txt = "First Response"
+            if changed_close is not None:
+                prev = datetime.timedelta(minutes=int(changed_close))
             if days + hours + minutes == 0:
-                guild.first_autoclose = None
+                changed_close = None
                 if prev is not None:
                     emd = discord.Embed(title="Autoclose Disabled",
                                         color=discord.Color.red())
@@ -336,64 +384,55 @@ class Settings(commands.GroupCog,
                 newtime = datetime.timedelta(days=days,
                                              hours=hours,
                                              minutes=minutes)
-                guild.first_autoclose = int(newtime.total_seconds() / 60)
-                emd = discord.Embed(title="Autoclose Changed",
+                changed_close = int(newtime.total_seconds() / 60)
+                emd = discord.Embed(title=f"{category_txt} Autoclose Changed",
                                     color=discord.Color.yellow())
                 emd.add_field(name="Previous autoclose time:",
                               value=f"{str(prev)}")
                 emd.add_field(name="New autoclose time:",
                               value=f"{str(newtime)}")
+            if category.value:
+                guild.any_autoclose = changed_close
+            else:
+                guild.first_autoclose = changed_close
             await conn.commit()
         await ctx.followup.send(embed=emd, ephemeral=True)
 
-    @app_commands.command(name="msgdiscovery",
-                          description="Toggle message link discovery.")
-    async def toggle_msg_discovery(self, ctx: discord.Interaction) -> None:
-        """This command is used to toggle message link discovery.
+    @app_commands.command(name="toggle",
+                          description="Toggle a specified True/False value.")
+    @app_commands.describe(value="The value to toggle.")
+    @app_commands.choices(value=[
+        app_commands.Choice(name="Message Discovery", value=0),
+        app_commands.Choice(name="Button Stripping", value=1),
+        app_commands.Choice(name="Role Stripping", value=2),
+    ])
+    async def toggle_value(self, ctx: discord.Interaction,
+                           value: app_commands.Choice[int]) -> None:
+        """A generic toggle command.
 
-        This is the feature that makes the bot automatically
-        resolve message links to their content and reply with
-        the content of the message. This is useful for staff
-        to quickly see what a user is referring to.
+        A more space efficient way to implement the toggle commands.
+        This command is used to toggle the specified value.
 
         Args:
-            ctx: The interaction context.
+            ctx (discord.Interaction): _description_
+            value (app_commands.Choice[int]): _description_
         """
         await ctx.response.defer(ephemeral=True)
         async with self._bt.get_connection() as conn:
             guild = await conn.get_guild(ctx.guild.id)  # type: ignore
-            new_status = not guild.msg_discovery
-            guild.msg_discovery = new_status
+            if value.value == 0:
+                new_status = not guild.msg_discovery
+                guild.msg_discovery = new_status
+            elif value.value == 1:
+                new_status = not guild.strip_buttons
+                guild.strip_buttons = new_status
+            else:
+                new_status = not guild.strip_roles
+                guild.strip_roles = new_status
             await conn.commit()
         emd = discord.Embed(
-            title="Message Toggled",
-            description=f"Message discovery is now {new_status}",
-            color=discord.Color.green() if new_status else discord.Color.red())
-        await ctx.followup.send(embed=emd, ephemeral=True)
-
-    @app_commands.command(name="stripbuttons",
-                          description="Toggle button stripping.")
-    async def toggle_button_stripping(self, ctx: discord.Interaction) -> None:
-        """This command is used to toggle button stripping.
-
-        Button stripping is the feature that makes the bot
-        remove buttons from messages that are sent by the
-        ticket bots. This is useful for cleaning up the
-        ticket channel. Additionally, we may later use this
-        to filter out content from the ticket information.
-
-        Args:
-            ctx: The interaction context.
-        """
-        await ctx.response.defer(ephemeral=True)
-        async with self._bt.get_connection() as conn:
-            guild = await conn.get_guild(ctx.guild.id)  # type: ignore
-            new_status = not guild.strip_buttons
-            guild.strip_buttons = new_status
-            await conn.commit()
-        emd = discord.Embed(
-            title="Button Stripping Toggled",
-            description=f"Button stripping is now {new_status}",
+            title="Value Toggled",
+            description=f"{value.name} is now {new_status}",
             color=discord.Color.green() if new_status else discord.Color.red())
         await ctx.followup.send(embed=emd, ephemeral=True)
 

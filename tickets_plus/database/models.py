@@ -19,6 +19,7 @@ Typical usage example:
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
+import datetime
 import sqlalchemy
 from sqlalchemy import orm, sql
 from sqlalchemy.ext import compiler as cmplr
@@ -137,6 +138,25 @@ class Guild(Base):
     first_autoclose: orm.Mapped[int | None] = orm.mapped_column(
         nullable=True,
         comment="Number of minutes since open with no response to autoclose")
+    any_autoclose: orm.Mapped[int | None] = orm.mapped_column(
+        nullable=True,
+        comment="Number of minutes since last response to autoclose")
+    support_block: orm.Mapped[int | None] = orm.mapped_column(
+        sqlalchemy.BigInteger(),
+        nullable=True,
+        comment=("Role to apply to users who are blocked from creating tickets"
+                 " Please manually add this role to blacklist users on"
+                 " https://ticketsbot.net/"
+                 " If not set, considered disabled."))
+    helping_block: orm.Mapped[int | None] = orm.mapped_column(
+        sqlalchemy.BigInteger(),
+        nullable=True,
+        comment=(
+            "Role to apply to users who are blocked from helping in tickets"
+            " I would reccomend also preventing the users from obtaining"
+            " any other support roles."
+            " Using permissions checks in reaction bots."
+            " If not set, considered disabled."))
 
     # Toggles
     msg_discovery: orm.Mapped[bool] = orm.mapped_column(
@@ -147,6 +167,10 @@ class Guild(Base):
         default=False,
         nullable=False,
         comment="Whether to strip buttons from messages")
+    strip_roles: orm.Mapped[bool] = orm.mapped_column(
+        default=False,
+        nullable=False,
+        comment="Whether to strip comsup roles when applying a helping_block")
 
     # Relationships
     ticket_bots: orm.Mapped[list["TicketBot"]] = orm.relationship(
@@ -250,13 +274,13 @@ class Ticket(Base):
         nullable=False,
         comment="Unique Guild ID of parent guild",
     )
-    date_created: orm.Mapped[sqlalchemy.DateTime] = orm.mapped_column(
+    date_created: orm.Mapped[datetime.datetime] = orm.mapped_column(
         sqlalchemy.DateTime(),
         nullable=False,
         comment="Date the ticket was created",
         server_default=UTCnow(),
     )
-    last_response: orm.Mapped[sqlalchemy.DateTime] = orm.mapped_column(
+    last_response: orm.Mapped[datetime.datetime] = orm.mapped_column(
         sqlalchemy.DateTime(),
         nullable=False,
         comment="Date the ticket was last responded to",
@@ -478,6 +502,19 @@ class Member(Base):
         primary_key=True,
         unique=False,
     )
+    status: orm.Mapped[int] = orm.mapped_column(
+        sqlalchemy.Integer(),
+        nullable=False,
+        default=0,
+        comment=("The status of the member, 0 is normal, "
+                 "1 is support-blocked, 2 is barred from providing support"),
+    )
+    status_till: orm.Mapped[datetime.datetime | None] = orm.mapped_column(
+        sqlalchemy.DateTime(),
+        nullable=True,
+        comment=("The time until the status is removed, "
+                 "if None, the status is permanent"),
+        default=None)
 
     # Relationships
     guild: orm.Mapped["Guild"] = orm.relationship(back_populates="members",
