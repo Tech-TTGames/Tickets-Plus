@@ -78,7 +78,7 @@ Here are the steps to host your copy of [this bot.](https://github.com/Tech-TTGa
 7. Create the bot on [Discord Developers](https://discord.com/developers/applications).
     1. Create application however you want.
     2. Create a bot.
-    3. Turn on the 'Message Content' privileged intent. Probably disable 'Public Bot'.
+    3. Turn on the 'Message Content' and 'Server Members' privileged intents. Probably disable 'Public Bot'.
     4. Input your bot token to secret.json. (Refer to example_secret.json)
     5. Invite the bot to your server! Replace the <CLIENT_ID> in the below invites with numbers from `https://discord.com/developers/applications/<CLIENT_ID>/`
         - The ***easy link*** - `https://discord.com/api/oauth2/authorize?client_id=<CLIENT_ID>&permissions=8&scope=bot%20applications.commands`
