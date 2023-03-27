@@ -314,8 +314,7 @@ class Events(commands.Cog, name="Events"):
                     )
                     await message.delete()
                 chan = message.channel
-                if isinstance(chan,
-                              discord.TextChannel) and guild.any_autoclose:
+                if guild.any_autoclose:
                     crrnt = chan.topic
                     if crrnt is None:
                         crrnt = (
@@ -324,7 +323,7 @@ class Events(commands.Cog, name="Events"):
                             f"Closes: <t:{int((message.created_at + datetime.timedelta(minutes=guild.any_autoclose)).timestamp())}:R>"
                         )
                     else:
-                        re.sub(
+                        crrnt = re.sub(
                             r"<t:[0-9]*?:R>",
                             # skipcq: FLK-E501 # pylint: disable=line-too-long
                             f"<t:{int((message.created_at + datetime.timedelta(minutes=guild.any_autoclose)).timestamp())}:R>",
