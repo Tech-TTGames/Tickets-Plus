@@ -29,7 +29,7 @@ optional = true
 yapf = "^0.32.0"
 pylint = "^2.17.0"
 toml = "^0.10.2"
-pdoc = "^13.0.0"
+pdoc = "^13.0.1"
 
 [tool.poetry.scripts]
 start = "tickets_plus.__main__:main"
