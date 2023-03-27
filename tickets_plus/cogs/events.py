@@ -80,7 +80,13 @@ class Events(commands.Cog, name="Events"):
                     if entry.target == channel and await confg.check_ticket_bot(
                             entry.user.id, gld.id):
                         ttypes = await confg.get_ticket_types(gld.id)
-                        ticket_type = models.TicketType(prefix=channel.name, guild_id=gld.id, comping=True, comaccs=True, strpbuttns=True, ignore=False)
+                        ticket_type = models.TicketType(prefix=channel.name,
+                                                        guild_id=gld.id,
+                                                        comping=True,
+                                                        comaccs=True,
+                                                        strpbuttns=True,
+                                                        ignore=False,
+                        )
                         for ttype in ttypes:
                             if channel.name.startswith(ttype.prefix):
                                 ticket_type = ttype
@@ -314,8 +320,7 @@ class Events(commands.Cog, name="Events"):
                     )
                     await message.delete()
                 chan = message.channel
-                if isinstance(chan,
-                              discord.TextChannel) and guild.any_autoclose:
+                if guild.any_autoclose:
                     crrnt = chan.topic
                     if crrnt is None:
                         crrnt = (
@@ -324,7 +329,7 @@ class Events(commands.Cog, name="Events"):
                             f"Closes: <t:{int((message.created_at + datetime.timedelta(minutes=guild.any_autoclose)).timestamp())}:R>"
                         )
                     else:
-                        re.sub(
+                        crrnt = re.sub(
                             r"<t:[0-9]*?:R>",
                             # skipcq: FLK-E501 # pylint: disable=line-too-long
                             f"<t:{int((message.created_at + datetime.timedelta(minutes=guild.any_autoclose)).timestamp())}:R>",
