@@ -80,7 +80,13 @@ class Events(commands.Cog, name="Events"):
                     if entry.target == channel and await confg.check_ticket_bot(
                             entry.user.id, gld.id):
                         ttypes = await confg.get_ticket_types(gld.id)
-                        ticket_type = models.TicketType(prefix=channel.name, guild_id=gld.id, comping=True, comaccs=True, strpbuttns=True, ignore=False)
+                        ticket_type = models.TicketType(prefix=channel.name,
+                                                        guild_id=gld.id,
+                                                        comping=True,
+                                                        comaccs=True,
+                                                        strpbuttns=True,
+                                                        ignore=False,
+                        )
                         for ttype in ttypes:
                             if channel.name.startswith(ttype.prefix):
                                 ticket_type = ttype
