@@ -85,8 +85,7 @@ class Events(commands.Cog, name="Events"):
                                                         comping=True,
                                                         comaccs=True,
                                                         strpbuttns=True,
-                                                        ignore=False,
-                        )
+                                                        ignore=False)
                         for ttype in ttypes:
                             if channel.name.startswith(ttype.prefix):
                                 ticket_type = ttype
