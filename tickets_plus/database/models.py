@@ -200,6 +200,11 @@ class Guild(Base):
     # SNOWFLAKE PROTOCOL
     @orm.reconstructor
     def init_on_load(self):
+        """Initiate snowflake protocol
+
+        This is a snowflake protocol, which is a way to make the guild ID
+        more accessible. To use with discord.py.
+        """
         self.id = self.guild_id
 
 
@@ -372,6 +377,11 @@ class Ticket(Base):
     # SNOWFLAKE PROTOCOL
     @orm.reconstructor
     def init_on_load(self):
+        """Initiate snowflake protocol
+
+        This is a snowflake protocol, which is a way to make the channel ID
+        more accessible. To use with discord.py.
+        """
         self.id = self.channel_id
 
 
@@ -491,6 +501,11 @@ class StaffRole(Base):
     # SNOWFLAKE PROTOCOL
     @orm.reconstructor
     def init_on_load(self):
+        """Initiate snowflake protocol
+
+        This is a snowflake protocol, which is a way to make the role ID
+        more accessible. To use with discord.py.
+        """
         self.id = self.role_id
 
 
@@ -534,6 +549,11 @@ class ObserversRole(Base):
     # SNOWFLAKE PROTOCOL
     @orm.reconstructor
     def init_on_load(self):
+        """Initiate snowflake protocol
+
+        This is a snowflake protocol, which is a way to make the role ID
+        more accessible. To use with discord.py.
+        """
         self.id = self.role_id
 
 
@@ -577,6 +597,11 @@ class CommunityRole(Base):
     # SNOWFLAKE PROTOCOL
     @orm.reconstructor
     def init_on_load(self):
+        """Initiate snowflake protocol
+
+        This is a snowflake protocol, which is a way to make the role ID
+        more accessible. To use with discord.py.
+        """
         self.id = self.role_id
 
 
@@ -622,6 +647,11 @@ class CommunityPing(Base):
     # SNOWFLAKE PROTOCOL
     @orm.reconstructor
     def init_on_load(self):
+        """Initiate snowflake protocol
+
+        This is a snowflake protocol, which is a way to make the role ID
+        more accessible. To use with discord.py.
+        """
         self.id = self.role_id
 
 
@@ -735,4 +765,9 @@ class User(Base):
     # SNOWFLAKE PROTOCOL
     @orm.reconstructor
     def init_on_load(self):
+        """Initiate snowflake protocol
+
+        This is a snowflake protocol, which is a way to make the user ID
+        more accessible. To use with discord.py.
+        """
         self.id = self.user_id

@@ -439,7 +439,7 @@ class OnlineConfig:
             emdd = vars(embed)
             emd2 = {}
             for a in emdd:
-                if emdd[a] != None:
+                if emdd[a] is not None:
                     emd2[a] = emdd[a]
             if embed.author:
                 emd2["author"] = {"name": embed.author}
