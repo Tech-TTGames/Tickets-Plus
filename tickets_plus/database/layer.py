@@ -437,6 +437,9 @@ class OnlineConfig:
             return None
         if embed.title:
             emdd = vars(embed)
+            for a in emdd:
+                if emdd[a] == None:
+                    del emdd[a]
             if embed.author:
                 emdd["author"] = {"name": embed.author}
             result = discord.Embed.from_dict(emdd)
