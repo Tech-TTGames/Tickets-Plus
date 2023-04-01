@@ -643,11 +643,9 @@ class Member(Base):
 
     __tablename__ = "members"
     __table_args__ = {
-        "comment": (
-            "Table for members,"
-            " this is a combination of a user and a guild,"
-            " as a user can be in multiple guilds."
-        )
+        "comment": ("Table for members,"
+                    " this is a combination of a user and a guild,"
+                    " as a user can be in multiple guilds.")
     }
 
     # Simple columns
@@ -708,11 +706,9 @@ class User(Base):
 
     __tablename__ = "users"
     __table_args__ = {
-        "comment": (
-            "Table for users,"
-            " this is not a guild-specific table,"
-            " as a user can be in multiple guilds."
-        )
+        "comment": ("Table for users,"
+                    " this is not a guild-specific table,"
+                    " as a user can be in multiple guilds.")
     }
 
     # Simple columns

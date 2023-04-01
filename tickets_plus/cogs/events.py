@@ -209,7 +209,8 @@ class Events(commands.Cog, name="Events"):
                 if actv_member.status_till is not None:
                     # Split this up to avoid None comparison.
                     # pylint: disable=line-too-long
-                    if actv_member.status_till <= datetime.datetime.utcnow():  # type: ignore
+                    if actv_member.status_till <= datetime.datetime.utcnow(
+                    ):  # type: ignore
                         # Check if the penalty has expired.
                         actv_member.status = 0
                         actv_member.status_till = None
