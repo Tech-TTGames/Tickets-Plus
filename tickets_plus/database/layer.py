@@ -436,7 +436,10 @@ class OnlineConfig:
         if embed is None:
             return None
         if embed.title:
-            result = discord.Embed.from_dict(vars(embed))
+            emdd = vars(embed)
+            if embed.author:
+                emdd["author"] = {"name": embed.author}
+            result = discord.Embed.from_dict(emdd)
             result.timestamp = utils.utcnow()
             return result
         return embed.description

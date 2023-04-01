@@ -197,6 +197,9 @@ class Guild(Base):
     #    secondary="members", back_populates="guilds", lazy="raise", viewonly=True
     # )
 
+    # SNOWFLAKE PROTOCOL
+    id = guild_id
+
 
 class TicketBot(Base):
     """Guild-specific Ticket Bot table
@@ -364,6 +367,9 @@ class Ticket(Base):
     guild: orm.Mapped["Guild"] = orm.relationship(back_populates="tickets",
                                                   lazy="selectin")
 
+    # SNOWFLAKE PROTOCOL
+    id = channel_id
+
 
 class Tag(Base):
     """Tags table.
@@ -478,6 +484,9 @@ class StaffRole(Base):
     guild: orm.Mapped["Guild"] = orm.relationship(back_populates="staff_roles",
                                                   lazy="selectin")
 
+    # SNOWFLAKE PROTOCOL
+    id = role_id
+
 
 class ObserversRole(Base):
     """Observer roles table
@@ -516,6 +525,9 @@ class ObserversRole(Base):
     guild: orm.Mapped["Guild"] = orm.relationship(
         back_populates="observers_roles", lazy="selectin")
 
+    # SNOWFLAKE PROTOCOL
+    id = role_id
+
 
 class CommunityRole(Base):
     """Community roles table
@@ -553,6 +565,9 @@ class CommunityRole(Base):
     # Relationships
     guild: orm.Mapped["Guild"] = orm.relationship(
         back_populates="community_roles", lazy="selectin")
+
+    # SNOWFLAKE PROTOCOL
+    id = role_id
 
 
 class CommunityPing(Base):
@@ -594,6 +609,9 @@ class CommunityPing(Base):
     guild: orm.Mapped["Guild"] = orm.relationship(
         back_populates="community_pings", lazy="selectin")
 
+    # SNOWFLAKE PROTOCOL
+    id = role_id
+
 
 class Member(Base):
     """Members table
@@ -615,7 +633,8 @@ class Member(Base):
     __table_args__ = {
         "comment": (
             "Table for members,"
-            " this is a combination of a user and a guild, as a user can be in multiple guilds."
+            " this is a combination of a user and a guild,"
+            " as a user can be in multiple guilds."
         )
     }
 
@@ -679,7 +698,8 @@ class User(Base):
     __table_args__ = {
         "comment": (
             "Table for users,"
-            " this is not a guild-specific table, as a user can be in multiple guilds."
+            " this is not a guild-specific table,"
+            " as a user can be in multiple guilds."
         )
     }
 
@@ -703,3 +723,6 @@ class User(Base):
     # guilds: orm.Mapped[list["Guild"]] = orm.relationship(
     #    secondary="members", back_populates="users", lazy="raise", viewonly=True
     # )
+
+    # SNOWFLAKE PROTOCOL
+    id = user_id
