@@ -443,6 +443,8 @@ class OnlineConfig:
                     emd2[a] = emdd[a]
             if embed.author:
                 emd2["author"] = {"name": embed.author}
+            if embed.footer:
+                emd2["footer"] = {"text": embed.footer}
             result = discord.Embed.from_dict(emd2)
             result.timestamp = utils.utcnow()
             return result
