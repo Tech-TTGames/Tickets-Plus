@@ -198,7 +198,9 @@ class Guild(Base):
     # )
 
     # SNOWFLAKE PROTOCOL
-    id = guild_id
+    @orm.reconstructor
+    def init_on_load(self):
+        self.id = self.guild_id
 
 
 class TicketBot(Base):
@@ -368,7 +370,9 @@ class Ticket(Base):
                                                   lazy="selectin")
 
     # SNOWFLAKE PROTOCOL
-    id = channel_id
+    @orm.reconstructor
+    def init_on_load(self):
+        self.id = self.channel_id
 
 
 class Tag(Base):
@@ -485,7 +489,9 @@ class StaffRole(Base):
                                                   lazy="selectin")
 
     # SNOWFLAKE PROTOCOL
-    id = role_id
+    @orm.reconstructor
+    def init_on_load(self):
+        self.id = self.role_id
 
 
 class ObserversRole(Base):
@@ -526,7 +532,9 @@ class ObserversRole(Base):
         back_populates="observers_roles", lazy="selectin")
 
     # SNOWFLAKE PROTOCOL
-    id = role_id
+    @orm.reconstructor
+    def init_on_load(self):
+        self.id = self.role_id
 
 
 class CommunityRole(Base):
@@ -567,7 +575,9 @@ class CommunityRole(Base):
         back_populates="community_roles", lazy="selectin")
 
     # SNOWFLAKE PROTOCOL
-    id = role_id
+    @orm.reconstructor
+    def init_on_load(self):
+        self.id = self.role_id
 
 
 class CommunityPing(Base):
@@ -610,7 +620,9 @@ class CommunityPing(Base):
         back_populates="community_pings", lazy="selectin")
 
     # SNOWFLAKE PROTOCOL
-    id = role_id
+    @orm.reconstructor
+    def init_on_load(self):
+        self.id = self.role_id
 
 
 class Member(Base):
@@ -725,4 +737,6 @@ class User(Base):
     # )
 
     # SNOWFLAKE PROTOCOL
-    id = user_id
+    @orm.reconstructor
+    def init_on_load(self):
+        self.id = self.user_id
