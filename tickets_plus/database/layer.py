@@ -442,7 +442,7 @@ class OnlineConfig:
                 if emdd[a] != None:
                     emd2[a] = emdd[a]
             if embed.author:
-                emdd["author"] = {"name": embed.author}
+                emd2["author"] = {"name": embed.author}
             result = discord.Embed.from_dict(emd2)
             result.timestamp = utils.utcnow()
             return result
