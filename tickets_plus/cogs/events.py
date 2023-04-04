@@ -326,15 +326,17 @@ class Events(commands.Cog, name="Events"):
                     if time_since_update >= datetime.timedelta(minutes=5):
                         crrnt = chan.topic
                         if crrnt is None:
+                            # pylint: disable=line-too-long
                             crrnt = (
                                 f"Ticket: {chan.name}\n"
-                                # skipcq: FLK-E501 # pylint: disable=line-too-long
+                                # skipcq: FLK-E501
                                 f"Closes: <t:{int((message.created_at + datetime.timedelta(minutes=guild.any_autoclose)).timestamp())}:R>"
                             )
                         else:
+                            # pylint: disable=line-too-long
                             crrnt = re.sub(
                                 r"<t:[0-9]*?:R>",
-                                # skipcq: FLK-E501 # pylint: disable=line-too-long
+                                # skipcq: FLK-E501
                                 f"<t:{int((message.created_at + datetime.timedelta(minutes=guild.any_autoclose)).timestamp())}:R>",
                                 crrnt)
                         await chan.edit(topic=crrnt)
