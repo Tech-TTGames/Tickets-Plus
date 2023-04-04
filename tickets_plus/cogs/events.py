@@ -321,22 +321,25 @@ class Events(commands.Cog, name="Events"):
                     await message.delete()
                 chan = message.channel
                 if guild.any_autoclose:
-                    crrnt = chan.topic
-                    if crrnt is None:
-                        crrnt = (
-                            f"Ticket: {chan.name}\n"
-                            # skipcq: FLK-E501 # pylint: disable=line-too-long
-                            f"Closes: <t:{int((message.created_at + datetime.timedelta(minutes=guild.any_autoclose)).timestamp())}:R>"
-                        )
-                    else:
-                        crrnt = re.sub(
-                            r"<t:[0-9]*?:R>",
-                            # skipcq: FLK-E501 # pylint: disable=line-too-long
-                            f"<t:{int((message.created_at + datetime.timedelta(minutes=guild.any_autoclose)).timestamp())}:R>",
-                            crrnt)
-                    await chan.edit(topic=crrnt)
-                    ticket.last_response = datetime.datetime.utcnow()
-                    await cnfg.commit()
+                    time_since_update = (ticket.last_response -
+                                         datetime.datetime.utcnow())
+                    if time_since_update >= datetime.timedelta(minutes=5):
+                        crrnt = chan.topic
+                        if crrnt is None:
+                            crrnt = (
+                                f"Ticket: {chan.name}\n"
+                                # skipcq: FLK-E501 # pylint: disable=line-too-long
+                                f"Closes: <t:{int((message.created_at + datetime.timedelta(minutes=guild.any_autoclose)).timestamp())}:R>"
+                            )
+                        else:
+                            crrnt = re.sub(
+                                r"<t:[0-9]*?:R>",
+                                # skipcq: FLK-E501 # pylint: disable=line-too-long
+                                f"<t:{int((message.created_at + datetime.timedelta(minutes=guild.any_autoclose)).timestamp())}:R>",
+                                crrnt)
+                        await chan.edit(topic=crrnt)
+                        ticket.last_response = datetime.datetime.utcnow()
+                        await cnfg.commit()
 
 
 async def setup(bot_instance: bot.TicketsPlusBot) -> None:
