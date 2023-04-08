@@ -260,7 +260,7 @@ class Events(commands.Cog, name="Events"):
             guild = await cnfg.get_guild(message.guild.id)
             if guild.msg_discovery:
                 alpha = re.search(
-                    r"https:\/\/(?:canary\.)?discord\.com\/channels\/(?P<srv>\d{18})\/(?P<cha>\d{18})\/(?P<msg>\d*)",  # skipcq: FLK-E501 # pylint: disable=line-too-long
+                    r"https:\/\/(?:canary\.)?discord\.com\/channels\/(?P<srv>\d*)\/(?P<cha>\d*)\/(?P<msg>\d*)",  # skipcq: FLK-E501 # pylint: disable=line-too-long
                     message.content,
                 )
                 if alpha:
