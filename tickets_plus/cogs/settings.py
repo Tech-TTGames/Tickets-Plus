@@ -388,24 +388,19 @@ class Settings(commands.GroupCog,
         async with self._bt.get_connection() as conn:
             guild = await conn.get_guild(ctx.guild_id)  # type: ignore
             prev = None
+            changed_close = guild.first_autoclose
+            category_txt = "First Response"
             if category.value:
                 changed_close = guild.any_autoclose
                 category_txt = "Last Response"
-            else:
-                changed_close = guild.first_autoclose
-                category_txt = "First Response"
             if changed_close is not None:
                 prev = datetime.timedelta(minutes=int(changed_close))
             if days + hours + minutes == 0:
                 changed_close = None
-                if prev is not None:
-                    emd = discord.Embed(title="Autoclose Disabled",
-                                        color=discord.Color.red())
-                    emd.add_field(name="Previous autoclose time:",
-                                  value=f"{str(prev)}")
-                else:
-                    emd = discord.Embed(title="Autoclose Already Disabled",
-                                        color=discord.Color.orange())
+                emd = discord.Embed(title="Autoclose Disabled",
+                                    color=discord.Color.red())
+                emd.add_field(name="Previous autoclose time:",
+                              value=f"{str(prev)}")
             else:
                 newtime = datetime.timedelta(days=days,
                                              hours=hours,

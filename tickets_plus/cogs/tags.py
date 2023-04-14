@@ -108,40 +108,16 @@ class TagUtils(commands.GroupCog,
                 messg += tag_data
         return messg, emd
 
-    @app_commands.command(name="anosend", description="Send a tag anonymously")
-    @app_commands.describe(tag="The tag to send", mention="The user to mention")
-    @app_commands.autocomplete(tag=tag_autocomplete)
-    async def anosend(self, ctx: discord.Interaction, tag: str,
-                      mention: Optional[discord.User]) -> None:
-        """Sends an anonymous tag.
-
-        This command sends an anonymous tag, which is a tag that is sent
-        without a connection to the user who sent it.
-
-        Args:
-            ctx: The interaction context.
-            tag: The tag to send.
-            mention: The user to mention.
-        """
-        await ctx.response.defer(ephemeral=True)
-        if isinstance(ctx.channel, (discord.ForumChannel, discord.StageChannel,
-                                    discord.CategoryChannel, types.NoneType)):
-            raise exceptions.InvalidLocation("You can't use this command here!")
-        messg, emd = await self.prep_tag(
-            ctx.guild_id,  # type: ignore
-            tag,
-            mention)
-        if emd:
-            await ctx.channel.send(content=messg, embed=emd)
-        else:
-            await ctx.channel.send(messg)
-        await ctx.followup.send("Sent!", ephemeral=True)
-
     @app_commands.command(name="send", description="Send a tag")
-    @app_commands.describe(tag="The tag to send", mention="The user to mention")
+    @app_commands.describe(tag="The tag to send",
+                           mention="The user to mention",
+                           anon="Send anonymously")
     @app_commands.autocomplete(tag=tag_autocomplete)
-    async def send(self, ctx: discord.Interaction, tag: str,
-                   mention: Optional[discord.User]) -> None:
+    async def send(self,
+                   ctx: discord.Interaction,
+                   tag: str,
+                   mention: Optional[discord.User],
+                   anon: bool = False) -> None:
         """Sends a tag.
 
         This command sends a tag, which is a snippet of text that can be
@@ -160,10 +136,14 @@ class TagUtils(commands.GroupCog,
             ctx.guild_id,  # type: ignore
             tag,
             mention)
+        post = ctx.followup
+        if anon:
+            post = ctx.channel
         if emd:
-            await ctx.followup.send(content=messg, embed=emd)
+            await post.send(content=messg, embed=emd)
         else:
-            await ctx.followup.send(messg)
+            await post.send(messg)
+        await ctx.followup.send("Sent!", ephemeral=True)
 
     @app_commands.command(name="create", description="Create/Delete a tag")
     @checks.is_staff_check()
@@ -206,13 +186,8 @@ class TagUtils(commands.GroupCog,
         Raises:
             InvalidParameters: The tag already exists.
         """
+        await ctx.response.defer(ephemeral=True)
         parsed_color = None
-        if (url or color or footer or image or thumbnail) and not title:
-            raise exceptions.InvalidParameters(
-                "You need to specify a title"
-                " if you want to use embed parameters!")
-        if color:
-            parsed_color = discord.Color.from_str(color).value
         opt_params = {
             "title": title,
             "url": url,
@@ -222,7 +197,13 @@ class TagUtils(commands.GroupCog,
             "thumbnail": thumbnail,
             "author": author
         }
-        await ctx.response.defer(ephemeral=True)
+        if any(opt_params) and not title:
+            raise exceptions.InvalidParameters(
+                "You need to specify a title"
+                " if you want to use embed parameters!")
+        if color:
+            parsed_color = discord.Color.from_str(color).value
+        opt_params["color"] = parsed_color
         async with self._bt.get_connection() as conn:
             new, tag_data = await conn.get_tag(
                 ctx.guild_id,  # type: ignore
@@ -281,9 +262,6 @@ class TagUtils(commands.GroupCog,
         Raises:
             InvalidParameters: The tag doesn't exist.
         """
-        if not any([content, title, url, color, footer, image, thumbnail]):
-            raise exceptions.InvalidParameters(
-                "You must specify at least one value to edit.")
         parsed_color = None
         if color:
             parsed_color = discord.Color.from_str(color).value
@@ -296,8 +274,10 @@ class TagUtils(commands.GroupCog,
             "author": author
         }
         async with self._bt.get_connection() as conn:
-            new, tag_data = await conn.get_tag(ctx.guild_id,
-                                               tag.lower())  # type: ignore
+            new, tag_data = await conn.get_tag(
+                ctx.guild_id,  # type: ignore
+                tag.lower(),
+                "")
             if new:
                 raise exceptions.InvalidParameters("That tag doesn't exist!")
             if content:

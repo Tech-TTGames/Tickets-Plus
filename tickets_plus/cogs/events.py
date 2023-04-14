@@ -30,7 +30,7 @@ from discord.ext import commands
 from sqlalchemy import orm
 
 from tickets_plus import bot
-from tickets_plus.database import models
+from tickets_plus.database import layer, models
 
 
 class Events(commands.Cog, name="Events"):
@@ -50,6 +50,123 @@ class Events(commands.Cog, name="Events"):
         """
         self._bt = bot_instance
         logging.info("Loaded %s", self.__class__.__name__)
+
+    async def message_discovery(self, message: discord.Message) -> None:
+        """Discovers the message linked to.
+
+        Fetches a message from it's discord link and responds with the
+        message content.
+
+        Args:
+            message: The message to check for links
+        """
+        alpha = re.search(
+            r"https:\/\/(?:canary\.)?discord\.com\/channels\/(?P<srv>\d*)\/(?P<cha>\d*)\/(?P<msg>\d*)",  # skipcq: FLK-E501 # pylint: disable=line-too-long
+            message.content,
+        )
+        if alpha:
+            # We do not check any types in try as we are catching.
+            try:
+                gld = self._bt.get_guild(int(alpha.group("srv")))
+                chan = gld.get_channel_or_thread(  # type: ignore
+                    int(alpha.group("cha")))
+                got_msg = await chan.fetch_message(  # type: ignore
+                    int(alpha.group("msg")))
+            except (
+                    AttributeError,
+                    discord.HTTPException,
+            ):
+                logging.warning("Message discovery failed.")
+            else:
+                time = got_msg.created_at.strftime("%d/%m/%Y %H:%M:%S")
+                if not got_msg.content and got_msg.embeds:
+                    discovered_result = got_msg.embeds[0]
+                    discovered_result.set_footer(text="[EMBED CAPTURED] Sent in"
+                                                 f" {chan.name}"  # type: ignore
+                                                 f" at {time}")
+                else:
+                    discovered_result = discord.Embed(
+                        description=got_msg.content, color=0x0D0EB4)
+                    discovered_result.set_footer(
+                        text="Sent in "
+                        f"{chan.name} at {time}"  # type: ignore
+                    )
+                discovered_result.set_author(
+                    name=got_msg.author.name,
+                    icon_url=got_msg.author.display_avatar.url,
+                )
+                discovered_result.set_image(url=got_msg.attachments[0].url
+                                            if got_msg.attachments else None)
+                await message.reply(embed=discovered_result)
+
+    async def handle_anon(self, message: discord.Message, ticket: models.Ticket,
+                          cnfg: layer.OnlineConfig,
+                          guild: models.Guild) -> None:
+        """Handles ticket anon messages.
+
+        Grabs a message and anonymises it, then sends it to the ticket.
+
+        Args:
+            message: The message to handle.
+            ticket: The ticket to send the message to.
+            cnfg: The database connection.
+            guild: The guild the ticket is in.
+        """
+        if ticket.anonymous:
+            staff = False
+            staff_roles = await cnfg.get_all_staff_roles(guild.guild_id)
+            for role in staff_roles:
+                parsed_role = message.guild.get_role(  # type: ignore
+                    role.role_id)
+                if parsed_role in message.author.roles:  # type: ignore
+                    # Alredy checked for member
+                    staff = True
+                    break
+            if not staff:
+                return
+            await message.channel.send(
+                f"**{guild.staff_team_name}:** "
+                f"{utils.escape_mentions(message.content)}",
+                embeds=message.embeds,
+            )
+            await message.delete()
+
+    async def update_autoclose(self, message: discord.Message,
+                               ticket: models.Ticket, guild: models.Guild,
+                               cnfg: layer.OnlineConfig) -> None:
+        """Updates channel topic autoclose time.
+
+        Changes the channel topic to reflect the new autoclose time.
+
+        Args:
+            message: The message to check.
+            ticket: The ticket updated.
+            guild: The guild settings.
+            cnfg: The database connection.
+        """
+        chan = message.channel
+        if guild.any_autoclose:
+            time_since_update = (ticket.last_response -
+                                 datetime.datetime.utcnow())
+            if time_since_update >= datetime.timedelta(minutes=5):
+                crrnt = chan.topic  # type: ignore
+                if crrnt is None:
+                    # pylint: disable=line-too-long
+                    crrnt = (
+                        f"Ticket: {chan.name}\n"  # type: ignore
+                        # skipcq: FLK-E501
+                        f"Closes: <t:{int((message.created_at + datetime.timedelta(minutes=guild.any_autoclose)).timestamp())}:R>"
+                    )
+                else:
+                    # pylint: disable=line-too-long
+                    crrnt = re.sub(
+                        r"<t:[0-9]*?:R>",
+                        # skipcq: FLK-E501
+                        f"<t:{int((message.created_at + datetime.timedelta(minutes=guild.any_autoclose)).timestamp())}:R>",
+                        crrnt)
+                await chan.edit(topic=crrnt)  # type: ignore
+                ticket.last_response = datetime.datetime.utcnow()
+                await cnfg.commit()
 
     @commands.Cog.listener(name="on_guild_channel_create")
     async def on_channel_create(self,
@@ -259,89 +376,12 @@ class Events(commands.Cog, name="Events"):
                 return
             guild = await cnfg.get_guild(message.guild.id)
             if guild.msg_discovery:
-                alpha = re.search(
-                    r"https:\/\/(?:canary\.)?discord\.com\/channels\/(?P<srv>\d*)\/(?P<cha>\d*)\/(?P<msg>\d*)",  # skipcq: FLK-E501 # pylint: disable=line-too-long
-                    message.content,
-                )
-                if alpha:
-                    # We do not check any types in try as we are catching.
-                    try:
-                        gld = self._bt.get_guild(int(alpha.group("srv")))
-                        chan = gld.get_channel_or_thread(  # type: ignore
-                            int(alpha.group("cha")))
-                        got_msg = await chan.fetch_message(  # type: ignore
-                            int(alpha.group("msg")))
-                    except (
-                            AttributeError,
-                            discord.HTTPException,
-                    ):
-                        logging.warning("Message discovery failed.")
-                    else:
-                        time = got_msg.created_at.strftime("%d/%m/%Y %H:%M:%S")
-                        if not got_msg.content and got_msg.embeds:
-                            discovered_result = got_msg.embeds[0]
-                            discovered_result.set_footer(
-                                text="[EMBED CAPTURED] Sent in"
-                                f" {chan.name}"  # type: ignore
-                                f" at {time}")
-                        else:
-                            discovered_result = discord.Embed(
-                                description=got_msg.content, color=0x0D0EB4)
-                            discovered_result.set_footer(
-                                text="Sent in "
-                                f"{chan.name} at {time}"  # type: ignore
-                            )
-                        discovered_result.set_author(
-                            name=got_msg.author.name,
-                            icon_url=got_msg.author.display_avatar.url,
-                        )
-                        discovered_result.set_image(
-                            url=got_msg.attachments[0].url if got_msg.
-                            attachments else None)
-                        await message.reply(embed=discovered_result)
+                await self.message_discovery(message)
             ticket = await cnfg.fetch_ticket(message.channel.id)
             if ticket:
                 # Make sure the ticket exists
-                if ticket.anonymous:
-                    staff = False
-                    staff_roles = await cnfg.get_all_staff_roles(guild.guild_id)
-                    for role in staff_roles:
-                        parsed_role = message.guild.get_role(role.role_id)
-                        if parsed_role in message.author.roles:  # type: ignore
-                            # Alredy checked for member
-                            staff = True
-                            break
-                    if not staff:
-                        return
-                    await message.channel.send(
-                        f"**{guild.staff_team_name}:** "
-                        f"{utils.escape_mentions(message.content)}",
-                        embeds=message.embeds,
-                    )
-                    await message.delete()
-                chan = message.channel
-                if guild.any_autoclose:
-                    time_since_update = (ticket.last_response -
-                                         datetime.datetime.utcnow())
-                    if time_since_update >= datetime.timedelta(minutes=5):
-                        crrnt = chan.topic
-                        if crrnt is None:
-                            # pylint: disable=line-too-long
-                            crrnt = (
-                                f"Ticket: {chan.name}\n"
-                                # skipcq: FLK-E501
-                                f"Closes: <t:{int((message.created_at + datetime.timedelta(minutes=guild.any_autoclose)).timestamp())}:R>"
-                            )
-                        else:
-                            # pylint: disable=line-too-long
-                            crrnt = re.sub(
-                                r"<t:[0-9]*?:R>",
-                                # skipcq: FLK-E501
-                                f"<t:{int((message.created_at + datetime.timedelta(minutes=guild.any_autoclose)).timestamp())}:R>",
-                                crrnt)
-                        await chan.edit(topic=crrnt)
-                        ticket.last_response = datetime.datetime.utcnow()
-                        await cnfg.commit()
+                await self.handle_anon(message, ticket, cnfg, guild)
+                await self.update_autoclose(message, ticket, guild, cnfg)
 
 
 async def setup(bot_instance: bot.TicketsPlusBot) -> None:
