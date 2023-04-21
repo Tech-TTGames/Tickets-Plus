@@ -130,8 +130,12 @@ class TagUtils(commands.GroupCog,
             mention: The user to mention.
         """
         await ctx.response.defer(ephemeral=False)
-        if isinstance(ctx.channel, (discord.ForumChannel, discord.StageChannel,
-                                    discord.CategoryChannel, types.NoneType)):
+        if isinstance(ctx.channel, (
+                discord.ForumChannel,
+                discord.StageChannel,
+                discord.CategoryChannel,
+                types.NoneType,
+        )):
             raise exceptions.InvalidLocation("You can't use this command here!")
         messg, emd = await self.prep_tag(
             ctx.guild_id,  # type: ignore
