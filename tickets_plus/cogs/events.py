@@ -18,6 +18,8 @@ Typical usage example:
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
+from __future__ import annotations
+
 import asyncio
 import datetime
 import logging
@@ -54,7 +56,7 @@ class Events(commands.Cog, name="Events"):
         logging.info("Loaded %s", self.__class__.__name__)
 
     async def ticket_creation(
-        self: "Events | handlers.TicketHandler",
+        self: Events | handlers.TicketHandler,
         confg: layer.OnlineConfig,
         guilded: Tuple[discord.Guild, models.Guild],
         channel: discord.TextChannel,
