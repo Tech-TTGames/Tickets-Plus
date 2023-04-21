@@ -25,7 +25,7 @@ import datetime
 import logging
 import re
 import string
-from typing import Tuple
+from typing import Tuple, Any
 
 import discord
 from discord import utils
@@ -33,7 +33,6 @@ from discord.ext import commands
 from sqlalchemy import orm
 
 from tickets_plus import bot
-from tickets_plus.api import handlers
 from tickets_plus.database import layer, models
 
 
@@ -56,7 +55,7 @@ class Events(commands.Cog, name="Events"):
         logging.info("Loaded %s", self.__class__.__name__)
 
     async def ticket_creation(
-        self: Events | handlers.TicketHandler,
+        self: Any,
         confg: layer.OnlineConfig,
         guilded: Tuple[discord.Guild, models.Guild],
         channel: discord.TextChannel,
