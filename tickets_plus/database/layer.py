@@ -383,6 +383,7 @@ class OnlineConfig:
             self,
             channel_id: int,
             guild_id: int,
+            user_id: int | None = None,
             staff_note: int | None = None) -> Tuple[bool, models.Ticket]:
         """Get a or create ticket from the database.
 
@@ -394,6 +395,7 @@ class OnlineConfig:
         Args:
             channel_id: The channel ID.
             guild_id: The guild ID. Used to create the guild if missing.
+            user_id: The user ID. Only filed if integration is enabled.
             staff_note: The staff note thread ID. Used to annotate the thread,
                 if the ticket is created.
 

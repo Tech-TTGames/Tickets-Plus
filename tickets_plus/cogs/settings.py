@@ -426,6 +426,7 @@ class Settings(commands.GroupCog,
         app_commands.Choice(name="Message Discovery", value=0),
         app_commands.Choice(name="Button Stripping", value=1),
         app_commands.Choice(name="Role Stripping", value=2),
+        app_commands.Choice(name="Integrated with Tickets", value=3)
     ])
     async def toggle_value(self, ctx: discord.Interaction,
                            value: app_commands.Choice[int]) -> None:
@@ -447,9 +448,12 @@ class Settings(commands.GroupCog,
             elif value.value == 1:
                 new_status = not guild.strip_buttons
                 guild.strip_buttons = new_status
-            else:
+            elif value.value == 2:
                 new_status = not guild.strip_roles
                 guild.strip_roles = new_status
+            else:
+                new_status = not guild.integrated
+                guild.integrated = new_status
             await conn.commit()
         emd = discord.Embed(
             title="Value Toggled",
