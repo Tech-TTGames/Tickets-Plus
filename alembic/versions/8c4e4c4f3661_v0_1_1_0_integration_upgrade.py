@@ -30,9 +30,10 @@ def upgrade() -> None:
         schema="tickets_plus",
     )
     op.execute("UPDATE tickets_plus.general_configs SET integrated = FALSE")
-    op.alter_column(
-        "general_configs", "integrated", nullable=False, schema="tickets_plus"
-    )
+    op.alter_column("general_configs",
+                    "integrated",
+                    nullable=False,
+                    schema="tickets_plus")
     op.add_column(
         "tickets",
         sa.Column(
