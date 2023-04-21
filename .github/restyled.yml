@@ -12,6 +12,8 @@ restylers:
       enabled: false
   - reorder-python-imports:
       enabled: false
+  - black:
+      enabled: false
   - isort:
       enabled: true
   - prettier-json:
