@@ -452,18 +452,18 @@ class Tag(Base):
         comment="The 'key' of the tag",
         primary_key=True)
     title: orm.Mapped[str | None] = orm.mapped_column(sqlalchemy.String(256),
-                                               nullable=True,
-                                               comment="The title of the embed")
+                                                      nullable=True,
+                                                      comment="The title of the embed")
     description: orm.Mapped[str] = orm.mapped_column(
         sqlalchemy.String(4096),
         nullable=False,
         comment="The description of the embed")
     url: orm.Mapped[str | None] = orm.mapped_column(sqlalchemy.String(256),
-                                             nullable=True,
-                                             comment="The url of the embed")
+                                                    nullable=True,
+                                                    comment="The url of the embed")
     color: orm.Mapped[int | None] = orm.mapped_column(sqlalchemy.Integer(),
-                                               nullable=True,
-                                               comment="The color of the embed")
+                                                      nullable=True,
+                                                      comment="The color of the embed")
     footer: orm.Mapped[str | None] = orm.mapped_column(
         sqlalchemy.String(2048),
         nullable=True,
