@@ -71,8 +71,8 @@ class BotHandler(web.RequestHandler):
             self.finish()
             return
         if self.request.headers.get(
-                "ticketsplus-api-auth") != self._bt.stat_confg.getitem(
-                    "auth_token"):
+            "ticketsplus-api-auth"
+        ) != self._bt.stat_confg.getitem("auth_token"):
             self.set_status(401, "Invalid authentication token.")
             self.write({"error": "Invalid authentication token."})
             self.finish()
@@ -147,8 +147,7 @@ class TicketHandler(BotHandler):
                 self.finish()
                 return
             user = self._bt.get_user(user_id)
-            await events.Events.ticket_creation(self, db, (guild, gld), channel,
-                                                user)
+            await events.Events.ticket_creation(self, db, (guild, gld), channel, user)
             self.set_status(200, "OK")
             self.finish()
 
