@@ -411,6 +411,7 @@ class OnlineConfig:
             new = True
             ticket = models.Ticket(channel_id=channel_id,
                                    guild=guild,
+                                   user_id=user_id,
                                    staff_note_thread=staff_note)
             self._session.add(ticket)
         return new, ticket
