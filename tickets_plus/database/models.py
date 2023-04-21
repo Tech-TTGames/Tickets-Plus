@@ -19,6 +19,8 @@ Typical usage example:
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
+from typing import Type
+
 import datetime
 import sqlalchemy
 from sqlalchemy import orm, sql
@@ -316,6 +318,20 @@ class TicketType(Base):
     # Relationships
     guild: orm.Mapped["Guild"] = orm.relationship(back_populates="ticket_types",
                                                   lazy="selectin")
+
+    @classmethod
+    def default(cls: Type["TicketType"]) -> "TicketType":
+        """Default ticket type
+
+        This is the default ticket type.
+        It is used when no ticket type is specified.
+        """
+        return cls(prefix="",
+                   guild_id=0,
+                   comping=True,
+                   comaccs=True,
+                   strpbuttns=True,
+                   ignore=False)
 
 
 class Ticket(Base):
