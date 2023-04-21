@@ -25,7 +25,7 @@ import datetime
 import logging
 import re
 import string
-from typing import Tuple, Any
+from typing import Any, Tuple
 
 import discord
 from discord import utils

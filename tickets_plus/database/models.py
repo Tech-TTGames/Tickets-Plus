@@ -20,9 +20,9 @@ Typical usage example:
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
 
+import datetime
 from typing import Type
 
-import datetime
 import sqlalchemy
 from sqlalchemy import orm, sql
 from sqlalchemy.ext import compiler as cmplr

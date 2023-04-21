@@ -28,11 +28,11 @@ Typical usage example:
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
 
-import signal
-import sys
-import ssl
 import logging
 import os
+import signal
+import ssl
+import sys
 
 import discord
 import sqlalchemy

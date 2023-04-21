@@ -23,8 +23,8 @@ Typical usage example:
 import json
 
 import discord
-from tornado import web
 from sqlalchemy import orm
+from tornado import web
 
 from tickets_plus import bot
 from tickets_plus.cogs import events

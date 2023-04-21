@@ -20,7 +20,7 @@ Typical usage example:
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
 
-from discord.ext import tasks, commands
+from discord.ext import commands, tasks
 
 from tickets_plus import bot
 

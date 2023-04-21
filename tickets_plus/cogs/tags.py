@@ -25,11 +25,11 @@ import types
 from typing import List, Optional, Tuple
 
 import discord
-from discord.ext import commands
 from discord import app_commands
+from discord.ext import commands
 
 from tickets_plus import bot
-from tickets_plus.ext import exceptions, checks
+from tickets_plus.ext import checks, exceptions
 
 
 @commands.guild_only()
