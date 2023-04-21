@@ -39,7 +39,7 @@ class BotHandler(web.RequestHandler):
             bot_instance: The bot object.
         """
         self._bt = bot_instance
-        self.SUPPORTED_METHODS = ("POST",) # pylint: disable=invalid-name
+        self.SUPPORTED_METHODS = ("POST",)  # pylint: disable=invalid-name
 
     def set_default_headers(self) -> None:
         """Sets the return type to JSON.
@@ -70,6 +70,7 @@ class BotHandler(web.RequestHandler):
             return
         self.args = json.loads(self.request.body.decode("utf-8"))
         await self._bt.wait_until_ready()
+
 
 class TicketHandler(BotHandler):
     """Handles integration-based ticket creation.
@@ -112,6 +113,7 @@ class TicketHandler(BotHandler):
                                                 user)
             self.set_status(200, "OK")
             self.finish()
+
 
 class OverrideHandler(BotHandler):
     """Basic messaging capabilites with the bot
