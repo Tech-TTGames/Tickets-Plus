@@ -23,7 +23,6 @@ import logging
 import discord
 from discord.ext import commands
 from sqlalchemy.ext import asyncio as sa_asyncio
-# Future Proofing for possible future use of asyncio
 
 from tickets_plus import cogs
 from tickets_plus.database import layer, statvars
