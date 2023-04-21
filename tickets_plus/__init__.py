@@ -38,6 +38,7 @@ import sqlalchemy
 from discord.ext import commands
 from sqlalchemy.ext import asyncio as sa_asyncio
 from tornado import web
+
 # Future Proofing for possible future use of asyncio
 
 from tickets_plus import bot
@@ -55,8 +56,9 @@ def sigint_handler(sign, frame):
 signal.signal(signal.SIGINT, sigint_handler)
 
 
-async def start_bot(stat_data: statvars.MiniConfig = statvars.MiniConfig()
-                    ) -> None:  # shush deepsource # skipcq: FLK-E124
+async def start_bot(
+    stat_data: statvars.MiniConfig = statvars.MiniConfig(),
+) -> None:  # shush deepsource # skipcq: FLK-E124
     """Sets up the bot and starts it. Coroutine.
 
     This function uses the exitsting .json files to set up the bot.
@@ -73,8 +75,8 @@ async def start_bot(stat_data: statvars.MiniConfig = statvars.MiniConfig()
         # Set up logging
         dt_fmr = "%Y-%m-%d %H:%M:%S"
         statvars.HANDLER.setFormatter(
-            logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s",
-                              dt_fmr))
+            logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s", dt_fmr)
+        )
 
         # Set up bot logging
         logging.root.setLevel(logging.INFO)
@@ -120,9 +122,8 @@ async def start_bot(stat_data: statvars.MiniConfig = statvars.MiniConfig()
                 pool_size=10,
                 max_overflow=-1,
                 pool_recycle=600,
-                connect_args={"server_settings": {
-                    "jit": "off"
-                }})
+                connect_args={"server_settings": {"jit": "off"}},
+            )
         else:
             engine = sa_asyncio.create_async_engine(
                 stat_data.get_url(),
@@ -133,8 +134,8 @@ async def start_bot(stat_data: statvars.MiniConfig = statvars.MiniConfig()
         logging.info("Engine created. Ensuring tables...")
         async with engine.begin() as conn:
             await conn.execute(
-                sqlalchemy.schema.CreateSchema("tickets_plus",
-                                               if_not_exists=True))
+                sqlalchemy.schema.CreateSchema("tickets_plus", if_not_exists=True)
+            )
             await conn.run_sync(models.Base.metadata.create_all)
             await conn.commit()
         logging.info("Tables ensured. Starting bot...")
@@ -152,8 +153,9 @@ async def start_bot(stat_data: statvars.MiniConfig = statvars.MiniConfig()
             intents=statvars.INTENTS,
             command_prefix=commands.when_mentioned,
             status=discord.Status.online,
-            activity=discord.Activity(type=discord.ActivityType.playing,
-                                      name="with tickets"),
+            activity=discord.Activity(
+                type=discord.ActivityType.playing, name="with tickets"
+            ),
         )
     # pylint: disable=broad-exception-caught # skipcq: PYL-W0718
     except Exception as exc:
