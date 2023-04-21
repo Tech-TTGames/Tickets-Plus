@@ -160,7 +160,8 @@ class Events(commands.Cog, name="Events"):
             message: The message to check for links
         """
         alpha = re.search(
-            r"https:\/\/(?:canary\.)?discord\.com\/channels\/(?P<srv>\d*)\/(?P<cha>\d*)\/(?P<msg>\d*)",  # skipcq: FLK-E501 # pylint: disable=line-too-long
+            # skipcq: FLK-E501 # pylint: disable=line-too-long
+            r"https:\/\/(?:canary\.)?discord\.com\/channels\/(?P<srv>\d*)\/(?P<cha>\d*)\/(?P<msg>\d*)",
             message.content,
         )
         if alpha:
@@ -181,7 +182,8 @@ class Events(commands.Cog, name="Events"):
                 if not got_msg.content and got_msg.embeds:
                     discovered_result = got_msg.embeds[0]
                     discovered_result.set_footer(text="[EMBED CAPTURED] Sent in"
-                                                 f" {chan.name}"  # type: ignore
+                                                 # type: ignore
+                                                 f" {chan.name}"
                                                  f" at {time}")
                 else:
                     discovered_result = discord.Embed(
