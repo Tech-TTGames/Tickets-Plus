@@ -31,7 +31,7 @@ Typical usage example:
 
 import datetime
 import types
-from typing import Sequence, Tuple, Type, Any
+from typing import Any, Sequence, Tuple, Type
 
 import discord
 from discord import utils
