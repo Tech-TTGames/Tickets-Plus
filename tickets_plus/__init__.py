@@ -36,6 +36,7 @@ from tickets_plus import bot
 from tickets_plus.api import routes
 from tickets_plus.database import models
 from tickets_plus.database import statvars
+
 # License: EPL-2.0
 # SPDX-License-Identifier: EPL-2.0
 # Copyright (c) 2021-present The Tickets+ Contributors
@@ -45,7 +46,6 @@ from tickets_plus.database import statvars
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
 
 # Future Proofing for possible future use of asyncio
-
 
 
 # pylint: disable=unused-argument
@@ -77,8 +77,8 @@ async def start_bot(
         # Set up logging
         dt_fmr = "%Y-%m-%d %H:%M:%S"
         statvars.HANDLER.setFormatter(
-            logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s", dt_fmr)
-        )
+            logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s",
+                              dt_fmr))
 
         # Set up bot logging
         logging.root.setLevel(logging.INFO)
@@ -124,7 +124,9 @@ async def start_bot(
                 pool_size=10,
                 max_overflow=-1,
                 pool_recycle=600,
-                connect_args={"server_settings": {"jit": "off"}},
+                connect_args={"server_settings": {
+                    "jit": "off"
+                }},
             )
         else:
             engine = sa_asyncio.create_async_engine(
@@ -136,8 +138,8 @@ async def start_bot(
         logging.info("Engine created. Ensuring tables...")
         async with engine.begin() as conn:
             await conn.execute(
-                sqlalchemy.schema.CreateSchema("tickets_plus", if_not_exists=True)
-            )
+                sqlalchemy.schema.CreateSchema("tickets_plus",
+                                               if_not_exists=True))
             await conn.run_sync(models.Base.metadata.create_all)
             await conn.commit()
         logging.info("Tables ensured. Starting bot...")
@@ -155,9 +157,8 @@ async def start_bot(
             intents=statvars.INTENTS,
             command_prefix=commands.when_mentioned,
             status=discord.Status.online,
-            activity=discord.Activity(
-                type=discord.ActivityType.playing, name="with tickets"
-            ),
+            activity=discord.Activity(type=discord.ActivityType.playing,
+                                      name="with tickets"),
         )
     # pylint: disable=broad-exception-caught # skipcq: PYL-W0718
     except Exception as exc:
