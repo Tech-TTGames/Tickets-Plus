@@ -8,5 +8,6 @@ labels:
   - "Priority: 3"
 
 restylers:
+  - "*"
   - yapf:
       arguments: ["--style pyproject.toml"]
