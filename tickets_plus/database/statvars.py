@@ -159,17 +159,15 @@ class Config:
     # Also I'm not going to update the docstrings for this class to the google-style ones.
     # I'm just going to leave them as they are.
 
-    def __init__(
-        self, bot: commands.Bot | Literal["offline"], legacy: bool = False
-    ) -> None:
+    def __init__(self,
+                 bot: commands.Bot | Literal["offline"],
+                 legacy: bool = False) -> None:
         self._file = pathlib.Path(PROG_DIR, "config.json")
         with open(self._file, encoding="utf-8", mode="r") as config_f:
             self._config: dict = json.load(config_f)
         if not legacy:
-            logging.warning(
-                "Config is deprecated and read-only."
-                " Use OnlineConfig and MiniConfig instead."
-            )
+            logging.warning("Config is deprecated and read-only."
+                            " Use OnlineConfig and MiniConfig instead.")
         self._bot = bot
 
     def cnfg(self) -> dict:
@@ -220,8 +218,7 @@ class Config:
     def open_msg(self) -> string.Template:
         """Returns the message sent when a ticket is opened"""
         return string.Template(
-            self._config.get("open_msg", "Staff notes for Ticket $channel.")
-        )
+            self._config.get("open_msg", "Staff notes for Ticket $channel."))
 
     @property
     def staff_team(self) -> str:
