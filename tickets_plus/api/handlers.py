@@ -3,11 +3,14 @@
 This module contains the handlers for the application interface.
 As it stands, these are not for use by the end user, but rather
 can be used by the main bot to deliver ticket data to our app.
+Not to be used directly, but rather through the routes module.
 
 Typical usage example:
+    ```py
     from tickets_plus.api import handlers
 
-    # TODO: Add usage example.
+    ...
+    ```
 """
 # License: EPL-2.0
 # SPDX-License-Identifier: EPL-2.0

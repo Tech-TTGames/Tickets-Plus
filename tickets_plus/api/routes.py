@@ -11,6 +11,7 @@ Typical usage example:
 
     bot_instance = bot.TicketsPlusBot(...)
     app = routes.make_app(bot_instance)
+    app.listen(443, ssl_options=...)
     ```
 """
 # License: EPL-2.0
