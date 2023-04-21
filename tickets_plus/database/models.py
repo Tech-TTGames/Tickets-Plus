@@ -171,6 +171,10 @@ class Guild(Base):
         default=False,
         nullable=False,
         comment="Whether to strip comsup roles when applying a helping_block")
+    integrated: orm.Mapped[bool] = orm.mapped_column(
+        default=False,
+        nullable=False,
+        comment="Whether the bot is integrated with the main bot")
 
     # Relationships
     ticket_bots: orm.Mapped[list["TicketBot"]] = orm.relationship(
@@ -346,6 +350,11 @@ class Ticket(Base):
         sqlalchemy.ForeignKey("general_configs.guild_id"),
         nullable=False,
         comment="Unique Guild ID of parent guild",
+    )
+    user_id: orm.Mapped[int] = orm.mapped_column(
+        sqlalchemy.BigInteger(),
+        nullable=True,
+        comment="Unique discord-provided user ID",
     )
     date_created: orm.Mapped[datetime.datetime] = orm.mapped_column(
         sqlalchemy.DateTime(),
