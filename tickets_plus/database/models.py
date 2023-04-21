@@ -346,6 +346,7 @@ class Ticket(Base):
     Attributes:
         channel_id: The unique discord-provided channel ID.
         guild_id: The unique discord-provided guild ID.
+        user_id: The unique discord-provided user ID.
         date_created: The date the ticket was created.
         last_response: The date of the last response in the ticket.
         staff_note_thread: The unique discord-provided ID of the note thread.
