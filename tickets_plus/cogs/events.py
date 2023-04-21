@@ -140,6 +140,8 @@ class Events(commands.Cog, name="Events"):
         descr = (f"Ticket {channel.name}\n"
                  "Opened at "
                  f"<t:{int(channel.created_at.timestamp())}:f>")
+        if user:
+            descr += f"\nOpened by {user.mention}"
         if guild.first_autoclose:
             # skipcq: FLK-E501 # pylint: disable=line-too-long
             descr += f"\nCloses <t:{int((channel.created_at + datetime.timedelta(minutes=guild.first_autoclose)).timestamp())}:R>"
@@ -211,6 +213,8 @@ class Events(commands.Cog, name="Events"):
             guild: The guild the ticket is in.
         """
         if ticket.anonymous:
+            if ticket.user_id == message.author.id:
+                return
             staff = False
             staff_roles = await cnfg.get_all_staff_roles(guild.guild_id)
             for role in staff_roles:

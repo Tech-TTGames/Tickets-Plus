@@ -369,7 +369,7 @@ class Ticket(Base):
         nullable=False,
         comment="Unique Guild ID of parent guild",
     )
-    user_id: orm.Mapped[int] = orm.mapped_column(
+    user_id: orm.Mapped[int | None] = orm.mapped_column(
         sqlalchemy.BigInteger(),
         nullable=True,
         comment="Unique discord-provided user ID",
@@ -386,7 +386,7 @@ class Ticket(Base):
         comment="Date the ticket was last responded to",
         server_default=UTCnow(),
     )
-    staff_note_thread: orm.Mapped[int] = orm.mapped_column(
+    staff_note_thread: orm.Mapped[int | None] = orm.mapped_column(
         sqlalchemy.BigInteger(),
         nullable=True,
         comment="Unique discord-provided channel ID of the staff note thread",
@@ -451,31 +451,31 @@ class Tag(Base):
         nullable=False,
         comment="The 'key' of the tag",
         primary_key=True)
-    title: orm.Mapped[str] = orm.mapped_column(sqlalchemy.String(256),
+    title: orm.Mapped[str | None] = orm.mapped_column(sqlalchemy.String(256),
                                                nullable=True,
                                                comment="The title of the embed")
     description: orm.Mapped[str] = orm.mapped_column(
         sqlalchemy.String(4096),
         nullable=False,
         comment="The description of the embed")
-    url: orm.Mapped[str] = orm.mapped_column(sqlalchemy.String(256),
+    url: orm.Mapped[str | None] = orm.mapped_column(sqlalchemy.String(256),
                                              nullable=True,
                                              comment="The url of the embed")
-    color: orm.Mapped[int] = orm.mapped_column(sqlalchemy.Integer(),
+    color: orm.Mapped[int | None] = orm.mapped_column(sqlalchemy.Integer(),
                                                nullable=True,
                                                comment="The color of the embed")
-    footer: orm.Mapped[str] = orm.mapped_column(
+    footer: orm.Mapped[str | None] = orm.mapped_column(
         sqlalchemy.String(2048),
         nullable=True,
         comment="The footer of the embed")
     image: orm.Mapped[str] = orm.mapped_column(sqlalchemy.String(256),
                                                nullable=True,
                                                comment="The image of the embed")
-    thumbnail: orm.Mapped[str] = orm.mapped_column(
+    thumbnail: orm.Mapped[str | None] = orm.mapped_column(
         sqlalchemy.String(256),
         nullable=True,
         comment="The thumbnail of the embed")
-    author: orm.Mapped[str] = orm.mapped_column(
+    author: orm.Mapped[str | None] = orm.mapped_column(
         sqlalchemy.String(256),
         nullable=True,
         comment="The author of the embed")
