@@ -5,10 +5,10 @@ Revises: 8c713ab3df0b
 Create Date: 2023-04-21 13:27:35.953542+00:00
 
 """
-# pylint: skip-file
-from alembic import op
 import sqlalchemy as sa
 
+# pylint: skip-file
+from alembic import op
 
 # revision identifiers, used by Alembic.
 revision = "8c4e4c4f3661"
