@@ -14,7 +14,7 @@ restylers:
       enabled: false
   - isort:
       enabled: true
-  - jdt:
+  - prettier-json:
       enabled: true
   - "*"
   - yapf:
