@@ -20,6 +20,8 @@ Typical usage example:
     loop.run_until_complete(tickets_plus.start_bot(config))
     ```
 """
+import logging
+import os
 # License: EPL-2.0
 # SPDX-License-Identifier: EPL-2.0
 # Copyright (c) 2021-present The Tickets+ Contributors
@@ -28,10 +30,8 @@ Typical usage example:
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
 import signal
-import sys
 import ssl
-import logging
-import os
+import sys
 
 import discord
 import sqlalchemy
@@ -39,11 +39,12 @@ from discord.ext import commands
 from sqlalchemy.ext import asyncio as sa_asyncio
 from tornado import web
 
-# Future Proofing for possible future use of asyncio
-
 from tickets_plus import bot
 from tickets_plus.api import routes
 from tickets_plus.database import models, statvars
+
+# Future Proofing for possible future use of asyncio
+
 
 
 # pylint: disable=unused-argument
