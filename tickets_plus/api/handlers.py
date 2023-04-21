@@ -17,11 +17,14 @@ Typical usage example:
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
 import json
+
 import discord
 from tornado import web
+from sqlalchemy import orm
 
 from tickets_plus import bot
 from tickets_plus.cogs import events
+from tickets_plus.database import models
 
 
 class BotHandler(web.RequestHandler):
@@ -54,22 +57,35 @@ class BotHandler(web.RequestHandler):
 
         Check if the request is authorized.
         """
+        if self.request.body == b"":
+            self.set_status(400, "No data provided.")
+            self.write({"error": "No data provided."})
+            self.finish()
+            return
         if self.request.headers.get("ticketsplus-api-auth") is None:
             self.set_status(401, "No authentication token provided.")
+            self.write({"error": "No authentication token provided."})
             self.finish()
             return
         if self.request.headers.get(
                 "ticketsplus-api-auth") != self._bt.stat_confg.getitem(
                     "auth_token"):
             self.set_status(401, "Invalid authentication token.")
+            self.write({"error": "Invalid authentication token."})
             self.finish()
             return
-        if self.request.headers["Content-Type"] != "application/json":
-            self.set_status(400, "Invalid content type.")
+        if self.request.headers.get("Content-Type") is None:
+            self.set_status(400, "No Content-Type header provided.")
+            self.write({"error": "No Content-Type header provided."})
             self.finish()
             return
-        self.args = json.loads(self.request.body.decode("utf-8"))
-        await self._bt.wait_until_ready()
+        if self.request.headers.get("Content-Type") == "application/json":
+            self.args = json.loads(self.request.body.decode("utf-8"))
+            await self._bt.wait_until_ready()
+            return
+        self.set_status(400, "Invalid Content-Type header provided.")
+        self.write({"error": "Invalid Content-Type header provided."})
+        self.finish()
 
 
 class TicketHandler(BotHandler):
@@ -93,22 +109,41 @@ class TicketHandler(BotHandler):
             ticket_channel_id (str): The ID of the channel
         """
         async with self._bt.get_connection() as db:
-            guild = self._bt.get_guild(int(self.args["guild_id"]))
+            try:
+                guild_id = int(self.args["guild_id"])
+                user_id = int(self.args["user_id"])
+                ticket_channel_id = int(self.args["ticket_channel_id"])
+            except (ValueError, KeyError):
+                self.set_status(400, "Missing or invalid parameters.")
+                self.write({"error": "Missing or invalid parameters."})
+                self.finish()
+                return
+            guild = self._bt.get_guild(guild_id)
             if guild is None:
                 self.set_status(404, "Guild not found.")
+                self.write({"error": "Guild not found."})
                 self.finish()
                 return
-            gld = await db.get_guild(guild.id)
+            gld = await db.get_guild(
+                guild_id,
+                (
+                    orm.selectinload(models.Guild.observers_roles),
+                    orm.selectinload(models.Guild.community_roles),
+                    orm.selectinload(models.Guild.community_pings),
+                ),
+            )
             if not gld.integrated:
                 self.set_status(409, "Guild not integrated.")
+                self.write({"error": "Guild not integrated."})
                 self.finish()
                 return
-            channel = guild.get_channel(int(self.args["ticket_channel_id"]))
+            channel = guild.get_channel(ticket_channel_id)
             if channel is None or not isinstance(channel, discord.TextChannel):
                 self.set_status(404, "Channel not found.")
+                self.write({"error": "Channel not found."})
                 self.finish()
                 return
-            user = self._bt.get_user(int(self.args["user_id"]))
+            user = self._bt.get_user(user_id)
             await events.Events.ticket_creation(self, db, (guild, gld), channel,
                                                 user)
             self.set_status(200, "OK")
@@ -127,20 +162,28 @@ class OverrideHandler(BotHandler):
         Tries to meet the parameters specified in the attempt.
 
         Args:
-            guild (str): The ID of the guild.
-            channel (str): The ID of the channel.
+            guild_id (str): The ID of the guild.
+            channel_id (str): The ID of the channel.
             message (str): The message to send.
         """
-        guild = self._bt.get_guild(int(self.args["guild"]))
+        try:
+            guild_id = int(self.args["guild_id"])
+            channel_id = int(self.args["channel_id"])
+            message = self.args["message"]
+        except (ValueError, KeyError):
+            self.set_status(400, "Missing or invalid parameters.")
+            self.finish()
+            return
+        guild = self._bt.get_guild(guild_id)
         if guild is None:
             self.set_status(404, "Guild not found.")
             self.finish()
             return
-        channel = guild.get_channel(int(self.args["channel"]))
+        channel = guild.get_channel(channel_id)
         if channel is None or not isinstance(channel, discord.TextChannel):
             self.set_status(404, "Channel not found.")
             self.finish()
             return
-        await channel.send(self.args["message"])
+        await channel.send(message)
         self.set_status(200, "OK")
         self.finish()

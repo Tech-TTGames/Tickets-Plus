@@ -29,6 +29,7 @@ Typical usage example:
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
 import signal
 import sys
+import ssl
 import logging
 import os
 
@@ -36,9 +37,11 @@ import discord
 import sqlalchemy
 from discord.ext import commands
 from sqlalchemy.ext import asyncio as sa_asyncio
+from tornado import web
 # Future Proofing for possible future use of asyncio
 
 from tickets_plus import bot
+from tickets_plus.api import routes
 from tickets_plus.database import models, statvars
 
 
@@ -160,6 +163,25 @@ async def start_bot(stat_data: statvars.MiniConfig = statvars.MiniConfig()
         print("Exiting...")
         return
     print("Bot: OK")
+
+    # Tornado API setup
+    try:
+        api = routes.make_app(bot_instance)
+        tls_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+        tls_ctx.load_cert_chain(
+            stat_data.getitem("ssl_cert"),
+            statvars.Secret().ssl_key,
+        )
+        api.listen(443, protocol="https", ssl_options=tls_ctx)
+    # pylint: disable=broad-exception-caught # skipcq: PYL-W0718
+    except Exception as exc:
+        logging.exception("API setup failed. Aborting startup.")
+        print("API: FAILED")
+        print(f"Error: {exc}")
+        print("Aborting...")
+        return
+    print("API: OK")
+
     try:
         print("ALL OK. Starting bot...")
         await bot_instance.start(statvars.Secret().token)
