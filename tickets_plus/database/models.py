@@ -12,6 +12,7 @@ Typical usage example:
     models.Base.metadata.create_all(...)
     ```
 """
+import datetime
 # License: EPL-2.0
 # SPDX-License-Identifier: EPL-2.0
 # Copyright (c) 2021-present The Tickets+ Contributors
@@ -21,7 +22,6 @@ Typical usage example:
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
 from typing import Type
 
-import datetime
 import sqlalchemy
 from sqlalchemy import orm, sql
 from sqlalchemy.ext import compiler as cmplr

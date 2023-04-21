@@ -30,7 +30,7 @@ Typical usage example:
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
 import datetime
 import types
-from typing import Sequence, Tuple, Type, Any
+from typing import Any, Sequence, Tuple, Type
 
 import discord
 from discord import utils
@@ -39,9 +39,10 @@ from sqlalchemy import sql
 from sqlalchemy.ext import asyncio as sa_asyncio
 from sqlalchemy.sql import base
 
+from tickets_plus.database import models
+
 # Future Proofing for possible future use of asyncio
 
-from tickets_plus.database import models
 
 
 class OnlineConfig:
