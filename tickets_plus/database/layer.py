@@ -38,6 +38,7 @@ from discord.ext import commands
 from sqlalchemy import sql
 from sqlalchemy.ext import asyncio as sa_asyncio
 from sqlalchemy.sql import base
+
 # Future Proofing for possible future use of asyncio
 
 from tickets_plus.database import models
@@ -51,8 +52,9 @@ class OnlineConfig:
     Any and all commits have to be done manually.
     """
 
-    def __init__(self, bot_instance: commands.AutoShardedBot,
-                 session: sa_asyncio.AsyncSession) -> None:
+    def __init__(
+        self, bot_instance: commands.AutoShardedBot, session: sa_asyncio.AsyncSession
+    ) -> None:
         """Initialises the database session layer.
 
         Wraps the provided session in a async context manager.
@@ -75,9 +77,12 @@ class OnlineConfig:
         """
         return self
 
-    async def __aexit__(self, exc_type: Type[BaseException] | None,
-                        exc_value: BaseException | None,
-                        traceback: types.TracebackType | None) -> None:
+    async def __aexit__(
+        self,
+        exc_type: Type[BaseException] | None,
+        exc_value: BaseException | None,
+        traceback: types.TracebackType | None,
+    ) -> None:
         """Exit the async with statement.
 
         This method is called when exiting the async with statement.
@@ -132,9 +137,7 @@ class OnlineConfig:
         await self._session.delete(obj)
 
     async def get_guild(
-            self,
-            guild_id: int,
-            options: Sequence[base.ExecutableOption] | None = None
+        self, guild_id: int, options: Sequence[base.ExecutableOption] | None = None
     ) -> models.Guild:
         """Get or create a guild from the database.
 
@@ -158,21 +161,21 @@ class OnlineConfig:
         """
         if options:
             guild_conf = await self._session.scalar(
-                sql.select(models.Guild).where(
-                    models.Guild.guild_id == guild_id).options(*options))
+                sql.select(models.Guild)
+                .where(models.Guild.guild_id == guild_id)
+                .options(*options)
+            )
         else:
             guild_conf = await self._session.scalar(
-                sql.select(
-                    models.Guild).where(models.Guild.guild_id == guild_id))
+                sql.select(models.Guild).where(models.Guild.guild_id == guild_id)
+            )
         if guild_conf is None:
             guild_conf = models.Guild(guild_id=guild_id)
             self._session.add(guild_conf)
         return guild_conf
 
     async def get_user(
-            self,
-            user_id: int,
-            options: Sequence[base.ExecutableOption] | None = None
+        self, user_id: int, options: Sequence[base.ExecutableOption] | None = None
     ) -> models.User:
         """Get or create a user from the database.
 
@@ -196,11 +199,14 @@ class OnlineConfig:
         """
         if options:
             user = await self._session.scalar(
-                sql.select(models.User).where(
-                    models.User.user_id == user_id).options(*options))
+                sql.select(models.User)
+                .where(models.User.user_id == user_id)
+                .options(*options)
+            )
         else:
             user = await self._session.scalar(
-                sql.select(models.User).where(models.User.user_id == user_id))
+                sql.select(models.User).where(models.User.user_id == user_id)
+            )
         if user is None:
             user = models.User(user_id=user_id)
             self._session.add(user)
@@ -227,8 +233,10 @@ class OnlineConfig:
         guild = await self.get_guild(guild_id)
         user = await self.get_user(user_id)
         member_conf = await self._session.scalar(
-            sql.select(models.Member).where(models.Member.user == user,
-                                            models.Member.guild == guild))
+            sql.select(models.Member).where(
+                models.Member.user == user, models.Member.guild == guild
+            )
+        )
         if member_conf is None:
             member_conf = models.Member(user=user, guild=guild)
             self._session.add(member_conf)
@@ -245,11 +253,13 @@ class OnlineConfig:
         """
         time = datetime.datetime.utcnow()
         expr_members = await self._session.scalars(
-            sql.select(models.Member).where(models.Member.status_till <= time))
+            sql.select(models.Member).where(models.Member.status_till <= time)
+        )
         return expr_members.all()
 
-    async def get_ticket_bot(self, user_id: int,
-                             guild_id: int) -> Tuple[bool, models.TicketBot]:
+    async def get_ticket_bot(
+        self, user_id: int, guild_id: int
+    ) -> Tuple[bool, models.TicketBot]:
         """Get or create a ticket bot from the database.
 
         Fetches a ticket bot from the database.
@@ -268,8 +278,9 @@ class OnlineConfig:
         guild = await self.get_guild(guild_id)
         ticket_user = await self._session.scalar(
             sql.select(models.TicketBot).where(
-                models.TicketBot.user_id == user_id,
-                models.TicketBot.guild == guild))
+                models.TicketBot.user_id == user_id, models.TicketBot.guild == guild
+            )
+        )
         new = False
         if ticket_user is None:
             new = True
@@ -296,17 +307,20 @@ class OnlineConfig:
         ticket_user = await self._session.scalar(
             sql.select(models.TicketBot).where(
                 models.TicketBot.user_id == user_id,
-                models.TicketBot.guild_id == guild_id))
+                models.TicketBot.guild_id == guild_id,
+            )
+        )
         return ticket_user is not None
 
     async def get_ticket_type(
-            self,
-            guild_id: int,
-            name: str,
-            comping: bool = False,
-            comaccs: bool = False,
-            strpbuttns: bool = False,
-            ignore: bool = False) -> Tuple[bool, models.TicketType]:
+        self,
+        guild_id: int,
+        name: str,
+        comping: bool = False,
+        comaccs: bool = False,
+        strpbuttns: bool = False,
+        ignore: bool = False,
+    ) -> Tuple[bool, models.TicketType]:
         """Get or create a ticket type from the database.
 
         Fetches a ticket type from the database.
@@ -329,22 +343,24 @@ class OnlineConfig:
         guild = await self.get_guild(guild_id)
         ticket_type = await self._session.scalar(
             sql.select(models.TicketType).where(
-                models.TicketType.guild == guild,
-                models.TicketType.prefix == name))
+                models.TicketType.guild == guild, models.TicketType.prefix == name
+            )
+        )
         new = False
         if ticket_type is None:
             new = True
-            ticket_type = models.TicketType(guild=guild,
-                                            prefix=name,
-                                            comping=comping,
-                                            comaccs=comaccs,
-                                            strpbuttns=strpbuttns,
-                                            ignore=ignore)
+            ticket_type = models.TicketType(
+                guild=guild,
+                prefix=name,
+                comping=comping,
+                comaccs=comaccs,
+                strpbuttns=strpbuttns,
+                ignore=ignore,
+            )
             self._session.add(ticket_type)
         return new, ticket_type
 
-    async def get_ticket_types(self,
-                               guild_id: int) -> Sequence[models.TicketType]:
+    async def get_ticket_types(self, guild_id: int) -> Sequence[models.TicketType]:
         """Get ticket types from the database.
 
         Fetches all ticket types from the database.
@@ -358,8 +374,8 @@ class OnlineConfig:
         """
         guild = await self.get_guild(guild_id)
         ticket_types = await self._session.scalars(
-            sql.select(
-                models.TicketType).where(models.TicketType.guild == guild))
+            sql.select(models.TicketType).where(models.TicketType.guild == guild)
+        )
         return ticket_types.all()
 
     async def fetch_ticket(self, channel_id: int) -> models.Ticket | None:
@@ -380,11 +396,12 @@ class OnlineConfig:
         return ticket
 
     async def get_ticket(
-            self,
-            channel_id: int,
-            guild_id: int,
-            user_id: int | None = None,
-            staff_note: int | None = None) -> Tuple[bool, models.Ticket]:
+        self,
+        channel_id: int,
+        guild_id: int,
+        user_id: int | None = None,
+        staff_note: int | None = None,
+    ) -> Tuple[bool, models.Ticket]:
         """Get a or create ticket from the database.
 
         Fetches a ticket from the database.
@@ -409,15 +426,16 @@ class OnlineConfig:
         new = False
         if ticket is None:
             new = True
-            ticket = models.Ticket(channel_id=channel_id,
-                                   guild=guild,
-                                   user_id=user_id,
-                                   staff_note_thread=staff_note)
+            ticket = models.Ticket(
+                channel_id=channel_id,
+                guild=guild,
+                user_id=user_id,
+                staff_note_thread=staff_note,
+            )
             self._session.add(ticket)
         return new, ticket
 
-    async def fetch_tag(self, guild_id: int,
-                        tag: str) -> discord.Embed | str | None:
+    async def fetch_tag(self, guild_id: int, tag: str) -> discord.Embed | str | None:
         """Fetch a tag from the database.
 
         Attempts to fetch a tag from the database.
@@ -434,8 +452,10 @@ class OnlineConfig:
         """
         guild = await self.get_guild(guild_id)
         embed = await self._session.scalar(
-            sql.select(models.Tag).where(models.Tag.guild == guild,
-                                         models.Tag.tag_name == tag))
+            sql.select(models.Tag).where(
+                models.Tag.guild == guild, models.Tag.tag_name == tag
+            )
+        )
         if embed is None:
             return None
         if embed.title:
@@ -477,17 +497,18 @@ class OnlineConfig:
         """
         guild = await self.get_guild(guild_id)
         tag = await self._session.scalar(
-            sql.select(models.Tag).where(models.Tag.guild == guild,
-                                         models.Tag.tag_name == tag_name))
+            sql.select(models.Tag).where(
+                models.Tag.guild == guild, models.Tag.tag_name == tag_name
+            )
+        )
         new = False
         if tag is None:
             new = True
             if embed_args is None:
                 embed_args = {}
-            tag = models.Tag(guild=guild,
-                             tag_name=tag_name,
-                             description=description,
-                             **embed_args)
+            tag = models.Tag(
+                guild=guild, tag_name=tag_name, description=description, **embed_args
+            )
             self._session.add(tag)
         return new, tag
 
@@ -505,11 +526,13 @@ class OnlineConfig:
         """
         guild = await self.get_guild(guild_id)
         tags = await self._session.scalars(
-            sql.select(models.Tag).where(models.Tag.guild == guild))
+            sql.select(models.Tag).where(models.Tag.guild == guild)
+        )
         return tags.all()
 
-    async def get_staff_role(self, role_id: int,
-                             guild_id: int) -> Tuple[bool, models.StaffRole]:
+    async def get_staff_role(
+        self, role_id: int, guild_id: int
+    ) -> Tuple[bool, models.StaffRole]:
         """Get or create the staff role from the database.
 
         Fetches a staff role from the database.
@@ -534,8 +557,7 @@ class OnlineConfig:
             self._session.add(staff_role)
         return new, staff_role
 
-    async def get_all_staff_roles(self,
-                                  guild_id: int) -> Sequence[models.StaffRole]:
+    async def get_all_staff_roles(self, guild_id: int) -> Sequence[models.StaffRole]:
         """Get all staff roles from the database.
 
         Fetches all staff roles from the database.
@@ -550,7 +572,8 @@ class OnlineConfig:
         """
         guild = await self.get_guild(guild_id)
         staff_roles = await self._session.scalars(
-            sql.select(models.StaffRole).where(models.StaffRole.guild == guild))
+            sql.select(models.StaffRole).where(models.StaffRole.guild == guild)
+        )
         return staff_roles.all()
 
     async def check_staff_role(self, role_id: int) -> bool:
@@ -570,8 +593,8 @@ class OnlineConfig:
         return staff_role is not None
 
     async def get_observers_role(
-            self, role_id: int,
-            guild_id: int) -> Tuple[bool, models.ObserversRole]:
+        self, role_id: int, guild_id: int
+    ) -> Tuple[bool, models.ObserversRole]:
         """Get or create the observers role from the database.
 
         Fetches a observers role from the database.
@@ -597,7 +620,8 @@ class OnlineConfig:
         return new, observers_role
 
     async def get_all_observers_roles(
-            self, guild_id: int) -> Sequence[models.ObserversRole]:
+        self, guild_id: int
+    ) -> Sequence[models.ObserversRole]:
         """Get all observers roles from the database.
 
         Fetches all observers roles from the database.
@@ -612,8 +636,7 @@ class OnlineConfig:
         """
         guild = await self.get_guild(guild_id)
         observers_roles = await self._session.scalars(
-            sql.select(
-                models.ObserversRole).where(models.ObserversRole.guild == guild)
+            sql.select(models.ObserversRole).where(models.ObserversRole.guild == guild)
         )
         return observers_roles.all()
 
@@ -634,8 +657,8 @@ class OnlineConfig:
         return observers_role is not None
 
     async def get_community_role(
-            self, role_id: int,
-            guild_id: int) -> Tuple[bool, models.CommunityRole]:
+        self, role_id: int, guild_id: int
+    ) -> Tuple[bool, models.CommunityRole]:
         """Get or create the community role from the database.
 
         Fetches a community role from the database.
@@ -661,7 +684,8 @@ class OnlineConfig:
         return new, community_role
 
     async def get_all_community_roles(
-            self, guild_id: int) -> Sequence[models.CommunityRole]:
+        self, guild_id: int
+    ) -> Sequence[models.CommunityRole]:
         """Get all community roles from the database.
 
         Fetches all community roles from the database.
@@ -676,8 +700,7 @@ class OnlineConfig:
         """
         guild = await self.get_guild(guild_id)
         community_roles = await self._session.scalars(
-            sql.select(
-                models.CommunityRole).where(models.CommunityRole.guild == guild)
+            sql.select(models.CommunityRole).where(models.CommunityRole.guild == guild)
         )
         return community_roles.all()
 
@@ -698,8 +721,8 @@ class OnlineConfig:
         return community_role is not None
 
     async def get_community_ping(
-            self, role_id: int,
-            guild_id: int) -> Tuple[bool, models.CommunityPing]:
+        self, role_id: int, guild_id: int
+    ) -> Tuple[bool, models.CommunityPing]:
         """Get or create the community ping from the database.
 
         Fetches a community ping from the database.
@@ -725,7 +748,8 @@ class OnlineConfig:
         return new, community_ping
 
     async def get_all_community_pings(
-            self, guild_id: int) -> Sequence[models.CommunityPing]:
+        self, guild_id: int
+    ) -> Sequence[models.CommunityPing]:
         """Get all community pings from the database.
 
         Fetches all community pings from the database.
@@ -740,8 +764,7 @@ class OnlineConfig:
         """
         guild = await self.get_guild(guild_id)
         community_pings = await self._session.scalars(
-            sql.select(
-                models.CommunityPing).where(models.CommunityPing.guild == guild)
+            sql.select(models.CommunityPing).where(models.CommunityPing.guild == guild)
         )
         return community_pings.all()
 
