@@ -1,4 +1,4 @@
-enabled: tr
+enabled: true
 also_exclude:
   - "alembic/**/*"
 
