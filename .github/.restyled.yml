@@ -9,4 +9,4 @@ labels:
 
 restylers:
   - yapf:
-      arguments: ["-i", "--style pyproject.toml"]
+      arguments: ["--style pyproject.toml"]
