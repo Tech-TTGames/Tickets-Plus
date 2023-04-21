@@ -30,7 +30,10 @@ Typical usage example:
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
 import datetime
 import types
-from typing import Any, Sequence, Tuple, Type
+from typing import Any
+from typing import Sequence
+from typing import Tuple
+from typing import Type
 
 import discord
 from discord import utils

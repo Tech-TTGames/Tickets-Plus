@@ -20,11 +20,11 @@ Typical usage example:
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
 import json
-import logging
 import logging.handlers
 import pathlib
 import string
-from typing import Any, Literal
+from typing import Any
+from typing import Literal
 
 import discord
 import sqlalchemy

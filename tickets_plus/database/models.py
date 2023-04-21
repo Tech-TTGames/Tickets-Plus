@@ -13,6 +13,12 @@ Typical usage example:
     ```
 """
 import datetime
+from typing import Type
+
+import sqlalchemy
+from sqlalchemy import orm
+from sqlalchemy import sql
+from sqlalchemy.ext import compiler as cmplr
 # License: EPL-2.0
 # SPDX-License-Identifier: EPL-2.0
 # Copyright (c) 2021-present The Tickets+ Contributors
@@ -20,11 +26,6 @@ import datetime
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
-from typing import Type
-
-import sqlalchemy
-from sqlalchemy import orm, sql
-from sqlalchemy.ext import compiler as cmplr
 
 _METADATA_OBJ = sqlalchemy.MetaData(schema="tickets_plus")
 """The metadata object for the database. Defines the schema."""

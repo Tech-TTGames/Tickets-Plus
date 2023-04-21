@@ -34,7 +34,8 @@ from sqlalchemy import orm
 
 from tickets_plus import bot
 from tickets_plus.api import handlers
-from tickets_plus.database import layer, models
+from tickets_plus.database import layer
+from tickets_plus.database import models
 
 
 class Events(commands.Cog, name="Events"):
