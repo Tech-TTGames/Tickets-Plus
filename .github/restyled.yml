@@ -9,13 +9,13 @@ labels:
 
 restylers:
   - jq:
-    enabled: false
+      enabled: false
   - reorder-python-imports:
-    enabled: false
+      enabled: false
   - isort:
-    enabled: true
+      enabled: true
   - jdt:
-    enabled: true
+      enabled: true
   - "*"
   - yapf:
       arguments: ["--style pyproject.toml"]
