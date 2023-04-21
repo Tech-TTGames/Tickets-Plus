@@ -1,0 +1,12 @@
+enabled: tr
+also_exclude:
+  - "alembic/**/*"
+
+request_review: author
+labels:
+  - "Type: Style"
+  - "Priority: 3"
+
+restylers:
+  - yapf:
+      arguments: ["-i", "--style pyproject.toml"]
