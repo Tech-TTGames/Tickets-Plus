@@ -30,7 +30,7 @@ import discord
 import sqlalchemy
 from discord.ext import commands
 
-VERSION = "v0.1.0.1b"
+VERSION = "v0.1.1.0"
 """The current version of the bot as a string.
 
 FORMAT:
@@ -81,12 +81,14 @@ class Secret:
             with open(self._file, encoding="utf-8", mode="r") as secret_f:
                 self.secrets = json.load(secret_f)
             self.token: str = self.secrets["token"]
+            self.ssl_key: str = self.secrets["ssl_key"]
         except FileNotFoundError:
             logging.warning("Running in dry-run mode.")
             self._file = pathlib.Path(PROG_DIR, "example_secret.json")
             with open(self._file, encoding="utf-8", mode="r") as secret_f:
                 self.secrets = json.load(secret_f)
             self.token: str = self.secrets["token"]
+            self.ssl_key: str = self.secrets["ssl_key"]
 
     def __repr__(self) -> str:
         return "[OBFUSCATED]"

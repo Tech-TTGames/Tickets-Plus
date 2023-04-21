@@ -13,5 +13,11 @@
     "dbpass": "bot",
     "info_dbpass": "The password for the database.",
     "dev_guild_id": 478114566509821953,
-    "dev_guild_id_info": "The id of a guild where you can use the override commands. This is required for the bot to work."
+    "dev_guild_id_info": "The id of a guild where you can use the override commands. This is required for the bot to work.",
+    "https_port": 443,
+    "https_port_info": "The port to run the https server on. This is required for the API to work.",
+    "ssl_cert": "/etc/letsencrypt/live/ticketsplus.xyz/fullchain.pem",
+    "ssl_cert_info": "The path to the ssl certificate. This is required for the API to work.",
+    "auth_token": "thequickbrownfoxjumpedoverthelazydog",
+    "auth_token_info": "The token to use for the API. Please set this to something else. This is required for the API to work."
 }
