@@ -22,13 +22,6 @@ Typical usage example:
 """
 import logging
 import os
-# License: EPL-2.0
-# SPDX-License-Identifier: EPL-2.0
-# Copyright (c) 2021-present The Tickets+ Contributors
-# This Source Code may also be made available under the following
-# Secondary Licenses when the conditions for such availability set forth
-# in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
-# If later approved by the Initial Contrubotor, GPL-3.0-or-later.
 import signal
 import ssl
 import sys
@@ -41,7 +34,15 @@ from tornado import web
 
 from tickets_plus import bot
 from tickets_plus.api import routes
-from tickets_plus.database import models, statvars
+from tickets_plus.database import models
+from tickets_plus.database import statvars
+# License: EPL-2.0
+# SPDX-License-Identifier: EPL-2.0
+# Copyright (c) 2021-present The Tickets+ Contributors
+# This Source Code may also be made available under the following
+# Secondary Licenses when the conditions for such availability set forth
+# in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
+# If later approved by the Initial Contrubotor, GPL-3.0-or-later.
 
 # Future Proofing for possible future use of asyncio
 
