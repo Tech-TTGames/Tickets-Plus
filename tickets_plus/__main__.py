@@ -18,7 +18,6 @@ Typical usage example:
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
 import asyncio
-import sys
 
 import tickets_plus
 from tickets_plus.database import statvars
@@ -32,8 +31,6 @@ def main():
     """
     print(f"Starting Tickets+ {statvars.VERSION}")
     cnfg = statvars.MiniConfig()
-    if (sys.platform == "win32" and "psycopg" in cnfg.getitem("dbtype")):
-        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     loop = asyncio.get_event_loop()
     # We don't need to pass the config to start_bot, but we do it anyway
     print("Entering event loop.")
