@@ -97,7 +97,8 @@ class Routines(commands.Cog):
         """Notifies users of their tickets closing soon.
 
         Running every 2 minutes and 30 seconds, this task checks if
-        any tickets are lacking responses, (time since last message above warning threshold)
+        any tickets are lacking responses,
+        (time since last message above warning threshold)
         and if so, sends a warning message to the user.
         """
         async with self._bt.get_connection() as conn:
@@ -116,7 +117,11 @@ class Routines(commands.Cog):
                     continue
                 appnd = "Please respond soon, or it will be closed."
                 if gld.any_autoclose:
-                    appnd = f"Please respond soon, or it will be closed <t:{int((ticket.last_response + gld.any_autoclose).timestamp())}:R>."
+                    appnd = (
+                        "Please respond soon, or it will be closed "
+                        # pylint: disable=line-too-long # skipcq: FLK-E501
+                        f"<t:{int((ticket.last_response + gld.any_autoclose).timestamp())}:R>."
+                    )
                 await actv_member.send(
                     f"Your ticket <#{ticket.channel_id}> in {actv_guild.name} is still open. {appnd}"
                 )

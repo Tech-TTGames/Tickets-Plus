@@ -5,6 +5,7 @@ Revises: 8c4e4c4f3661
 Create Date: 2023-04-23 11:26:40.065546+00:00
 
 """
+# pylint: skip-file
 from alembic import op
 import sqlalchemy as sa
 
