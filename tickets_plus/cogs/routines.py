@@ -122,9 +122,10 @@ class Routines(commands.Cog):
                         # pylint: disable=line-too-long # skipcq: FLK-E501
                         f"<t:{int((ticket.last_response + gld.any_autoclose).timestamp())}:R>."
                     )
-                await actv_member.send(
-                    f"Your ticket <#{ticket.channel_id}> in {actv_guild.name} is still open. {appnd}"
-                )
+                txt = (
+                    f"Your ticket <#{ticket.channel_id}> in {actv_guild.name} "
+                    f"is still open. {appnd}")
+                await actv_member.send(txt)
             await conn.commit()
 
     @notify_users.before_loop
