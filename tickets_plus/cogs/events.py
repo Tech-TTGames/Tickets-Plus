@@ -144,7 +144,7 @@ class Events(commands.Cog, name="Events"):
             descr += f"\nOpened by {user.mention}"
         if guild.first_autoclose:
             # skipcq: FLK-E501 # pylint: disable=line-too-long
-            descr += f"\nCloses <t:{int((channel.created_at + datetime.timedelta(minutes=guild.first_autoclose)).timestamp())}:R>"
+            descr += f"\nCloses <t:{int((channel.created_at + guild.first_autoclose).timestamp())}:R>"
             # skipcq: FLK-E501 # pylint: disable=line-too-long
             descr += "\nIf no one responds, the ticket will be closed automatically. Thank you for your patience!"
         await channel.edit(topic=descr,
@@ -183,8 +183,7 @@ class Events(commands.Cog, name="Events"):
                 if not got_msg.content and got_msg.embeds:
                     discovered_result = got_msg.embeds[0]
                     discovered_result.set_footer(text="[EMBED CAPTURED] Sent in"
-                                                 # type: ignore
-                                                 f" {chan.name}"
+                                                 f" {chan.name}"  # type: ignore
                                                  f" at {time}")
                 else:
                     discovered_result = discord.Embed(
@@ -259,14 +258,14 @@ class Events(commands.Cog, name="Events"):
                     crrnt = (
                         f"Ticket: {chan.name}\n"  # type: ignore
                         # skipcq: FLK-E501
-                        f"Closes: <t:{int((message.created_at + datetime.timedelta(minutes=guild.any_autoclose)).timestamp())}:R>"
+                        f"Closes: <t:{int((message.created_at + guild.any_autoclose).timestamp())}:R>"
                     )
                 else:
                     # pylint: disable=line-too-long
                     crrnt = re.sub(
                         r"<t:[0-9]*?:R>",
                         # skipcq: FLK-E501
-                        f"<t:{int((message.created_at + datetime.timedelta(minutes=guild.any_autoclose)).timestamp())}:R>",
+                        f"<t:{int((message.created_at + guild.any_autoclose).timestamp())}:R>",
                         crrnt)
                 await chan.edit(topic=crrnt)  # type: ignore
                 ticket.last_response = datetime.datetime.utcnow()

@@ -100,8 +100,9 @@ class Guild(Base):
             limited to 200 characters.
         staff_team_name: The name of the staff team
             defaults to "Staff Team" and is limited to 40 characters.
-        first_autoclose: The number of minutes since open with no response
-            to autoclose the ticket.
+        first_autoclose: Time since open with no response to autoclose.
+        any_autoclose: Time since last response to autoclose.
+        warn_autoclose: Time to warn user (via DM) after last response.
         msg_discovery: Whether to allow message discovery
             defaults to True.
         strip_buttons: Whether to strip buttons from messages
@@ -138,12 +139,18 @@ class Guild(Base):
         nullable=False,
         comment="Name of the staff team",
     )
-    first_autoclose: orm.Mapped[int | None] = orm.mapped_column(
+    first_autoclose: orm.Mapped[datetime.timedelta | None] = orm.mapped_column(
+        sqlalchemy.Interval(),
         nullable=True,
-        comment="Number of minutes since open with no response to autoclose")
-    any_autoclose: orm.Mapped[int | None] = orm.mapped_column(
+        comment="Time since open with no response to autoclose")
+    any_autoclose: orm.Mapped[datetime.timedelta | None] = orm.mapped_column(
+        sqlalchemy.Interval(),
         nullable=True,
-        comment="Number of minutes since last response to autoclose")
+        comment="Time since last response to autoclose")
+    warn_autoclose: orm.Mapped[datetime.timedelta | None] = orm.mapped_column(
+        sqlalchemy.Interval(),
+        nullable=True,
+        comment="Time to warn user (via DM) after last response")
     support_block: orm.Mapped[int | None] = orm.mapped_column(
         sqlalchemy.BigInteger(),
         nullable=True,
@@ -396,6 +403,10 @@ class Ticket(Base):
         default=False,
         nullable=False,
         comment="Whether the ticket is in anonymous mode")
+    notified: orm.Mapped[bool] = orm.mapped_column(
+        default=False,
+        nullable=False,
+        comment="Whether the user has been notified about this ticket")
 
     # Relationships
     guild: orm.Mapped["Guild"] = orm.relationship(back_populates="tickets",

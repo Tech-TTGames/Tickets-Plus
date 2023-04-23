@@ -352,17 +352,18 @@ class Settings(commands.GroupCog,
         emd.add_field(name="New name:", value=name)
         await ctx.followup.send(embed=emd, ephemeral=True)
 
-    @app_commands.command(name="autoclose",
-                          description="Change the autoclose time.")
+    @app_commands.command(name="timings",
+                          description="Change any internal bot timings.")
     @app_commands.describe(
-        category="The category of autoclose time to change.",
-        days="The new autoclose time days.",
-        hours="The new autoclose time hours.",
-        minutes="The new autoclose time minutes.",
+        category="The category of timing to change.",
+        days="The new timing time days.",
+        hours="The new timing time hours.",
+        minutes="The new timing time minutes.",
     )
     @app_commands.choices(category=[
-        app_commands.Choice(name="First Response", value=0),
-        app_commands.Choice(name="Last Response", value=1),
+        app_commands.Choice(name="First Response Autoclose", value=0),
+        app_commands.Choice(name="Last Response Autoclose", value=1),
+        app_commands.Choice(name="Ticket Close Warning", value=2),
     ])
     async def change_autoclose(self,
                                ctx: discord.Interaction,
@@ -381,6 +382,7 @@ class Settings(commands.GroupCog,
 
         Args:
             ctx: The interaction context.
+            category: The category of autoclose time to change.
             days: The new autoclose time days. Defaults to 0.
             hours: The new autoclose time hours. Defaults to 0.
             minutes: The new autoclose time minutes. Defaults to 0.
@@ -389,32 +391,37 @@ class Settings(commands.GroupCog,
         async with self._bt.get_connection() as conn:
             guild = await conn.get_guild(ctx.guild_id)  # type: ignore
             prev = None
-            changed_close = guild.first_autoclose
-            category_txt = "First Response"
-            if category.value:
+            if category.value == 1:
                 changed_close = guild.any_autoclose
                 category_txt = "Last Response"
+            elif category.value == 2:
+                changed_close = guild.warn_autoclose
+                category_txt = "Ticket Close Warning"
+            else:
+                changed_close = guild.first_autoclose
+                category_txt = "First Response"
             if changed_close is not None:
-                prev = datetime.timedelta(minutes=int(changed_close))
+                prev = changed_close
             if days + hours + minutes == 0:
                 changed_close = None
-                emd = discord.Embed(title="Autoclose Disabled",
+                emd = discord.Embed(title=f"{category_txt} Disabled",
                                     color=discord.Color.red())
                 emd.add_field(name="Previous autoclose time:",
                               value=f"{str(prev)}")
             else:
-                newtime = datetime.timedelta(days=days,
-                                             hours=hours,
-                                             minutes=minutes)
-                changed_close = int(newtime.total_seconds() / 60)
-                emd = discord.Embed(title=f"{category_txt} Autoclose Changed",
+                changed_close = datetime.timedelta(days=days,
+                                                   hours=hours,
+                                                   minutes=minutes)
+                emd = discord.Embed(title=f"{category_txt} Timings Changed",
                                     color=discord.Color.yellow())
                 emd.add_field(name="Previous autoclose time:",
                               value=f"{str(prev)}")
                 emd.add_field(name="New autoclose time:",
-                              value=f"{str(newtime)}")
-            if category.value:
+                              value=f"{str(changed_close)}")
+            if category.value == 1:
                 guild.any_autoclose = changed_close
+            elif category.value == 2:
+                guild.warn_autoclose = changed_close
             else:
                 guild.first_autoclose = changed_close
             await conn.commit()
