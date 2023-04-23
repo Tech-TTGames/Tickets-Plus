@@ -294,6 +294,8 @@ class Events(commands.Cog, name="Events"):
                         orm.selectinload(models.Guild.community_pings),
                     ),
                 )
+                if guild.integrated:
+                    return
                 async for entry in gld.audit_logs(
                         limit=3, action=discord.AuditLogAction.channel_create):
                     if not entry.user:
