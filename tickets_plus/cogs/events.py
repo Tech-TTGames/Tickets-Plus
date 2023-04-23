@@ -28,7 +28,7 @@ import string
 from typing import Any, Tuple
 
 import discord
-from discord import utils, abc
+from discord import abc, utils
 from discord.ext import commands
 from sqlalchemy import orm
 
