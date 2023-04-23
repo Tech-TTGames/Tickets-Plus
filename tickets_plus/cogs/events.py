@@ -28,7 +28,7 @@ import string
 from typing import Any, Tuple
 
 import discord
-from discord import utils
+from discord import utils, abc
 from discord.ext import commands
 from sqlalchemy import orm
 
@@ -169,8 +169,9 @@ class Events(commands.Cog, name="Events"):
             # We do not check any types in try as we are catching.
             try:
                 gld = self._bt.get_guild(int(alpha.group("srv")))
-                chan = gld.get_channel_or_thread(  # type: ignore
-                    int(alpha.group("cha")))
+                chan: abc.GuildChannel = (
+                    gld.get_channel_or_thread(  # type: ignore
+                        int(alpha.group("cha"))))
                 got_msg = await chan.fetch_message(  # type: ignore
                     int(alpha.group("msg")))
             except (
@@ -183,7 +184,7 @@ class Events(commands.Cog, name="Events"):
                 if not got_msg.content and got_msg.embeds:
                     discovered_result = got_msg.embeds[0]
                     discovered_result.set_footer(text="[EMBED CAPTURED] Sent in"
-                                                 f" {chan.name}"  # type: ignore
+                                                 f" {chan.name}"
                                                  f" at {time}")
                 else:
                     discovered_result = discord.Embed(
