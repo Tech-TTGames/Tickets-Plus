@@ -416,6 +416,21 @@ class OnlineConfig:
             self._session.add(ticket)
         return new, ticket
 
+    async def get_pending_tickets(self) -> Sequence[models.Ticket]:
+        """Get pending tickets from the database.
+
+        Fetches all pending tickets from the database.
+
+        Returns:
+            Sequence[models.Ticket]: The pending tickets.
+        """
+        tickets = await self._session.scalars(
+            sql.select(models.Ticket).join(models.Guild).filter(
+                models.Guild.warn_autoclose.isnot(None),
+                models.Ticket.notified.isnot(True), models.Ticket.last_response
+                <= models.UTCnow() - models.Guild.warn_autoclose))
+        return tickets.all()
+
     async def fetch_tag(self, guild_id: int,
                         tag: str) -> discord.Embed | str | None:
         """Fetch a tag from the database.

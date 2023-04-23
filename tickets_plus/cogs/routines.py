@@ -92,6 +92,45 @@ class Routines(commands.Cog):
         """
         await self._bt.wait_until_ready()
 
+    @tasks.loop(minutes=2, seconds=30)
+    async def notify_users(self):
+        """Notifies users of their tickets closing soon.
+
+        Running every 2 minutes and 30 seconds, this task checks if
+        any tickets are lacking responses, (time since last message above warning threshold)
+        and if so, sends a warning message to the user.
+        """
+        async with self._bt.get_connection() as conn:
+            tickets = await conn.get_pending_tickets()
+            for ticket in tickets:
+                ticket.notified = True
+                gld = ticket.guild
+                usr_id = ticket.user_id
+                if usr_id is None:
+                    continue
+                actv_guild = self._bt.get_guild(gld.guild_id)
+                if actv_guild is None:
+                    continue
+                actv_member = actv_guild.get_member(usr_id)
+                if actv_member is None:
+                    continue
+                appnd = "Please respond soon, or it will be closed."
+                if gld.any_autoclose:
+                    appnd = f"Please respond soon, or it will be closed <t:{int((ticket.last_response + gld.any_autoclose).timestamp())}:R>."
+                await actv_member.send(
+                    f"Your ticket <#{ticket.channel_id}> in {actv_guild.name} is still open. {appnd}"
+                )
+            await conn.commit()
+
+    @notify_users.before_loop
+    async def before_notify_users(self):
+        """Delay the first run till the bot is ready.
+
+        Ensures that the bot is ready before the first run of the
+        task.
+        """
+        await self._bt.wait_until_ready()
+
 
 async def setup(bot_instance: bot.TicketsPlusBot):
     """Load the cog into the bot.
