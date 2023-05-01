@@ -136,7 +136,8 @@ class TagUtils(commands.GroupCog,
                 discord.CategoryChannel,
                 types.NoneType,
         )):
-            raise exceptions.InvalidLocation("You can't use this command here!")
+            raise exceptions.InvalidLocation(
+                "You can't use this command here!")
         messg, emd = await self.prep_tag(
             ctx.guild_id,  # type: ignore
             tag,
