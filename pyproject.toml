@@ -27,7 +27,7 @@ optional = true
 
 [tool.poetry.group.dev.dependencies]
 yapf = "^0.32.0"
-pylint = "^2.17.2"
+pylint = "^2.17.3"
 toml = "^0.10.2"
 pdoc = "^13.1.0"
 
