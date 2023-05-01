@@ -42,7 +42,7 @@ Toggle with /setting stripbuttons.
 ## Setup
 
 You can add the public instance of the bot using the links here:
-- [Admin Perms](https://discord.com/oauth2/authorize?client_id=1079422909812047953&scope=bot+applications.commands&permissions=8)
+- [Admin Perms](https://discord.com/oauth2/authorize?client_id=1079422909812047953&scope=bot+applications.commands&permissions=535059492056)
 - [Safe Perms](https://discord.com/oauth2/authorize?client_id=1079422909812047953&scope=bot+applications.commands&permissions=535059492048)
 
 Here are the steps to host your copy of [this bot.](https://github.com/Tech-TTGames/Tickets-Plus):

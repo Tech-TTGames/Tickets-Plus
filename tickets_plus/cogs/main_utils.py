@@ -102,7 +102,7 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
             ctx: The interaction context.
         """
         app = await ctx.client.application_info()
-        admn_perms = discord.Permissions(8)
+        admn_perms = discord.Permissions(535059492056)
         safe_perms = discord.Permissions(535059492048)
         if app.bot_public:
             emd = discord.Embed(
