@@ -55,7 +55,7 @@ signal.signal(signal.SIGINT, sigint_handler)
 
 
 async def start_bot(stat_data: statvars.MiniConfig = statvars.MiniConfig()
-                   ) -> None:  # shush deepsource # skipcq: FLK-E124
+                    ) -> None:  # shush deepsource # skipcq: FLK-E124
     """Sets up the bot and starts it. Coroutine.
 
     This function uses the exitsting .json files to set up the bot.
@@ -171,7 +171,7 @@ async def start_bot(stat_data: statvars.MiniConfig = statvars.MiniConfig()
             tls_ctx.load_cert_chain(
                 stat_data.getitem("ssl_cert"),
                 statvars.Secret().ssl_key,
-            ) 
+            )
         except FileNotFoundError:
             logging.info("SSL cert not found. Starting without API...")
             print("API: SKIPPED (SSL cert not found)")
