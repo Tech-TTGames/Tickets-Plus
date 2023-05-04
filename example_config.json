@@ -15,9 +15,9 @@
   "dev_guild_id": 478114566509821953,
   "info_dev_guild_id": "The id of a guild where you can use the override commands. This is required for the bot to work.",
   "https_port": 443,
-  "info_https_port": "The port to run the https server on. This is required for the API to work.",
+  "info_https_port": "The port to run the https server on. This is required for the API to work. Otherwise optional.",
   "ssl_cert": "/etc/letsencrypt/live/ticketsplus.xyz/fullchain.pem",
-  "info_ssl_cert": "The path to the ssl certificate. This is required for the API to work.",
+  "info_ssl_cert": "The path to the ssl certificate. This is required for the API to work. Otherwise optional.",
   "auth_token": "thequickbrownfoxjumpedoverthelazydog",
-  "info_auth_token": "The token to use for the API. Please set this to something else. This is required for the API to work."
+  "info_auth_token": "The token to use for the API. Please set this to something else. This is required for the API to work. Otherwise optional."
 }

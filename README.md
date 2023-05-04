@@ -83,7 +83,20 @@ Here are the steps to host your copy of [this bot.](https://github.com/Tech-TTGa
     5. Invite the bot to your server! Replace the <CLIENT_ID> in the below invites with numbers from `https://discord.com/developers/applications/<CLIENT_ID>/`
         - The ***easy link*** - `https://discord.com/api/oauth2/authorize?client_id=<CLIENT_ID>&permissions=8&scope=bot%20applications.commands`
         - The *safer link* - `https://discord.com/api/oauth2/authorize?client_id=<CLIENT_ID>&permissions=535059492048&scope=bot%20applications.commands`
-8. Start your bot! Use `poetry run start` or after activating venv (if present) `python3 /tickets_plus/`
+8. Set up API (optional): This is an advanced step that will not be described in detail. (If certificate not set API skipped) If you want to use it here's some guidelines:
+    1. Create a SSL certificate. Either self-signed or from a CA (like Let's Encrypt).
+    2. Enter the path to the certificate in config.json under "ssl_cert", an in secret.json under "ssl_key" the path to the key.
+    3. Create a safe token for the API and enter it in secret.json under "auth_token".
+    4. And you're done with the basic setup. You can now use the API. If you want to use more bells and whistles, do it yourself.
+    5. Connect the API to the main bot. Go to the `https://panel.ticketsbot.net/manage/<YOUR_SERVER_ID>/integrations/create` and create a new integration. Follow instructions there.
+        - Use 'POST' requests.
+        - The header for the token is `ticketsplus-api-auth`, the value is the token you set in secret.json.
+        - Do not set any placeholders.
+        - The URL is the URL of the domain/IP you are hosting the API on, with the port if you are using one.
+        - The protocol *must* be HTTPS.
+        - The path is just `/`.
+9. Copy your *main* guild ID and paste it into config.json under "dev_guild_id". This will enable the dev commands in your server. (Reqired)
+10. Start your bot! Use `poetry run start` or after activating venv (if present) `python3 /tickets_plus/`
     - Probably add a background service that will restart the bot on boot. *I use systemd for my bots.*
 
 ### Database Documentation
