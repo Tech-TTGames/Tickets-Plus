@@ -167,11 +167,21 @@ async def start_bot(stat_data: statvars.MiniConfig = statvars.MiniConfig()
     try:
         api = routes.make_app(bot_instance)
         tls_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-        tls_ctx.load_cert_chain(
-            stat_data.getitem("ssl_cert"),
-            statvars.Secret().ssl_key,
-        )
-        api.listen(443, protocol="https", ssl_options=tls_ctx)
+        try:
+            tls_ctx.load_cert_chain(
+                stat_data.getitem("ssl_cert"),
+                statvars.Secret().ssl_key,
+            ) 
+        except FileNotFoundError:
+            logging.info("SSL cert not found. Starting without API...")
+            print("API: SKIPPED (SSL cert not found)")
+        else:
+            tkn = stat_data.getitem("auth_token")
+            frbddn = ["thequickbrownfoxjumpedoverthelazydog", ""]
+            if tkn is None or tkn in frbddn:
+                raise ValueError("API Auth token not set.")
+            logging.info("SSL cert and key loaded. Starting API...")
+            api.listen(443, protocol="https", ssl_options=tls_ctx)
     # pylint: disable=broad-exception-caught # skipcq: PYL-W0718
     except Exception as exc:
         logging.exception("API setup failed. Aborting startup.")
