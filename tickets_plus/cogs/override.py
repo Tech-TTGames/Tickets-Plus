@@ -232,8 +232,10 @@ class Overrides(commands.GroupCog,
                           value=guild_confg.staff_team_name)
             emd.add_field(name="FIRST AUTOCLOSE",
                           value=guild_confg.first_autoclose)
-            emd.add_field(name="MSG DISCOVERY", value=guild_confg.msg_discovery)
-            emd.add_field(name="STRIP BUTTONS", value=guild_confg.strip_buttons)
+            emd.add_field(name="MSG DISCOVERY",
+                          value=guild_confg.msg_discovery)
+            emd.add_field(name="STRIP BUTTONS",
+                          value=guild_confg.strip_buttons)
         await ctx.user.send(embed=emd)
         await ctx.followup.send("Sent config.")
         logging.info("Config sent.")

@@ -35,7 +35,7 @@ from tickets_plus.database.models import (  # isort:skip # nopep8
     Base, CommunityRole, Guild, ObserversRole, StaffRole, TicketBot,
 )
 from tickets_plus.database.config import MiniConfig  # isort:skip # nopep8
-from toolbox.legacy import Config # isort:skip # nopep8
+from toolbox.legacy import Config  # isort:skip # nopep8
 
 
 # pylint: disable=invalid-name

@@ -37,6 +37,7 @@ sys.path.append(str(_PROG_DIR))
 # Full disclosure: This is a hacky way to do it.
 from tickets_plus.database.const import PROG_DIR  # isort:skip # nopep8
 
+
 class Config:
     """DEPRECATED. Class for convinient config access"""
 

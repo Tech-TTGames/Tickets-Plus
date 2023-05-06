@@ -128,6 +128,7 @@ class MiniConfig:
             database=self._config["dbname"],
         )
 
+
 class RuntimeConfig:
     """Advanced low-level coonfiguration parameters
 

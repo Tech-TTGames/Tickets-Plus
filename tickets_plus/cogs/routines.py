@@ -27,6 +27,7 @@ from tickets_plus.database import config
 
 _CNFG = config.RuntimeConfig()
 
+
 class Routines(commands.Cog):
     """Magic cog for background tasks.
 
