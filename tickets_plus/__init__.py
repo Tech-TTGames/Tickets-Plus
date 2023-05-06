@@ -55,7 +55,7 @@ signal.signal(signal.SIGINT, sigint_handler)
 
 
 async def start_bot(stat_data: config.MiniConfig = config.MiniConfig()
-                    ) -> None:  # shush deepsource # skipcq: FLK-E124
+                   ) -> None:  # shush deepsource # skipcq: FLK-E124
     """Sets up the bot and starts it. Coroutine.
 
     This function uses the exitsting .json files to set up the bot.
