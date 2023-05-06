@@ -31,11 +31,11 @@ sys.path.append(str(_PROG_DIR))
 # pylint: disable=wrong-import-position
 # pylint: disable=import-error # It works, I promise.
 # Full disclosure: This is a hacky way to do it.
-from tickets_plus.database.models import (  # isort:skip
+from tickets_plus.database.models import (  # isort:skip # nopep8
     Base, CommunityRole, Guild, ObserversRole, StaffRole, TicketBot,
 )
-from tickets_plus.database.config import MiniConfig  # isort:skip
-from toolbox.legacy import Config # isort:skip
+from tickets_plus.database.config import MiniConfig  # isort:skip # nopep8
+from toolbox.legacy import Config # isort:skip # nopep8
 
 
 # pylint: disable=invalid-name

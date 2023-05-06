@@ -35,7 +35,7 @@ sys.path.append(str(_PROG_DIR))
 # pylint: disable=wrong-import-position
 # pylint: disable=import-error # It works, I promise.
 # Full disclosure: This is a hacky way to do it.
-from tickets_plus.database.const import PROG_DIR  # isort:skip
+from tickets_plus.database.const import PROG_DIR  # isort:skip # nopep8
 
 class Config:
     """DEPRECATED. Class for convinient config access"""
