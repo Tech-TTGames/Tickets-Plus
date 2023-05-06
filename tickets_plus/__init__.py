@@ -41,7 +41,7 @@ from sqlalchemy.ext import asyncio as sa_asyncio
 
 from tickets_plus import bot
 from tickets_plus.api import routes
-from tickets_plus.database import models, statvars
+from tickets_plus.database import const, config, models
 
 
 # pylint: disable=unused-argument
@@ -54,7 +54,7 @@ def sigint_handler(sign, frame):
 signal.signal(signal.SIGINT, sigint_handler)
 
 
-async def start_bot(stat_data: statvars.MiniConfig = statvars.MiniConfig()
+async def start_bot(stat_data: config.MiniConfig = config.MiniConfig()
                    ) -> None:  # shush deepsource # skipcq: FLK-E124
     """Sets up the bot and starts it. Coroutine.
 
@@ -71,27 +71,27 @@ async def start_bot(stat_data: statvars.MiniConfig = statvars.MiniConfig()
     try:
         # Set up logging
         dt_fmr = "%Y-%m-%d %H:%M:%S"
-        statvars.HANDLER.setFormatter(
+        const.HANDLER.setFormatter(
             logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s",
                               dt_fmr))
 
         # Set up bot logging
         logging.root.setLevel(logging.INFO)
-        logging.root.addHandler(statvars.HANDLER)
+        logging.root.addHandler(const.HANDLER)
 
         # Set up discord.py logging
         dscrd_logger = logging.getLogger("discord")
         dscrd_logger.setLevel(logging.INFO)
-        dscrd_logger.addHandler(statvars.HANDLER)
+        dscrd_logger.addHandler(const.HANDLER)
 
         # Set up sqlalchemy logging
         sql_logger = logging.getLogger("sqlalchemy.engine")
         sql_logger.setLevel(logging.WARNING)
-        sql_logger.addHandler(statvars.HANDLER)
+        sql_logger.addHandler(const.HANDLER)
 
         sql_pool_logger = logging.getLogger("sqlalchemy.pool")
         sql_pool_logger.setLevel(logging.WARNING)
-        sql_pool_logger.addHandler(statvars.HANDLER)
+        sql_pool_logger.addHandler(const.HANDLER)
 
         if os.environ.get("TICKETS_PLUS_VERBOSE", "false").lower() == "true":
             logging.info("Enabling verbose logging.")
@@ -148,7 +148,7 @@ async def start_bot(stat_data: statvars.MiniConfig = statvars.MiniConfig()
     try:
         bot_instance = bot.TicketsPlusBot(
             db_engine=engine,
-            intents=statvars.INTENTS,
+            intents=const.INTENTS,
             command_prefix=commands.when_mentioned,
             status=discord.Status.online,
             activity=discord.Activity(type=discord.ActivityType.playing,
@@ -170,7 +170,7 @@ async def start_bot(stat_data: statvars.MiniConfig = statvars.MiniConfig()
         try:
             tls_ctx.load_cert_chain(
                 stat_data.getitem("ssl_cert"),
-                statvars.Secret().ssl_key,
+                config.Secret().ssl_key,
             ) 
         except FileNotFoundError:
             logging.info("SSL cert not found. Starting without API...")
@@ -193,7 +193,7 @@ async def start_bot(stat_data: statvars.MiniConfig = statvars.MiniConfig()
 
     try:
         print("ALL OK. Starting bot...")
-        await bot_instance.start(statvars.Secret().token)
+        await bot_instance.start(config.Secret().token)
     except KeyboardInterrupt:
         logging.info("Keyboard interrupt detected. Shutting down...")
         print("Keyboard interrupt detected. Shutting down...")

@@ -34,7 +34,8 @@ sys.path.append(str(_PROG_DIR))
 from tickets_plus.database.models import (  # isort:skip
     Base, CommunityRole, Guild, ObserversRole, StaffRole, TicketBot,
 )
-from tickets_plus.database.statvars import Config, MiniConfig  # isort:skip
+from tickets_plus.database.config import MiniConfig  # isort:skip
+from toolbox.legacy import Config # isort:skip
 
 
 # pylint: disable=invalid-name

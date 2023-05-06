@@ -25,7 +25,7 @@ from discord.ext import commands
 from sqlalchemy.ext import asyncio as sa_asyncio
 
 from tickets_plus import cogs
-from tickets_plus.database import layer, statvars
+from tickets_plus.database import const, layer, config
 
 
 class TicketsPlusBot(commands.AutoShardedBot):
@@ -41,13 +41,13 @@ class TicketsPlusBot(commands.AutoShardedBot):
         sessions: The database session maker.
     """
 
-    stat_confg: statvars.MiniConfig
+    stat_confg: config.MiniConfig
     sessions: sa_asyncio.async_sessionmaker
 
     def __init__(self,
                  *args,
                  db_engine: sa_asyncio.AsyncEngine,
-                 confg: statvars.MiniConfig = statvars.MiniConfig(),
+                 confg: config.MiniConfig = config.MiniConfig(),
                  **kwargs) -> None:
         """Initialises the bot instance.
 
@@ -74,7 +74,7 @@ class TicketsPlusBot(commands.AutoShardedBot):
         This is used to load the cogs and sync the database.
         Generally, this function should not be called manually.
         """
-        logging.info("Bot version: %s", statvars.VERSION)
+        logging.info("Bot version: %s", const.VERSION)
         logging.info("Discord.py version: %s", discord.__version__)
         logging.info("Loading cogs...")
         for extension in cogs.EXTENSIONS:

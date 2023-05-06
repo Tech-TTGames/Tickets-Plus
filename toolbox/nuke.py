@@ -28,7 +28,7 @@ sys.path.append(str(_PROG_DIR))
 
 # pylint: disable=wrong-import-position
 # pylint: disable=import-error # It works, I promise.
-from tickets_plus.database.statvars import MiniConfig  # isort:skip
+from tickets_plus.database.config import MiniConfig  # isort:skip
 
 _SAFETY_TOGGLE = False
 """A safety toggle to prevent accidental drops."""

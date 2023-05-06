@@ -1,0 +1,7 @@
+{
+    "WARNING": "This is a internal configuration file. DO NOT modify unless you know what you are doing! If you want to understand what option does what, see the documentation for config.py.",
+    "spt": {
+        "clean_usr": 60,
+        "notif_usr": 150
+    }
+}

@@ -26,7 +26,7 @@ from discord import app_commands, utils
 from discord.ext import commands
 
 from tickets_plus import bot
-from tickets_plus.database import statvars
+from tickets_plus.database import const
 
 
 class FreeCommands(commands.Cog, name="General Random Commands"):
@@ -77,7 +77,7 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
         """
         emd = discord.Embed(
             title="Tickets+",
-            description=f"Bot version: {statvars.VERSION}\n"
+            description=f"Bot version: {const.VERSION}\n"
             "This bot is open source and experimental!",
             color=discord.Color.from_str("0x00FFFF"),
         ).add_field(

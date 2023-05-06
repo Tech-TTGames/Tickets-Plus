@@ -21,7 +21,7 @@ Typical usage example:
 import asyncio
 
 import tickets_plus
-from tickets_plus.database import statvars
+from tickets_plus.database import config, const
 
 
 def main():
@@ -30,8 +30,8 @@ def main():
     Adjust the event loop policy if we're on Windows and psycopg3.
     Then, run the bot until it's done.
     """
-    print(f"Starting Tickets+ {statvars.VERSION}")
-    cnfg = statvars.MiniConfig()
+    print(f"Starting Tickets+ {const.VERSION}")
+    cnfg = config.MiniConfig()
     loop = asyncio.get_event_loop()
     # We don't need to pass the config to start_bot, but we do it anyway
     print("Entering event loop.")

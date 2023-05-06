@@ -23,7 +23,9 @@ Typical usage example:
 from discord.ext import commands, tasks
 
 from tickets_plus import bot
+from tickets_plus.database import config
 
+_CNFG = config.RuntimeConfig()
 
 class Routines(commands.Cog):
     """Magic cog for background tasks.
@@ -56,7 +58,7 @@ class Routines(commands.Cog):
         self.clean_status.cancel()
         self.notify_users.cancel()
 
-    @tasks.loop(minutes=1)
+    @tasks.loop(seconds=_CNFG.spt_clean_usr)
     async def clean_status(self):
         """Remove all status roles from users whose status has expired.
 
@@ -94,7 +96,7 @@ class Routines(commands.Cog):
         """
         await self._bt.wait_until_ready()
 
-    @tasks.loop(minutes=2, seconds=30)
+    @tasks.loop(seconds=_CNFG.spt_notif_usr)
     async def notify_users(self):
         """Notifies users of their tickets closing soon.
 
