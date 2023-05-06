@@ -171,7 +171,7 @@ async def start_bot(stat_data: config.MiniConfig = config.MiniConfig()
             tls_ctx.load_cert_chain(
                 stat_data.getitem("ssl_cert"),
                 config.Secret().ssl_key,
-            ) 
+            )
         except FileNotFoundError:
             logging.info("SSL cert not found. Starting without API...")
             print("API: SKIPPED (SSL cert not found)")
