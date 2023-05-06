@@ -45,6 +45,7 @@ class Routines(commands.Cog):
         """
         self._bt = bot_instance
         self.clean_status.start()
+        self.notify_users.start()
 
     async def cog_unload(self):
         """Cancel all tasks when the cog is unloaded.
@@ -53,6 +54,7 @@ class Routines(commands.Cog):
         tasks that are running.
         """
         self.clean_status.cancel()
+        self.notify_users.cancel()
 
     @tasks.loop(minutes=1)
     async def clean_status(self):
