@@ -25,7 +25,7 @@ from discord.ext import commands
 from sqlalchemy.ext import asyncio as sa_asyncio
 
 from tickets_plus import cogs
-from tickets_plus.database import const, layer, config
+from tickets_plus.database import config, const, layer
 
 
 class TicketsPlusBot(commands.AutoShardedBot):

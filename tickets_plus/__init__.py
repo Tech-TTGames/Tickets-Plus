@@ -41,7 +41,7 @@ from sqlalchemy.ext import asyncio as sa_asyncio
 
 from tickets_plus import bot
 from tickets_plus.api import routes
-from tickets_plus.database import const, config, models
+from tickets_plus.database import config, const, models
 
 
 # pylint: disable=unused-argument

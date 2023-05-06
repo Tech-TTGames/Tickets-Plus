@@ -24,13 +24,14 @@ Typical usage example:
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
 
 import json
-from typing import Any
-import pathlib
 import logging
+import pathlib
+from typing import Any
 
 import sqlalchemy
 
 from tickets_plus.database import const
+
 
 class Secret:
     """Class for secret.json management
