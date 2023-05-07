@@ -144,7 +144,7 @@ class Events(commands.Cog, name="Events"):
         await channel.edit(topic=descr,
                            reason="More information for the ticket.")
         if guild.strip_buttons and ticket_type.strpbuttns:
-            await asyncio.sleep(3)
+            await asyncio.sleep(5)
             async for msg in channel.history(oldest_first=True, limit=2):
                 if await confg.check_ticket_bot(msg.author.id, gld.id):
                     await channel.send(embeds=msg.embeds)
