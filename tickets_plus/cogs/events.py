@@ -131,7 +131,20 @@ class Events(commands.Cog, name="Events"):
                 [f"<@&{role.role_id}>" for role in comm_pings]))
             await asyncio.sleep(0.25)
             await inv.delete()
+        descr = (f"Ticket {channel.name}\n"
+                 "Opened at "
+                 f"<t:{int(channel.created_at.timestamp())}:f>")
+        if user:
+            descr += f"\nOpened by {user.mention}"
+        if guild.first_autoclose:
+            # skipcq: FLK-E501 # pylint: disable=line-too-long
+            descr += f"\nCloses <t:{int((channel.created_at + guild.first_autoclose).timestamp())}:R>"
+            # skipcq: FLK-E501 # pylint: disable=line-too-long
+            descr += "\nIf no one responds, the ticket will be closed automatically. Thank you for your patience!"
+        await channel.edit(topic=descr,
+                           reason="More information for the ticket.")
         if guild.strip_buttons and ticket_type.strpbuttns:
+            await asyncio.sleep(1)
             hits = 2
             bts = await confg.get_all_ticket_bots(gld.id)
             async for msg in channel.history(oldest_first=True, limit=2):
@@ -154,18 +167,6 @@ class Events(commands.Cog, name="Events"):
                         break
                     await channel.send(embeds=msg.embeds)
                     await msg.delete()
-        descr = (f"Ticket {channel.name}\n"
-                 "Opened at "
-                 f"<t:{int(channel.created_at.timestamp())}:f>")
-        if user:
-            descr += f"\nOpened by {user.mention}"
-        if guild.first_autoclose:
-            # skipcq: FLK-E501 # pylint: disable=line-too-long
-            descr += f"\nCloses <t:{int((channel.created_at + guild.first_autoclose).timestamp())}:R>"
-            # skipcq: FLK-E501 # pylint: disable=line-too-long
-            descr += "\nIf no one responds, the ticket will be closed automatically. Thank you for your patience!"
-        await channel.edit(topic=descr,
-                           reason="More information for the ticket.")
         await confg.commit()
 
     async def message_discovery(self, message: discord.Message) -> None:
