@@ -277,6 +277,25 @@ class OnlineConfig:
             self._session.add(ticket_user)
         return new, ticket_user
 
+    async def get_all_ticket_bots(self,
+                                  guild_id: int) -> Sequence[models.TicketBot]:
+        """Get all ticket bots from the database.
+
+        Fetches all ticket bots from the database.
+        We also check if the guild exists and create it if it does not.
+
+        Args:
+            guild_id: The guild ID.
+
+        Returns:
+            Sequence[models.TicketBot]: The ticket bots.
+                Relationships are loaded.
+        """
+        guild = await self.get_guild(guild_id)
+        ticket_users = await self._session.scalars(
+            sql.select(models.TicketBot).where(models.TicketBot.guild == guild))
+        return ticket_users.all()
+
     async def check_ticket_bot(self, user_id: int, guild_id: int) -> bool:
         """Check if the ticket user exists.
 

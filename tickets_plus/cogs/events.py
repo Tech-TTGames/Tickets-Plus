@@ -25,7 +25,7 @@ import datetime
 import logging
 import re
 import string
-from typing import Any, Tuple
+from typing import Tuple
 
 import discord
 from discord import abc, utils
@@ -55,7 +55,7 @@ class Events(commands.Cog, name="Events"):
         logging.info("Loaded %s", self.__class__.__name__)
 
     async def ticket_creation(
-        self: Any,
+        self,
         confg: layer.OnlineConfig,
         guilded: Tuple[discord.Guild, models.Guild],
         channel: discord.TextChannel,
@@ -132,9 +132,26 @@ class Events(commands.Cog, name="Events"):
             await asyncio.sleep(0.25)
             await inv.delete()
         if guild.strip_buttons and ticket_type.strpbuttns:
-            await asyncio.sleep(1)
+            hits = 2
+            bts = await confg.get_all_ticket_bots(gld.id)
             async for msg in channel.history(oldest_first=True, limit=2):
-                if await confg.check_ticket_bot(msg.author.id, gld.id):
+                if msg.author.id in bts:
+                    await channel.send(embeds=msg.embeds)
+                    await msg.delete()
+                    hits -= 1
+            if hits != 0:
+
+                def on_tbot_msg(msg: discord.Message) -> bool:
+                    """Check if message sent from ticket bot."""
+                    return msg.author.id in bts and msg.channel == channel
+
+                for _ in range(hits):
+                    try:
+                        msg = await self._bt.wait_for("message",
+                                                      check=on_tbot_msg,
+                                                      timeout=10)
+                    except asyncio.TimeoutError:
+                        break
                     await channel.send(embeds=msg.embeds)
                     await msg.delete()
         descr = (f"Ticket {channel.name}\n"
