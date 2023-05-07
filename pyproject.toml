@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tickets-plus"
-version = "0.1.0"
+version = "0.1.1"
 description = "A companion bot adding some extensions to Tickets discord bot. Experimental."
 authors = ["Tech. TTGames <50541739+Tech-TTGames@users.noreply.github.com>"]
 license = "EPL-2.0"
@@ -16,6 +16,7 @@ alembic = {extras = ["tz"], version = "^1.10.3"}
 asyncpg = { version = "^0.27.0", optional = true }
 aiosqlite = { version = "^0.19.0", optional = true }
 pynacl = "^1.5.0"
+tornado = "^6.3"
 
 [tool.poetry.extras]
 sqlite = ["aiosqlite"]

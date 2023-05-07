@@ -18,6 +18,7 @@ Typical usage example:
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
+
 import logging
 
 import discord
@@ -25,7 +26,7 @@ from discord import app_commands, utils
 from discord.ext import commands
 
 from tickets_plus import bot
-from tickets_plus.database import statvars
+from tickets_plus.database import const
 
 
 class FreeCommands(commands.Cog, name="General Random Commands"):
@@ -76,7 +77,7 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
         """
         emd = discord.Embed(
             title="Tickets+",
-            description=f"Bot version: {statvars.VERSION}\n"
+            description=f"Bot version: {const.VERSION}\n"
             "This bot is open source and experimental!",
             color=discord.Color.from_str("0x00FFFF"),
         ).add_field(
@@ -101,7 +102,7 @@ class FreeCommands(commands.Cog, name="General Random Commands"):
             ctx: The interaction context.
         """
         app = await ctx.client.application_info()
-        admn_perms = discord.Permissions(8)
+        admn_perms = discord.Permissions(535059492056)
         safe_perms = discord.Permissions(535059492048)
         if app.bot_public:
             emd = discord.Embed(

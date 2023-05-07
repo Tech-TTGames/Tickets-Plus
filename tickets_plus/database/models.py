@@ -19,7 +19,10 @@ Typical usage example:
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
+
 import datetime
+from typing import Type
+
 import sqlalchemy
 from sqlalchemy import orm, sql
 from sqlalchemy.ext import compiler as cmplr
@@ -97,8 +100,9 @@ class Guild(Base):
             limited to 200 characters.
         staff_team_name: The name of the staff team
             defaults to "Staff Team" and is limited to 40 characters.
-        first_autoclose: The number of minutes since open with no response
-            to autoclose the ticket.
+        first_autoclose: Time since open with no response to autoclose.
+        any_autoclose: Time since last response to autoclose.
+        warn_autoclose: Time to warn user (via DM) after last response.
         msg_discovery: Whether to allow message discovery
             defaults to True.
         strip_buttons: Whether to strip buttons from messages
@@ -135,12 +139,18 @@ class Guild(Base):
         nullable=False,
         comment="Name of the staff team",
     )
-    first_autoclose: orm.Mapped[int | None] = orm.mapped_column(
+    first_autoclose: orm.Mapped[datetime.timedelta | None] = orm.mapped_column(
+        sqlalchemy.Interval(),
         nullable=True,
-        comment="Number of minutes since open with no response to autoclose")
-    any_autoclose: orm.Mapped[int | None] = orm.mapped_column(
+        comment="Time since open with no response to autoclose")
+    any_autoclose: orm.Mapped[datetime.timedelta | None] = orm.mapped_column(
+        sqlalchemy.Interval(),
         nullable=True,
-        comment="Number of minutes since last response to autoclose")
+        comment="Time since last response to autoclose")
+    warn_autoclose: orm.Mapped[datetime.timedelta | None] = orm.mapped_column(
+        sqlalchemy.Interval(),
+        nullable=True,
+        comment="Time to warn user (via DM) after last response")
     support_block: orm.Mapped[int | None] = orm.mapped_column(
         sqlalchemy.BigInteger(),
         nullable=True,
@@ -171,6 +181,10 @@ class Guild(Base):
         default=False,
         nullable=False,
         comment="Whether to strip comsup roles when applying a helping_block")
+    integrated: orm.Mapped[bool] = orm.mapped_column(
+        default=False,
+        nullable=False,
+        comment="Whether the bot is integrated with the main bot")
 
     # Relationships
     ticket_bots: orm.Mapped[list["TicketBot"]] = orm.relationship(
@@ -313,6 +327,20 @@ class TicketType(Base):
     guild: orm.Mapped["Guild"] = orm.relationship(back_populates="ticket_types",
                                                   lazy="selectin")
 
+    @classmethod
+    def default(cls: Type["TicketType"]) -> "TicketType":
+        """Default ticket type
+
+        This is the default ticket type.
+        It is used when no ticket type is specified.
+        """
+        return cls(prefix="",
+                   guild_id=0,
+                   comping=True,
+                   comaccs=True,
+                   strpbuttns=True,
+                   ignore=False)
+
 
 class Ticket(Base):
     """Ticket channels table
@@ -326,6 +354,7 @@ class Ticket(Base):
     Attributes:
         channel_id: The unique discord-provided channel ID.
         guild_id: The unique discord-provided guild ID.
+        user_id: The unique discord-provided user ID.
         date_created: The date the ticket was created.
         last_response: The date of the last response in the ticket.
         staff_note_thread: The unique discord-provided ID of the note thread.
@@ -347,6 +376,11 @@ class Ticket(Base):
         nullable=False,
         comment="Unique Guild ID of parent guild",
     )
+    user_id: orm.Mapped[int | None] = orm.mapped_column(
+        sqlalchemy.BigInteger(),
+        nullable=True,
+        comment="Unique discord-provided user ID",
+    )
     date_created: orm.Mapped[datetime.datetime] = orm.mapped_column(
         sqlalchemy.DateTime(),
         nullable=False,
@@ -359,7 +393,7 @@ class Ticket(Base):
         comment="Date the ticket was last responded to",
         server_default=UTCnow(),
     )
-    staff_note_thread: orm.Mapped[int] = orm.mapped_column(
+    staff_note_thread: orm.Mapped[int | None] = orm.mapped_column(
         sqlalchemy.BigInteger(),
         nullable=True,
         comment="Unique discord-provided channel ID of the staff note thread",
@@ -369,6 +403,10 @@ class Ticket(Base):
         default=False,
         nullable=False,
         comment="Whether the ticket is in anonymous mode")
+    notified: orm.Mapped[bool] = orm.mapped_column(
+        default=False,
+        nullable=False,
+        comment="Whether the user has been notified about this ticket")
 
     # Relationships
     guild: orm.Mapped["Guild"] = orm.relationship(back_populates="tickets",
@@ -424,31 +462,28 @@ class Tag(Base):
         nullable=False,
         comment="The 'key' of the tag",
         primary_key=True)
-    title: orm.Mapped[str] = orm.mapped_column(sqlalchemy.String(256),
-                                               nullable=True,
-                                               comment="The title of the embed")
+    title: orm.Mapped[str | None] = orm.mapped_column(
+        sqlalchemy.String(256), nullable=True, comment="The title of the embed")
     description: orm.Mapped[str] = orm.mapped_column(
         sqlalchemy.String(4096),
         nullable=False,
         comment="The description of the embed")
-    url: orm.Mapped[str] = orm.mapped_column(sqlalchemy.String(256),
-                                             nullable=True,
-                                             comment="The url of the embed")
-    color: orm.Mapped[int] = orm.mapped_column(sqlalchemy.Integer(),
-                                               nullable=True,
-                                               comment="The color of the embed")
-    footer: orm.Mapped[str] = orm.mapped_column(
+    url: orm.Mapped[str | None] = orm.mapped_column(
+        sqlalchemy.String(256), nullable=True, comment="The url of the embed")
+    color: orm.Mapped[int | None] = orm.mapped_column(
+        sqlalchemy.Integer(), nullable=True, comment="The color of the embed")
+    footer: orm.Mapped[str | None] = orm.mapped_column(
         sqlalchemy.String(2048),
         nullable=True,
         comment="The footer of the embed")
     image: orm.Mapped[str] = orm.mapped_column(sqlalchemy.String(256),
                                                nullable=True,
                                                comment="The image of the embed")
-    thumbnail: orm.Mapped[str] = orm.mapped_column(
+    thumbnail: orm.Mapped[str | None] = orm.mapped_column(
         sqlalchemy.String(256),
         nullable=True,
         comment="The thumbnail of the embed")
-    author: orm.Mapped[str] = orm.mapped_column(
+    author: orm.Mapped[str | None] = orm.mapped_column(
         sqlalchemy.String(256),
         nullable=True,
         comment="The author of the embed")

@@ -1,0 +1,23 @@
+enabled: true
+also_exclude:
+  - "alembic/**/*"
+
+request_review: author
+labels:
+  - "Type: Style"
+  - "Priority: 3"
+
+restylers:
+  - jq:
+      enabled: false
+  - reorder-python-imports:
+      enabled: false
+  - black:
+      enabled: false
+  - isort:
+      enabled: true
+  - prettier-json:
+      enabled: true
+  - "*"
+  - yapf:
+      arguments: ["--style pyproject.toml"]

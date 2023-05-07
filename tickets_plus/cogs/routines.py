@@ -19,9 +19,13 @@ Typical usage example:
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
-from discord.ext import tasks, commands
+
+from discord.ext import commands, tasks
 
 from tickets_plus import bot
+from tickets_plus.database import config
+
+_CNFG = config.RuntimeConfig()
 
 
 class Routines(commands.Cog):
@@ -44,6 +48,7 @@ class Routines(commands.Cog):
         """
         self._bt = bot_instance
         self.clean_status.start()
+        self.notify_users.start()
 
     async def cog_unload(self):
         """Cancel all tasks when the cog is unloaded.
@@ -52,8 +57,9 @@ class Routines(commands.Cog):
         tasks that are running.
         """
         self.clean_status.cancel()
+        self.notify_users.cancel()
 
-    @tasks.loop(minutes=1)
+    @tasks.loop(seconds=_CNFG.spt_clean_usr)
     async def clean_status(self):
         """Remove all status roles from users whose status has expired.
 
@@ -84,6 +90,51 @@ class Routines(commands.Cog):
 
     @clean_status.before_loop
     async def before_clean_status(self):
+        """Delay the first run till the bot is ready.
+
+        Ensures that the bot is ready before the first run of the
+        task.
+        """
+        await self._bt.wait_until_ready()
+
+    @tasks.loop(seconds=_CNFG.spt_notif_usr)
+    async def notify_users(self):
+        """Notifies users of their tickets closing soon.
+
+        Running every 2 minutes and 30 seconds, this task checks if
+        any tickets are lacking responses,
+        (time since last message above warning threshold)
+        and if so, sends a warning message to the user.
+        """
+        async with self._bt.get_connection() as conn:
+            tickets = await conn.get_pending_tickets()
+            for ticket in tickets:
+                ticket.notified = True
+                gld = ticket.guild
+                usr_id = ticket.user_id
+                if usr_id is None:
+                    continue
+                actv_guild = self._bt.get_guild(gld.guild_id)
+                if actv_guild is None:
+                    continue
+                actv_member = actv_guild.get_member(usr_id)
+                if actv_member is None:
+                    continue
+                appnd = "Please respond soon, or it will be closed."
+                if gld.any_autoclose:
+                    appnd = (
+                        "Please respond soon, or it will be closed "
+                        # pylint: disable=line-too-long # skipcq: FLK-E501
+                        f"<t:{int((ticket.last_response + gld.any_autoclose).timestamp())}:R>."
+                    )
+                txt = (
+                    f"Your ticket <#{ticket.channel_id}> in {actv_guild.name} "
+                    f"is still open. {appnd}")
+                await actv_member.send(txt)
+            await conn.commit()
+
+    @notify_users.before_loop
+    async def before_notify_users(self):
         """Delay the first run till the bot is ready.
 
         Ensures that the bot is ready before the first run of the

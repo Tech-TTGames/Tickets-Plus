@@ -19,16 +19,17 @@ Typical usage example:
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
+
 import logging
 import types
 from typing import List, Optional, Tuple
 
 import discord
-from discord.ext import commands
 from discord import app_commands
+from discord.ext import commands
 
 from tickets_plus import bot
-from tickets_plus.ext import exceptions, checks
+from tickets_plus.ext import checks, exceptions
 
 
 @commands.guild_only()
@@ -129,8 +130,12 @@ class TagUtils(commands.GroupCog,
             mention: The user to mention.
         """
         await ctx.response.defer(ephemeral=False)
-        if isinstance(ctx.channel, (discord.ForumChannel, discord.StageChannel,
-                                    discord.CategoryChannel, types.NoneType)):
+        if isinstance(ctx.channel, (
+                discord.ForumChannel,
+                discord.StageChannel,
+                discord.CategoryChannel,
+                types.NoneType,
+        )):
             raise exceptions.InvalidLocation("You can't use this command here!")
         messg, emd = await self.prep_tag(
             ctx.guild_id,  # type: ignore

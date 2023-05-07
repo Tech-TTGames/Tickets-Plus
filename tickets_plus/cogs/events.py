@@ -18,14 +18,17 @@ Typical usage example:
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
+from __future__ import annotations
+
 import asyncio
 import datetime
 import logging
 import re
 import string
+from typing import Any, Tuple
 
 import discord
-from discord import utils
+from discord import abc, utils
 from discord.ext import commands
 from sqlalchemy import orm
 
@@ -51,6 +54,103 @@ class Events(commands.Cog, name="Events"):
         self._bt = bot_instance
         logging.info("Loaded %s", self.__class__.__name__)
 
+    async def ticket_creation(
+        self: Any,
+        confg: layer.OnlineConfig,
+        guilded: Tuple[discord.Guild, models.Guild],
+        channel: discord.TextChannel,
+        user: None | discord.User = None,
+    ) -> None:
+        """Main ticket creation function.
+
+        Creates db and does some other stuff.
+        """
+        gld, guild = guilded
+        ttypes = await confg.get_ticket_types(gld.id)
+        ticket_type = models.TicketType.default()
+        for ttype in ttypes:
+            if channel.name.startswith(ttype.prefix):
+                ticket_type = ttype
+        if ticket_type.ignore:
+            return
+        nts_thrd: discord.Thread = await channel.create_thread(
+            name="Staff Notes",
+            reason=f"Staff notes for Ticket {channel.name}",
+            auto_archive_duration=10080,
+        )
+        await nts_thrd.send(
+            string.Template(
+                guild.open_message).safe_substitute(channel=channel.mention))
+        user_id = user.id if user else None
+        await confg.get_ticket(channel.id, gld.id, user_id, nts_thrd.id)
+        logging.info("Created thread %s for %s", nts_thrd.name, channel.name)
+        if guild.observers_roles:
+            observer_ids = await confg.get_all_observers_roles(gld.id)
+            inv = await nts_thrd.send(" ".join(
+                [f"<@&{role.role_id}>" for role in observer_ids]))
+            await inv.delete()
+        if guild.helping_block:
+            overwrite = discord.PermissionOverwrite()
+            overwrite.view_channel = False
+            overwrite.add_reactions = False
+            overwrite.send_messages = False
+            overwrite.read_messages = False
+            overwrite.read_message_history = False
+            rol = gld.get_role(guild.helping_block)
+            if rol is None:
+                guild.helping_block = None
+            else:
+                await channel.set_permissions(
+                    rol,
+                    overwrite=overwrite,
+                    reason="Penalty Enforcmement",
+                )
+        if guild.community_roles and ticket_type.comaccs:
+            comm_roles = await confg.get_all_community_roles(gld.id)
+            overwrite = discord.PermissionOverwrite()
+            overwrite.view_channel = True
+            overwrite.add_reactions = True
+            overwrite.send_messages = True
+            overwrite.read_messages = True
+            overwrite.read_message_history = True
+            overwrite.attach_files = True
+            overwrite.embed_links = True
+            overwrite.use_application_commands = True
+            for role in comm_roles:
+                rle = gld.get_role(role.role_id)
+                if rle is None:
+                    continue
+                await channel.set_permissions(
+                    rle,
+                    overwrite=overwrite,
+                    reason="Community Support Access",
+                )
+        if guild.community_pings and ticket_type.comping:
+            comm_pings = await confg.get_all_community_pings(gld.id)
+            inv = await channel.send(" ".join(
+                [f"<@&{role.role_id}>" for role in comm_pings]))
+            await asyncio.sleep(0.25)
+            await inv.delete()
+        if guild.strip_buttons and ticket_type.strpbuttns:
+            await asyncio.sleep(1)
+            async for msg in channel.history(oldest_first=True, limit=2):
+                if await confg.check_ticket_bot(msg.author.id, gld.id):
+                    await channel.send(embeds=msg.embeds)
+                    await msg.delete()
+        descr = (f"Ticket {channel.name}\n"
+                 "Opened at "
+                 f"<t:{int(channel.created_at.timestamp())}:f>")
+        if user:
+            descr += f"\nOpened by {user.mention}"
+        if guild.first_autoclose:
+            # skipcq: FLK-E501 # pylint: disable=line-too-long
+            descr += f"\nCloses <t:{int((channel.created_at + guild.first_autoclose).timestamp())}:R>"
+            # skipcq: FLK-E501 # pylint: disable=line-too-long
+            descr += "\nIf no one responds, the ticket will be closed automatically. Thank you for your patience!"
+        await channel.edit(topic=descr,
+                           reason="More information for the ticket.")
+        await confg.commit()
+
     async def message_discovery(self, message: discord.Message) -> None:
         """Discovers the message linked to.
 
@@ -61,15 +161,17 @@ class Events(commands.Cog, name="Events"):
             message: The message to check for links
         """
         alpha = re.search(
-            r"https:\/\/(?:canary\.)?discord\.com\/channels\/(?P<srv>\d*)\/(?P<cha>\d*)\/(?P<msg>\d*)",  # skipcq: FLK-E501 # pylint: disable=line-too-long
+            # skipcq: FLK-E501 # pylint: disable=line-too-long
+            r"https:\/\/(?:canary\.)?discord\.com\/channels\/(?P<srv>\d*)\/(?P<cha>\d*)\/(?P<msg>\d*)",
             message.content,
         )
         if alpha:
             # We do not check any types in try as we are catching.
             try:
                 gld = self._bt.get_guild(int(alpha.group("srv")))
-                chan = gld.get_channel_or_thread(  # type: ignore
-                    int(alpha.group("cha")))
+                chan: abc.GuildChannel = (
+                    gld.get_channel_or_thread(  # type: ignore
+                        int(alpha.group("cha"))))
                 got_msg = await chan.fetch_message(  # type: ignore
                     int(alpha.group("msg")))
             except (
@@ -82,7 +184,7 @@ class Events(commands.Cog, name="Events"):
                 if not got_msg.content and got_msg.embeds:
                     discovered_result = got_msg.embeds[0]
                     discovered_result.set_footer(text="[EMBED CAPTURED] Sent in"
-                                                 f" {chan.name}"  # type: ignore
+                                                 f" {chan.name}"
                                                  f" at {time}")
                 else:
                     discovered_result = discord.Embed(
@@ -113,6 +215,8 @@ class Events(commands.Cog, name="Events"):
             guild: The guild the ticket is in.
         """
         if ticket.anonymous:
+            if ticket.user_id == message.author.id:
+                return
             staff = False
             staff_roles = await cnfg.get_all_staff_roles(guild.guild_id)
             for role in staff_roles:
@@ -155,14 +259,14 @@ class Events(commands.Cog, name="Events"):
                     crrnt = (
                         f"Ticket: {chan.name}\n"  # type: ignore
                         # skipcq: FLK-E501
-                        f"Closes: <t:{int((message.created_at + datetime.timedelta(minutes=guild.any_autoclose)).timestamp())}:R>"
+                        f"Closes: <t:{int((message.created_at + guild.any_autoclose).timestamp())}:R>"
                     )
                 else:
                     # pylint: disable=line-too-long
                     crrnt = re.sub(
                         r"<t:[0-9]*?:R>",
                         # skipcq: FLK-E501
-                        f"<t:{int((message.created_at + datetime.timedelta(minutes=guild.any_autoclose)).timestamp())}:R>",
+                        f"<t:{int((message.created_at + guild.any_autoclose).timestamp())}:R>",
                         crrnt)
                 await chan.edit(topic=crrnt)  # type: ignore
                 ticket.last_response = datetime.datetime.utcnow()
@@ -190,106 +294,15 @@ class Events(commands.Cog, name="Events"):
                         orm.selectinload(models.Guild.community_pings),
                     ),
                 )
+                if guild.integrated:
+                    return
                 async for entry in gld.audit_logs(
                         limit=3, action=discord.AuditLogAction.channel_create):
                     if not entry.user:
                         continue
                     if entry.target == channel and await confg.check_ticket_bot(
                             entry.user.id, gld.id):
-                        ttypes = await confg.get_ticket_types(gld.id)
-                        ticket_type = models.TicketType(prefix=channel.name,
-                                                        guild_id=gld.id,
-                                                        comping=True,
-                                                        comaccs=True,
-                                                        strpbuttns=True,
-                                                        ignore=False)
-                        for ttype in ttypes:
-                            if channel.name.startswith(ttype.prefix):
-                                ticket_type = ttype
-                        if ticket_type.ignore:
-                            return
-                        nts_thrd: discord.Thread = await channel.create_thread(
-                            name="Staff Notes",
-                            reason=f"Staff notes for Ticket {channel.name}",
-                            auto_archive_duration=10080,
-                        )
-                        await nts_thrd.send(
-                            string.Template(guild.open_message).safe_substitute(
-                                channel=channel.mention))
-                        await confg.get_ticket(channel.id, gld.id, nts_thrd.id)
-                        logging.info("Created thread %s for %s", nts_thrd.name,
-                                     channel.name)
-                        if guild.observers_roles:
-                            observer_ids = await confg.get_all_observers_roles(
-                                gld.id)
-                            inv = await nts_thrd.send(" ".join([
-                                f"<@&{role.role_id}>" for role in observer_ids
-                            ]))
-                            await inv.delete()
-                        if guild.helping_block:
-                            overwrite = discord.PermissionOverwrite()
-                            overwrite.view_channel = False
-                            overwrite.add_reactions = False
-                            overwrite.send_messages = False
-                            overwrite.read_messages = False
-                            overwrite.read_message_history = False
-                            rol = gld.get_role(guild.helping_block)
-                            if rol is None:
-                                guild.helping_block = None
-                            else:
-                                await channel.set_permissions(
-                                    rol,
-                                    overwrite=overwrite,
-                                    reason="Penalty Enforcmement",
-                                )
-                        if guild.community_roles and ticket_type.comaccs:
-                            comm_roles = await confg.get_all_community_roles(
-                                gld.id)
-                            overwrite = discord.PermissionOverwrite()
-                            overwrite.view_channel = True
-                            overwrite.add_reactions = True
-                            overwrite.send_messages = True
-                            overwrite.read_messages = True
-                            overwrite.read_message_history = True
-                            overwrite.attach_files = True
-                            overwrite.embed_links = True
-                            overwrite.use_application_commands = True
-                            for role in comm_roles:
-                                rle = gld.get_role(role.role_id)
-                                if rle is None:
-                                    continue
-                                await channel.set_permissions(
-                                    rle,
-                                    overwrite=overwrite,
-                                    reason="Community Support Access",
-                                )
-                        if guild.community_pings and ticket_type.comping:
-                            comm_pings = await confg.get_all_community_pings(
-                                gld.id)
-                            inv = await channel.send(" ".join(
-                                [f"<@&{role.role_id}>" for role in comm_pings]))
-                            await asyncio.sleep(0.25)
-                            await inv.delete()
-                        if guild.strip_buttons and ticket_type.strpbuttns:
-                            await asyncio.sleep(1)
-                            async for msg in channel.history(oldest_first=True,
-                                                             limit=2):
-                                if await confg.check_ticket_bot(
-                                        msg.author.id, gld.id):
-                                    await channel.send(embeds=msg.embeds)
-                                    await msg.delete()
-                        descr = (f"Ticket {channel.name}\n"
-                                 "Opened at "
-                                 f"<t:{int(channel.created_at.timestamp())}:f>")
-                        if guild.first_autoclose:
-                            # skipcq: FLK-E501 # pylint: disable=line-too-long
-                            descr += f"\nCloses <t:{int((channel.created_at + datetime.timedelta(minutes=guild.first_autoclose)).timestamp())}:R>"
-                            # skipcq: FLK-E501 # pylint: disable=line-too-long
-                            descr += "\nIf no one responds, the ticket will be closed automatically. Thank you for your patience!"
-                        await channel.edit(
-                            topic=descr,
-                            reason="More information for the ticket.")
-                        await confg.commit()
+                        await self.ticket_creation(confg, (gld, guild), channel)
 
     @commands.Cog.listener(name="on_guild_channel_delete")
     async def on_channel_delete(self,

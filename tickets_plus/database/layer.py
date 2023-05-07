@@ -28,9 +28,10 @@ Typical usage example:
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
+
 import datetime
 import types
-from typing import Sequence, Tuple, Type, Any
+from typing import Any, Sequence, Tuple, Type
 
 import discord
 from discord import utils
@@ -38,7 +39,6 @@ from discord.ext import commands
 from sqlalchemy import sql
 from sqlalchemy.ext import asyncio as sa_asyncio
 from sqlalchemy.sql import base
-# Future Proofing for possible future use of asyncio
 
 from tickets_plus.database import models
 
@@ -383,6 +383,7 @@ class OnlineConfig:
             self,
             channel_id: int,
             guild_id: int,
+            user_id: int | None = None,
             staff_note: int | None = None) -> Tuple[bool, models.Ticket]:
         """Get a or create ticket from the database.
 
@@ -394,6 +395,7 @@ class OnlineConfig:
         Args:
             channel_id: The channel ID.
             guild_id: The guild ID. Used to create the guild if missing.
+            user_id: The user ID. Only filed if integration is enabled.
             staff_note: The staff note thread ID. Used to annotate the thread,
                 if the ticket is created.
 
@@ -409,9 +411,25 @@ class OnlineConfig:
             new = True
             ticket = models.Ticket(channel_id=channel_id,
                                    guild=guild,
+                                   user_id=user_id,
                                    staff_note_thread=staff_note)
             self._session.add(ticket)
         return new, ticket
+
+    async def get_pending_tickets(self) -> Sequence[models.Ticket]:
+        """Get pending tickets from the database.
+
+        Fetches all pending tickets from the database.
+
+        Returns:
+            Sequence[models.Ticket]: The pending tickets.
+        """
+        tickets = await self._session.scalars(
+            sql.select(models.Ticket).join(models.Guild).filter(
+                models.Guild.warn_autoclose.isnot(None),
+                models.Ticket.notified.isnot(True), models.Ticket.last_response
+                <= models.UTCnow() - models.Guild.warn_autoclose))
+        return tickets.all()
 
     async def fetch_tag(self, guild_id: int,
                         tag: str) -> discord.Embed | str | None:
@@ -438,9 +456,9 @@ class OnlineConfig:
         if embed.title:
             emdd = vars(embed)
             emd2 = {}
-            for a in emdd:
-                if emdd[a] is not None:
-                    emd2[a] = emdd[a]
+            for key, data in emdd.values():
+                if data is not None:
+                    emd2[key] = data
             if embed.author:
                 emd2["author"] = {"name": embed.author}
             if embed.footer:

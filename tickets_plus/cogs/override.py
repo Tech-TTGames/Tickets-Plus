@@ -20,6 +20,7 @@ Typical usage example:
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
 # If later approved by the Initial Contrubotor, GPL-3.0-or-later.
+
 import asyncio
 import logging
 import os
@@ -29,10 +30,10 @@ from discord import app_commands
 from discord.ext import commands
 
 from tickets_plus import bot, cogs
-from tickets_plus.database import statvars
+from tickets_plus.database import config, const
 from tickets_plus.ext import checks, views
 
-_CNFG = statvars.MiniConfig()
+_CNFG = config.MiniConfig()
 """Submodule private global constant for the config."""
 
 
@@ -159,7 +160,7 @@ class Overrides(commands.GroupCog,
             "git pull",
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
-            cwd=statvars.PROG_DIR,
+            cwd=const.PROG_DIR,
         )
         stdo, stdr = await pull.communicate()
         if stdo:
@@ -191,7 +192,7 @@ class Overrides(commands.GroupCog,
         await ctx.response.defer(thinking=True)
         logging.info("Sending logs to %s...", str(ctx.user))
         filename = f"bot.log{'.'+str(id_no) if id_no else ''}"
-        file_path = os.path.join(statvars.PROG_DIR, "log", filename)
+        file_path = os.path.join(const.PROG_DIR, "log", filename)
         try:
             await ctx.user.send(file=discord.File(fp=file_path))
         except FileNotFoundError:
