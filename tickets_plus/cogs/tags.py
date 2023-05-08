@@ -202,7 +202,7 @@ class TagUtils(commands.GroupCog,
             "thumbnail": thumbnail,
             "author": author
         }
-        if any(opt_params) and not title:
+        if any(opt_params.values()) and not title:
             raise exceptions.InvalidParameters(
                 "You need to specify a title"
                 " if you want to use embed parameters!")
@@ -289,7 +289,7 @@ class TagUtils(commands.GroupCog,
                 tag_data.description = content
             if title:
                 tag_data.title = title
-            if not tag_data.title and any(opt_params):
+            if not tag_data.title and any(opt_params.values()):
                 raise exceptions.InvalidParameters(
                     "You need to specify a title if"
                     " you want to use embed parameters!")
