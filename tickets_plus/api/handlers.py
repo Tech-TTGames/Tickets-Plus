@@ -54,6 +54,11 @@ class BotHandler(web.RequestHandler):
         Not striclty necessary, but it's good practice.
         """
         self.set_header("Content-Type", "application/json")
+        # pylint: disable=line-too-long # skipcq: FLK-E501
+        self.set_header("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload")
+        # pylint: disable=line-too-long # skipcq: FLK-E501
+        self.set_header("Content-Security-Policy","default-src 'none'; script-src 'none'; object-src 'none'; style-src 'none'; img-src 'none'; font-src 'none'; connect-src 'self'; media-src 'none'; frame-src 'none'; worker-src 'none'; manifest-src 'none'")
+        self.set_header("X-Content-Type-Options", "nosniff")
 
     # pylint: disable=invalid-overridden-method
     async def prepare(self) -> None:
