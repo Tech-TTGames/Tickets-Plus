@@ -168,6 +168,8 @@ async def start_bot(stat_data: config.MiniConfig = config.MiniConfig()
         api = routes.make_app(bot_instance)
         tls_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
         tls_ctx.options |= ssl.OP_NO_TLSv1_2
+        tls_ctx.options |= ssl.OP_CIPHER_SERVER_PREFERENCE
+        tls_ctx.options |= ssl.OP_NO_RENEGOTIATION
         try:
             tls_ctx.load_cert_chain(
                 stat_data.getitem("ssl_cert"),
