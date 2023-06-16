@@ -122,9 +122,15 @@ class TicketHandler(BotHandler):
                 guild_id = int(self.args["guild_id"])
                 user_id = int(self.args["user_id"])
                 ticket_channel_id = int(self.args["ticket_channel_id"])
+                is_new_ticket = bool(self.args["is_new_ticket"])
             except (ValueError, KeyError):
                 self.set_status(400, "Missing or invalid parameters.")
                 self.write({"error": "Missing or invalid parameters."})
+                self.finish()
+                return
+            if not is_new_ticket:
+                self.set_status(202, "Not a new ticket.")
+                self.write({"notice": "Not a new ticket."})
                 self.finish()
                 return
             guild = self._bt.get_guild(guild_id)
