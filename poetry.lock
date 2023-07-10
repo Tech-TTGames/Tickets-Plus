@@ -438,13 +438,13 @@ graph = ["objgraph (>=1.7.2)"]
 
 [[package]]
 name = "discord-py"
-version = "2.2.3"
+version = "2.3.1"
 description = "A Python wrapper for the Discord API"
 optional = false
 python-versions = ">=3.8.0"
 files = [
-    {file = "discord.py-2.2.3-py3-none-any.whl", hash = "sha256:792bdcfe71cfe013c446cf379b2e83e08b5050604322ad6fb592864e63511abd"},
-    {file = "discord.py-2.2.3.tar.gz", hash = "sha256:f9df95795c6f52c5db43b7ab43634993e12ef233288636a759166dd9c134d077"},
+    {file = "discord.py-2.3.1-py3-none-any.whl", hash = "sha256:149652f24da299706270bf8c03c2fcf80cf1caf3a480744c61d5b001688b380d"},
+    {file = "discord.py-2.3.1.tar.gz", hash = "sha256:8eb4fe66b5d503da6de3a8425e23012711dc2fbcd7a782107a92beac15ee3459"},
 ]
 
 [package.dependencies]
@@ -1332,4 +1332,4 @@ sqlite = ["aiosqlite"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "2476456e8dd2c5c5cdc0fd7dde300cc957f021f8db598e8b8d5040f79317ecf8"
+content-hash = "a38df2079871197414b18a8206a5cded20b9af5dd0616020c37f52d8d2afa9be"
