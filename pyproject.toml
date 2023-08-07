@@ -12,7 +12,7 @@ exclude = ["branding"]
 python = "^3.11"
 "discord.py" = "^2.3.1"
 SQLAlchemy = {extras = ["asyncio"], version = "^2.0.19"}
-alembic = {extras = ["tz"], version = "^1.11.1"}
+alembic = {extras = ["tz"], version = "^1.11.2"}
 asyncpg = { version = "^0.28.0", optional = true }
 aiosqlite = { version = "^0.19.0", optional = true }
 pynacl = "^1.5.0"
