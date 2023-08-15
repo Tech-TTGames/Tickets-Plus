@@ -10,13 +10,13 @@ exclude = ["branding"]
 
 [tool.poetry.dependencies]
 python = "^3.11"
-"discord.py" = "^2.3.1"
+"discord.py" = "^2.3.2"
 SQLAlchemy = {extras = ["asyncio"], version = "^2.0.19"}
-alembic = {extras = ["tz"], version = "^1.11.1"}
+alembic = {extras = ["tz"], version = "^1.11.2"}
 asyncpg = { version = "^0.28.0", optional = true }
 aiosqlite = { version = "^0.19.0", optional = true }
 pynacl = "^1.5.0"
-tornado = "^6.3.2"
+tornado = "^6.3.3"
 
 [tool.poetry.extras]
 sqlite = ["aiosqlite"]
@@ -28,7 +28,7 @@ optional = true
 
 [tool.poetry.group.dev.dependencies]
 yapf = "^0.40.1"
-pylint = "^2.17.4"
+pylint = "^2.17.5"
 pdoc = "^14.0.0"
 
 [tool.poetry.scripts]
