@@ -1,5 +1,5 @@
 discord.py~=2.3.2
-SQLAlchemy[asyncio]~=2.0.19
+SQLAlchemy[asyncio]~=2.0.20
 alembic[tz]~=1.11.2
 asyncpg~=0.27.0
 pynacl~=1.5.0
