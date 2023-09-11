@@ -29,7 +29,7 @@ optional = true
 [tool.poetry.group.dev.dependencies]
 yapf = "^0.40.1"
 pylint = "^2.17.5"
-pdoc = "^14.0.0"
+pdoc = "^14.1.0"
 
 [tool.poetry.scripts]
 start = "tickets_plus.__main__:main"
