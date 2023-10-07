@@ -9,7 +9,7 @@ packages = [{include = "tickets_plus"}]
 exclude = ["branding"]
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.12"
 "discord.py" = "^2.3.2"
 SQLAlchemy = {extras = ["asyncio"], version = "^2.0.21"}
 alembic = {extras = ["tz"], version = "^1.12.0"}
