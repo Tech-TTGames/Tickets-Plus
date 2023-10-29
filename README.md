@@ -99,6 +99,7 @@ Here are the steps to host your copy of [this bot.](https://github.com/Tech-TTGa
 9. Copy your _main_ guild ID and paste it into config.json under "dev_guild_id". This will enable the dev commands in your server. (Reqired)
 10. Start your bot! Use `poetry run start` or after activating venv (if present) `python3 /tickets_plus/`
     - Probably add a background service that will restart the bot on boot. _I use systemd for my bots._
+11. Finally send `<bot ping> sync` in the bot's DMs to sync / commands.
 
 ### Database Documentation
 
