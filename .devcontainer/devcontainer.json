@@ -1,6 +1,6 @@
 {
 	"name": "Poetry Basic",
-	"image": "mcr.microsoft.com/devcontainers/python:3.11-bullseye",
+	"image": "mcr.microsoft.com/devcontainers/python:3.12-bullseye",
 	"features": {
 		"ghcr.io/devcontainers/features/git:1": {},
 		"ghcr.io/devcontainers-contrib/features/poetry:2": {},
