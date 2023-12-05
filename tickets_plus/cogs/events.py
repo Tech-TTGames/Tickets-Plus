@@ -73,22 +73,12 @@ class Events(commands.Cog, name="Events"):
                 ticket_type = ttype
         if ticket_type.ignore:
             return
-        nts_thrd: discord.Thread = await channel.create_thread(
-            name="Staff Notes",
-            reason=f"Staff notes for Ticket {channel.name}",
-            auto_archive_duration=10080,
-        )
-        await nts_thrd.send(
-            string.Template(
-                guild.open_message).safe_substitute(channel=channel.mention))
+        nts_thrd = None
+        if guild.legacy_threads:
+            nts_thrd = await legacy.thread_create(channel, guild, confg)
         user_id = user.id if user else None
-        await confg.get_ticket(channel.id, gld.id, user_id, nts_thrd.id)
-        logging.info("Created thread %s for %s", nts_thrd.name, channel.name)
-        if guild.observers_roles:
-            observer_ids = await confg.get_all_observers_roles(gld.id)
-            inv = await nts_thrd.send(" ".join(
-                [f"<@&{role.role_id}>" for role in observer_ids]))
-            await inv.delete()
+        thr_id = nts_thrd.id if nts_thrd else None
+        await confg.get_ticket(channel.id, gld.id, user_id, thr_id)
         if guild.helping_block:
             overwrite = discord.PermissionOverwrite()
             overwrite.view_channel = False

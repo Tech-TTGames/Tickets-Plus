@@ -166,6 +166,7 @@ class Settings(commands.GroupCog,
                 ctx.guild_id,  # type: ignore
             )
             emd = discord.Embed(title="Observers Role List Edited")
+            emd.set_footer(text="Warning! Ticket notes are currently legacy, please use the main bot for ticket notes.")
             if not new:
                 await conn.delete(obsrvrs)
                 emd.add_field(name="Removed:", value=role.mention)
@@ -280,6 +281,7 @@ class Settings(commands.GroupCog,
                             color=discord.Color.yellow())
         emd.add_field(name="Old message:", value=old)
         emd.add_field(name="New message:", value=message)
+        emd.set_footer(text="Warning! Ticket notes are currently legacy, please use the main bot for ticket notes.")
         await ctx.followup.send(embed=emd, ephemeral=True)
 
     @app_commands.command(name="penrole",

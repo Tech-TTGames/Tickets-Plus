@@ -185,6 +185,9 @@ class Guild(Base):
         default=False,
         nullable=False,
         comment="Whether the bot is integrated with the main bot")
+    legacy_threads: orm.Mapped[bool] = orm.mapped_column(default=False,
+                                                         nullable=False,
+                                                         comment="Whether the server has legacy threads")
 
     # Relationships
     ticket_bots: orm.Mapped[list["TicketBot"]] = orm.relationship(
