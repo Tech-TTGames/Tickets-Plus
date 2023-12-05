@@ -12,6 +12,8 @@ This bot acts as a supplementary, separate bot[^2] to the main Tickets bot.
 
 ## Feature 1 - Staff Notes
 
+Due to the implementation of staff notes in the main bot this is now legacy, but still available servers registered before the v0.2 update.
+
 Private threads are _(now)_ free!
 
 This creates a private thread in a channel and adds the staff roles to it[^3].
