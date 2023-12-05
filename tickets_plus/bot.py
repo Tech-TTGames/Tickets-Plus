@@ -16,7 +16,7 @@ Typical usage example:
 # This Source Code may also be made available under the following
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
-# If later approved by the Initial Contrubotor, GPL-3.0-or-later.
+# If later approved by the Initial Contributor, GPL-3.0-or-later.
 
 import logging
 
@@ -31,7 +31,7 @@ from tickets_plus.database import config, const, layer
 class TicketsPlusBot(commands.AutoShardedBot):
     """A bot instance that is used to run Tickets+.
 
-    Automatically sharded bot instance that is used to run Tickets+.
+    Automatically sharded bot instance used to run Tickets+.
     This is to allow us to add our own methods and attributes.
     In general, not much is done in this class.
     Most of the work is done in the cogs.
@@ -49,28 +49,27 @@ class TicketsPlusBot(commands.AutoShardedBot):
                  db_engine: sa_asyncio.AsyncEngine,
                  confg: config.MiniConfig = config.MiniConfig(),
                  **kwargs) -> None:
-        """Initialises the bot instance.
+        """Initializes the bot instance.
 
-        This function is used to initialise the bot instance.
+        This function is used to initialize the bot instance.
         We create prep some stuff for the bot to use.
 
         Args:
-            *args: The arguments to pass to the super class.
+            *args: The arguments to pass to the superclass.
             db_engine: The database engine.
             confg: The config for the bot.
                 Defaults to `tickets_plus.statvars.MiniConfig`.
-            **kwargs: The keyword arguments to pass to the super class.
+            **kwargs: The keyword arguments to pass to the superclass.
         """
         super().__init__(*args, **kwargs)
         self._db_engine = db_engine
         self.stat_confg = confg
-        self.sessions = sa_asyncio.async_sessionmaker(self._db_engine,
-                                                      expire_on_commit=False)
+        self.sessions = sa_asyncio.async_sessionmaker(self._db_engine, expire_on_commit=False)
 
     async def setup_hook(self) -> None:
         """Runs just before the bot connects to Discord.
 
-        Sets up the bot, for actual use.
+        Sets up the bot for actual use.
         This is used to load the cogs and sync the database.
         Generally, this function should not be called manually.
         """
@@ -88,7 +87,7 @@ class TicketsPlusBot(commands.AutoShardedBot):
         """Gets a connection from the database pool.
 
         Grabs a connection from the async session maker.
-        We additionally wrap the connection in a OnlineConfig object.
+        We additionally wrap the connection in a `OnlineConfig` object.
         This is to allow us to use the OnlineConfig object as a context manager.
         And to allow for more convenient access to the database.
 

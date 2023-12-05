@@ -1,7 +1,7 @@
 """Tickets+ decorators for use with discord.py app commands.
 
 A set of decorators for use with discord.py application commands.
-These are generally Ticket Plus specific checks.
+These are generally Tickets Plus specific checks.
 They require the client to be a `tickets_plus.bot.TicketsPlusBot` instance.
 Though some may work with any `discord.ext.commands.Bot` instance.
 
@@ -22,7 +22,7 @@ Typical usage example:
 # This Source Code may also be made available under the following
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
-# If later approved by the Initial Contrubotor, GPL-3.0-or-later.
+# If later approved by the Initial Contributor, GPL-3.0-or-later.
 
 import discord
 from discord import app_commands
@@ -48,7 +48,7 @@ def is_owner_check():
     """
 
     async def is_owner(interaction: discord.Interaction) -> bool:
-        """Checks if interaction user is owner.
+        """Checks if interaction user is an owner.
 
         The actual check. It's a coroutine, so it can be awaited.
 
@@ -56,12 +56,12 @@ def is_owner_check():
             interaction: The interaction to check.
 
         Returns:
-            `bool`: Whether the user is owner or not.
-                Doesn't return if the user is not owner.
+            `bool`: Whether the user is an owner or not.
+                Doesn't return if the user is not an owner.
 
         Raises:
             `tickets_plus.exceptions.TicketsCheckFailure`: Requirements not met.
-                Raised if the user is not owner. This is according to the
+                Raised if the user is not an owner. This is according to the
                 discord.py convention.
         """
         app = await interaction.client.application_info()
@@ -71,8 +71,7 @@ def is_owner_check():
                 return True
         if interaction.user == app.owner:
             return True
-        raise exceptions.TicketsCheckFailure(
-            "You do not have permission to do this.")
+        raise exceptions.TicketsCheckFailure("You do not have permission to do this.")
 
     return app_commands.check(is_owner)
 
@@ -80,7 +79,7 @@ def is_owner_check():
 def is_staff_check():
     """A staff check using the database.
 
-    We need create our own check so we can use the database.
+    We need to create our own check, so we can use the database.
 
     Returns:
         `discord.app_commands.check`: The check.
@@ -124,7 +123,7 @@ def is_staff_check():
             for role in staff_roles:
                 parsed_role = interaction.guild.get_role(role.role_id)
                 if parsed_role in interaction.user.roles:  # type: ignore
-                    # Alredy checked for member
+                    # Already checked for member
                     return True
         raise exceptions.TicketsCheckFailure("You do not have"
                                              " permission to do this here.")

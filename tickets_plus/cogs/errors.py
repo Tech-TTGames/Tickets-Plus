@@ -17,7 +17,7 @@ Typical usage example:
 # This Source Code may also be made available under the following
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
-# If later approved by the Initial Contrubotor, GPL-3.0-or-later.
+# If later approved by the Initial Contributor, GPL-3.0-or-later.
 
 import logging
 
@@ -71,14 +71,14 @@ class ErrorHandling(commands.Cog, name="AppCommandErrorHandler"):
         tree.on_error = self.old_error_handler
         logging.info("Error handling unloaded.")
 
-    async def on_app_command_error(self, ctx: discord.Interaction,
-                                   error: app_commands.AppCommandError) -> None:
+    @staticmethod
+    async def on_app_command_error(ctx: discord.Interaction, error: app_commands.AppCommandError) -> None:
         """Handles errors from app commands globally.
 
-        This function is automatically called when an error is raised,
+        This function is automatically called when an error is raised
         from an app command.
         This is used to handle and respond to errors.
-        So as to not leave the user confused.
+        To not leave the user confused.
 
         Args:
             ctx: The interaction that raised the error.
@@ -87,7 +87,7 @@ class ErrorHandling(commands.Cog, name="AppCommandErrorHandler"):
         if not ctx.response.is_done():
             await ctx.response.defer(ephemeral=True)
         if isinstance(ctx.command, app_commands.Command):
-            # Splitting cuz we don't want AttributeError
+            # Splitting because, we don't want AttributeError
             if hasattr(ctx.command, "on_error"):
                 # Same as above
                 if ctx.command.on_error is not None:
@@ -114,12 +114,11 @@ class ErrorHandling(commands.Cog, name="AppCommandErrorHandler"):
         if isinstance(error, app_commands.CheckFailure):
             if isinstance(error, app_commands.BotMissingPermissions):
                 emd.title = "Tickets+ Error: 503 - Bot Missing Permissions"
-                emd.description = (
-                    "The bot is missing permissions required"
-                    " to run this command.\n"
-                    "Please ask a server administrator to grant the bot the "
-                    "following permissions:\n"
-                    f"{chr(92).join(error.missing_permissions)}")
+                emd.description = ("The bot is missing permissions required"
+                                   " to run this command.\n"
+                                   "Please ask a server administrator to grant the bot the "
+                                   "following permissions:\n"
+                                   f"{chr(92).join(error.missing_permissions)}")
                 emd.set_footer(text="If you are sure the bot has the "
                                "required permissions, please report this.")
                 await ctx.followup.send(embed=emd, ephemeral=True)
@@ -134,9 +133,8 @@ class ErrorHandling(commands.Cog, name="AppCommandErrorHandler"):
 
             if isinstance(error, app_commands.CommandOnCooldown):
                 emd.title = "Tickets+ Error: 429 - Command On Cooldown"
-                emd.description = (
-                    "This command is on cooldown.\n"
-                    f"Please try again in {error.retry_after} seconds.")
+                emd.description = ("This command is on cooldown.\n"
+                                   f"Please try again in {error.retry_after} seconds.")
                 emd.set_footer(text="Thank you for using Tickets+!")
                 await ctx.followup.send(embed=emd, ephemeral=True)
                 return
@@ -158,21 +156,18 @@ class ErrorHandling(commands.Cog, name="AppCommandErrorHandler"):
             underlying_error = error.original
 
             if isinstance(underlying_error, exc.SQLAlchemyError):
-                logging.error("An error occurred while accessing the database:",
-                              exc_info=underlying_error)
+                logging.error("An error occurred while accessing the database:", exc_info=underlying_error)
                 emd.title = "Tickets+ Error: 500 - Database Error"
-                emd.description = (
-                    "An error occurred while accessing the database.\n"
-                    "Please try again later. If this error persists, "
-                    "please report it.\n"
-                    "You can get the link to GitHub and support server by "
-                    "using the /version command.")
+                emd.description = ("An error occurred while accessing the database.\n"
+                                   "Please try again later. If this error persists, "
+                                   "please report it.\n"
+                                   "You can get the link to GitHub and support server by "
+                                   "using the /version command.")
                 emd.set_footer(text=f"Error type: {type(underlying_error)}")
                 await ctx.followup.send(embed=emd, ephemeral=True)
                 return
 
-        logging.error("An unhadled error occurred while executing a command:",
-                      exc_info=error)
+        logging.error("An unhandled error occurred while executing a command:", exc_info=error)
         emd.set_footer(text=f"Error type: {type(error).__name__}")
         await ctx.followup.send(embed=emd, ephemeral=True)
 

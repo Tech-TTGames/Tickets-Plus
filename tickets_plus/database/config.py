@@ -12,7 +12,7 @@ Typical usage example:
     ```py
     from tickets_plus.database import config
     # Make use of the config module
-    # i.e. import and use the Classes
+    # i.e., import and use the Classes
     ```
 """
 # License: EPL-2.0
@@ -21,7 +21,7 @@ Typical usage example:
 # This Source Code may also be made available under the following
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
-# If later approved by the Initial Contrubotor, GPL-3.0-or-later.
+# If later approved by the Initial Contributor, GPL-3.0-or-later.
 
 import json
 import logging
@@ -50,21 +50,21 @@ class Secret:
     secrets: dict[str, Any]
 
     def __init__(self) -> None:
-        """Loads the secret.json file and stores the data in self.secrets
+        """Loads the secret.json file and stores the data in `self.secrets`
 
         We load the secret.json file and store the data in self.secrets.
-        We also store the token in self.token for easy access.
+        We also store the token in `self.token` for easy access.
         """
         self._file = pathlib.Path(const.PROG_DIR, "secret.json")
         try:
-            with open(self._file, encoding="utf-8", mode="r") as secret_f:
+            with open(self._file, encoding="utf-8") as secret_f:
                 self.secrets = json.load(secret_f)
             self.token: str = self.secrets["token"]
             self.ssl_key: str = self.secrets["ssl_key"]
         except FileNotFoundError:
             logging.warning("Running in dry-run mode.")
             self._file = pathlib.Path(const.PROG_DIR, "example_secret.json")
-            with open(self._file, encoding="utf-8", mode="r") as secret_f:
+            with open(self._file, encoding="utf-8") as secret_f:
                 self.secrets = json.load(secret_f)
             self.token: str = self.secrets["token"]
             self.ssl_key: str = self.secrets["ssl_key"]
@@ -82,19 +82,19 @@ class MiniConfig:
     This class is used to manage the config.json file.
     It is used to store non-sensitive information such as the bot prefix.
     It does not allow for modification of the config.json file.
-    As any functiality that should modify the config.json file should be
+    As any functionality that should modify the config.json file should be
     instead implemented in the `tickets_plus.database.layer.OnlineConfig` class.
     """
 
     def __init__(self) -> None:
         self._file = pathlib.Path(const.PROG_DIR, "config.json")
         try:
-            with open(self._file, encoding="utf-8", mode="r") as config_f:
+            with open(self._file, encoding="utf-8") as config_f:
                 self._config: dict = json.load(config_f)
         except FileNotFoundError:
             logging.warning("Running in dry-run mode.")
             self._file = pathlib.Path(const.PROG_DIR, "example_config.json")
-            with open(self._file, encoding="utf-8", mode="r") as config_f:
+            with open(self._file, encoding="utf-8") as config_f:
                 self._config: dict = json.load(config_f)
 
     def __dict__(self) -> dict:
@@ -130,7 +130,7 @@ class MiniConfig:
 
 
 class RuntimeConfig:
-    """Advanced low-level coonfiguration parameters
+    """Advanced low-level configuration parameters
 
     This class is used to manage the runtimeconfig.json file.
     It is used to store advanced configuration information.
@@ -143,7 +143,7 @@ class RuntimeConfig:
 
     def __init__(self) -> None:
         self._file = pathlib.Path(const.PROG_DIR, "runtimeconfig.json")
-        with open(self._file, encoding="utf-8", mode="r") as config_f:
+        with open(self._file, encoding="utf-8") as config_f:
             self._config: dict = json.load(config_f)
 
     def __dict__(self) -> dict:

@@ -18,7 +18,7 @@ Typical usage example:
 # This Source Code may also be made available under the following
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
-# If later approved by the Initial Contrubotor, GPL-3.0-or-later.
+# If later approved by the Initial Contributor, GPL-3.0-or-later.
 
 import datetime
 from typing import Type
@@ -58,7 +58,7 @@ def pg_UTCnow(element, compiler, **kw):
 
     Args:
       element: The element to compile so, in this case, the UTCnow object.
-      compiler: The Compiled object, can be accessed to get information.
+      compiler: The Compiled object can be accessed to get information.
       **kw: Keyword arguments.
 
     Returns:
@@ -74,7 +74,7 @@ class Base(orm.DeclarativeBase):
     It is used to define the metadata object for the database.
     A detailed database schema is available in our docs.
     It includes a diagram of the database tables.
-    Please see the SQLAlchemy docs for more information, about
+    Please see the SQLAlchemy docs for more information about
     how to use this class.
 
     Attributes:
@@ -96,12 +96,12 @@ class Guild(Base):
     Attributes:
         guild_id: The unique discord-provided guild ID.
         open_message: The message to send when a staff thread is opened
-            defaults to "Staff notes for Ticket $channel." and is
+            defaults to "Staff notes for Ticket $channel." and it is
             limited to 200 characters.
         staff_team_name: The name of the staff team
             defaults to "Staff Team" and is limited to 40 characters.
-        first_autoclose: Time since open with no response to autoclose.
-        any_autoclose: Time since last response to autoclose.
+        first_autoclose: Time since open with no response to auto-close.
+        any_autoclose: Time since last response to auto-close.
         warn_autoclose: Time to warn user (via DM) after last response.
         msg_discovery: Whether to allow message discovery
             defaults to True.
@@ -123,10 +123,9 @@ class Guild(Base):
     }
 
     # Simple columns
-    guild_id: orm.Mapped[int] = orm.mapped_column(
-        sqlalchemy.BigInteger(),
-        primary_key=True,
-        comment="Unique discord-provided guild ID")
+    guild_id: orm.Mapped[int] = orm.mapped_column(sqlalchemy.BigInteger(),
+                                                  primary_key=True,
+                                                  comment="Unique discord-provided guild ID")
     open_message: orm.Mapped[str] = orm.mapped_column(
         sqlalchemy.String(200),
         default="Staff notes for Ticket $channel.",
@@ -140,17 +139,11 @@ class Guild(Base):
         comment="Name of the staff team",
     )
     first_autoclose: orm.Mapped[datetime.timedelta | None] = orm.mapped_column(
-        sqlalchemy.Interval(),
-        nullable=True,
-        comment="Time since open with no response to autoclose")
+        sqlalchemy.Interval(), nullable=True, comment="Time since open with no response to auto-close")
     any_autoclose: orm.Mapped[datetime.timedelta | None] = orm.mapped_column(
-        sqlalchemy.Interval(),
-        nullable=True,
-        comment="Time since last response to autoclose")
+        sqlalchemy.Interval(), nullable=True, comment="Time since last response to auto-close")
     warn_autoclose: orm.Mapped[datetime.timedelta | None] = orm.mapped_column(
-        sqlalchemy.Interval(),
-        nullable=True,
-        comment="Time to warn user (via DM) after last response")
+        sqlalchemy.Interval(), nullable=True, comment="Time to warn user (via DM) after last response")
     support_block: orm.Mapped[int | None] = orm.mapped_column(
         sqlalchemy.BigInteger(),
         nullable=True,
@@ -161,53 +154,38 @@ class Guild(Base):
     helping_block: orm.Mapped[int | None] = orm.mapped_column(
         sqlalchemy.BigInteger(),
         nullable=True,
-        comment=(
-            "Role to apply to users who are blocked from helping in tickets"
-            " I would reccomend also preventing the users from obtaining"
-            " any other support roles."
-            " Using permissions checks in reaction bots."
-            " If not set, considered disabled."))
+        comment=("Role to apply to users who are blocked from helping in tickets"
+                 " I would recommend also preventing the users from obtaining"
+                 " any other support roles."
+                 " Using permissions checks in reaction bots."
+                 " If not set, considered disabled."))
 
     # Toggles
-    msg_discovery: orm.Mapped[bool] = orm.mapped_column(
-        default=True,
-        nullable=False,
-        comment="Whether to allow message discovery")
-    strip_buttons: orm.Mapped[bool] = orm.mapped_column(
-        default=False,
-        nullable=False,
-        comment="Whether to strip buttons from messages")
+    msg_discovery: orm.Mapped[bool] = orm.mapped_column(default=True,
+                                                        nullable=False,
+                                                        comment="Whether to allow message discovery")
+    strip_buttons: orm.Mapped[bool] = orm.mapped_column(default=False,
+                                                        nullable=False,
+                                                        comment="Whether to strip buttons from messages")
     strip_roles: orm.Mapped[bool] = orm.mapped_column(
-        default=False,
-        nullable=False,
-        comment="Whether to strip comsup roles when applying a helping_block")
-    integrated: orm.Mapped[bool] = orm.mapped_column(
-        default=False,
-        nullable=False,
-        comment="Whether the bot is integrated with the main bot")
+        default=False, nullable=False, comment="Whether to strip comsup roles when applying a helping_block")
+    integrated: orm.Mapped[bool] = orm.mapped_column(default=False,
+                                                     nullable=False,
+                                                     comment="Whether the bot is integrated with the main bot")
     legacy_threads: orm.Mapped[bool] = orm.mapped_column(default=False,
                                                          nullable=False,
                                                          comment="Whether the server has legacy threads")
 
     # Relationships
-    ticket_bots: orm.Mapped[list["TicketBot"]] = orm.relationship(
-        back_populates="guild", lazy="raise")
-    tickets: orm.Mapped[list["Ticket"]] = orm.relationship(
-        back_populates="guild", lazy="raise")
-    staff_roles: orm.Mapped[list["StaffRole"]] = orm.relationship(
-        back_populates="guild", lazy="raise")
-    observers_roles: orm.Mapped[list["ObserversRole"]] = orm.relationship(
-        back_populates="guild", lazy="raise")
-    community_roles: orm.Mapped[list["CommunityRole"]] = orm.relationship(
-        back_populates="guild", lazy="raise")
-    community_pings: orm.Mapped[list["CommunityPing"]] = orm.relationship(
-        back_populates="guild", lazy="raise")
-    members: orm.Mapped[list["Member"]] = orm.relationship(
-        back_populates="guild", lazy="raise")
-    tags: orm.Mapped[list["Tag"]] = orm.relationship(back_populates="guild",
-                                                     lazy="raise")
-    ticket_types: orm.Mapped[list["TicketType"]] = orm.relationship(
-        back_populates="guild", lazy="raise")
+    ticket_bots: orm.Mapped[list["TicketBot"]] = orm.relationship(back_populates="guild", lazy="raise")
+    tickets: orm.Mapped[list["Ticket"]] = orm.relationship(back_populates="guild", lazy="raise")
+    staff_roles: orm.Mapped[list["StaffRole"]] = orm.relationship(back_populates="guild", lazy="raise")
+    observers_roles: orm.Mapped[list["ObserversRole"]] = orm.relationship(back_populates="guild", lazy="raise")
+    community_roles: orm.Mapped[list["CommunityRole"]] = orm.relationship(back_populates="guild", lazy="raise")
+    community_pings: orm.Mapped[list["CommunityPing"]] = orm.relationship(back_populates="guild", lazy="raise")
+    members: orm.Mapped[list["Member"]] = orm.relationship(back_populates="guild", lazy="raise")
+    tags: orm.Mapped[list["Tag"]] = orm.relationship(back_populates="guild", lazy="raise")
+    ticket_types: orm.Mapped[list["TicketType"]] = orm.relationship(back_populates="guild", lazy="raise")
     # Disabled for now gets sqlalchemy confused
     # pylint: disable=line-too-long
     # users: orm.Mapped[list["User"]] = orm.relationship(
@@ -241,18 +219,16 @@ class TicketBot(Base):
 
     __tablename__ = "ticket_bots"
     __table_args__ = {
-        "comment":
-            ("Users that open the ticket channels, mostly the Tickets bot,"
-             " but can be other users due to whitelabel options.")
+        "comment": ("Users that open the ticket channels, mostly the Tickets bot,"
+                    " but can be other users due to whitelabel options.")
     }
 
     # Simple columns
     user_id: orm.Mapped[int] = orm.mapped_column(
         sqlalchemy.BigInteger(),
         nullable=False,
-        comment=(
-            "Unique discord-provided user ID."
-            " Used in conjunction with guild_id to make a unique primary key"),
+        comment=("Unique discord-provided user ID."
+                 " Used in conjunction with guild_id to make a unique primary key"),
         primary_key=True,
         unique=False,
     )
@@ -260,16 +236,14 @@ class TicketBot(Base):
         sqlalchemy.BigInteger(),
         sqlalchemy.ForeignKey("general_configs.guild_id"),
         nullable=False,
-        comment=(
-            "Unique Guild ID of parent guild."
-            " Used in conjunction with user_id to make a unique primary key"),
+        comment=("Unique Guild ID of parent guild."
+                 " Used in conjunction with user_id to make a unique primary key"),
         primary_key=True,
         unique=False,
     )
 
     # Relationships
-    guild: orm.Mapped["Guild"] = orm.relationship(back_populates="ticket_bots",
-                                                  lazy="selectin")
+    guild: orm.Mapped["Guild"] = orm.relationship(back_populates="ticket_bots", lazy="selectin")
 
 
 class TicketType(Base):
@@ -282,7 +256,7 @@ class TicketType(Base):
     And type-specific setting overrides.
 
     Attributes:
-        prefix: The prefix of the ticket type. Also the, type name.
+        prefix: The prefix of the ticket type. Also, the type name.
         guild_id: The unique discord-provided guild ID
         guild: The relationship to the Guild table
         comping: Whether to ping the community roles when template matches
@@ -291,9 +265,7 @@ class TicketType(Base):
     """
 
     __tablename__ = "ticket_types"
-    __table_args__ = {
-        "comment": "Ticket types are stored here. Each guild can have multiple."
-    }
+    __table_args__ = {"comment": "Ticket types are stored here. Each guild can have multiple."}
 
     # Simple columns
     prefix: orm.Mapped[str] = orm.mapped_column(
@@ -309,26 +281,21 @@ class TicketType(Base):
         comment="The unique discord-provided guild ID",
         primary_key=True,
     )
-    comping: orm.Mapped[bool] = orm.mapped_column(
-        default=True,
-        nullable=False,
-        comment="Whether to ping the community roles when template matches")
-    comaccs: orm.Mapped[bool] = orm.mapped_column(
-        default=True,
-        nullable=False,
-        comment="Whether to add the community roles when template matches")
-    strpbuttns: orm.Mapped[bool] = orm.mapped_column(
-        default=True,
-        nullable=False,
-        comment="Whether to strip buttons from open when template matches")
-    ignore: orm.Mapped[bool] = orm.mapped_column(
-        default=False,
-        nullable=False,
-        comment="Whether to ignore this ticket type")
+    comping: orm.Mapped[bool] = orm.mapped_column(default=True,
+                                                  nullable=False,
+                                                  comment="Whether to ping the community roles when template matches")
+    comaccs: orm.Mapped[bool] = orm.mapped_column(default=True,
+                                                  nullable=False,
+                                                  comment="Whether to add the community roles when template matches")
+    strpbuttns: orm.Mapped[bool] = orm.mapped_column(default=True,
+                                                     nullable=False,
+                                                     comment="Whether to strip buttons from open when template matches")
+    ignore: orm.Mapped[bool] = orm.mapped_column(default=False,
+                                                 nullable=False,
+                                                 comment="Whether to ignore this ticket type")
 
     # Relationships
-    guild: orm.Mapped["Guild"] = orm.relationship(back_populates="ticket_types",
-                                                  lazy="selectin")
+    guild: orm.Mapped["Guild"] = orm.relationship(back_populates="ticket_types", lazy="selectin")
 
     @classmethod
     def default(cls: Type["TicketType"]) -> "TicketType":
@@ -337,12 +304,7 @@ class TicketType(Base):
         This is the default ticket type.
         It is used when no ticket type is specified.
         """
-        return cls(prefix="",
-                   guild_id=0,
-                   comping=True,
-                   comaccs=True,
-                   strpbuttns=True,
-                   ignore=False)
+        return cls(prefix="", guild_id=0, comping=True, comaccs=True, strpbuttns=True, ignore=False)
 
 
 class Ticket(Base):
@@ -369,10 +331,9 @@ class Ticket(Base):
     __table_args__ = {"comment": "Channels that are tickets are stored here."}
 
     # Simple columns
-    channel_id: orm.Mapped[int] = orm.mapped_column(
-        sqlalchemy.BigInteger(),
-        primary_key=True,
-        comment="Unique discord-provided channel ID")
+    channel_id: orm.Mapped[int] = orm.mapped_column(sqlalchemy.BigInteger(),
+                                                    primary_key=True,
+                                                    comment="Unique discord-provided channel ID")
     guild_id: orm.Mapped[int] = orm.mapped_column(
         sqlalchemy.BigInteger(),
         sqlalchemy.ForeignKey("general_configs.guild_id"),
@@ -402,18 +363,15 @@ class Ticket(Base):
         comment="Unique discord-provided channel ID of the staff note thread",
         unique=True,
     )
-    anonymous: orm.Mapped[bool] = orm.mapped_column(
-        default=False,
-        nullable=False,
-        comment="Whether the ticket is in anonymous mode")
-    notified: orm.Mapped[bool] = orm.mapped_column(
-        default=False,
-        nullable=False,
-        comment="Whether the user has been notified about this ticket")
+    anonymous: orm.Mapped[bool] = orm.mapped_column(default=False,
+                                                    nullable=False,
+                                                    comment="Whether the ticket is in anonymous mode")
+    notified: orm.Mapped[bool] = orm.mapped_column(default=False,
+                                                   nullable=False,
+                                                   comment="Whether the user has been notified about this ticket")
 
     # Relationships
-    guild: orm.Mapped["Guild"] = orm.relationship(back_populates="tickets",
-                                                  lazy="selectin")
+    guild: orm.Mapped["Guild"] = orm.relationship(back_populates="tickets", lazy="selectin")
 
     # SNOWFLAKE PROTOCOL
     @orm.reconstructor
@@ -431,14 +389,14 @@ class Tag(Base):
 
     Stores the tags for the guild.
     Tags are used to quickly respond to common questions.
-    Tags are stored in the database so they can be
+    Tags are stored in the database, so they can be
     updated without restarting the bot.
     Additionally, if additional columns besides "tag" and "content" are added,
-    the tag is automatically interpreted as a embed.
+    the tag is automatically interpreted as an embed.
 
     Attributes:
         guild_id: The unique discord-provided guild ID.
-        tag: The 'key' of the tag.
+        tag_name: The 'key' of the tag.
         title: The title of the embed.
         description: The description of the embed.
         url: The url of the embed.
@@ -454,42 +412,37 @@ class Tag(Base):
     __table_args__ = {"comment": "Tags for the guilds."}
 
     # Simple columns
-    guild_id: orm.Mapped[int] = orm.mapped_column(
-        sqlalchemy.BigInteger(),
-        sqlalchemy.ForeignKey("general_configs.guild_id"),
-        nullable=False,
-        comment="Unique Guild ID of parent guild",
-        primary_key=True)
-    tag_name: orm.Mapped[str] = orm.mapped_column(
-        sqlalchemy.String(32),
-        nullable=False,
-        comment="The 'key' of the tag",
-        primary_key=True)
-    title: orm.Mapped[str | None] = orm.mapped_column(
-        sqlalchemy.String(256), nullable=True, comment="The title of the embed")
-    description: orm.Mapped[str] = orm.mapped_column(
-        sqlalchemy.String(4096),
-        nullable=False,
-        comment="The description of the embed")
-    url: orm.Mapped[str | None] = orm.mapped_column(
-        sqlalchemy.String(256), nullable=True, comment="The url of the embed")
-    color: orm.Mapped[int | None] = orm.mapped_column(
-        sqlalchemy.Integer(), nullable=True, comment="The color of the embed")
-    footer: orm.Mapped[str | None] = orm.mapped_column(
-        sqlalchemy.String(2048),
-        nullable=True,
-        comment="The footer of the embed")
-    image: orm.Mapped[str] = orm.mapped_column(sqlalchemy.String(256),
-                                               nullable=True,
-                                               comment="The image of the embed")
-    thumbnail: orm.Mapped[str | None] = orm.mapped_column(
-        sqlalchemy.String(256),
-        nullable=True,
-        comment="The thumbnail of the embed")
-    author: orm.Mapped[str | None] = orm.mapped_column(
-        sqlalchemy.String(256),
-        nullable=True,
-        comment="The author of the embed")
+    guild_id: orm.Mapped[int] = orm.mapped_column(sqlalchemy.BigInteger(),
+                                                  sqlalchemy.ForeignKey("general_configs.guild_id"),
+                                                  nullable=False,
+                                                  comment="Unique Guild ID of parent guild",
+                                                  primary_key=True)
+    tag_name: orm.Mapped[str] = orm.mapped_column(sqlalchemy.String(32),
+                                                  nullable=False,
+                                                  comment="The 'key' of the tag",
+                                                  primary_key=True)
+    title: orm.Mapped[str | None] = orm.mapped_column(sqlalchemy.String(256),
+                                                      nullable=True,
+                                                      comment="The title of the embed")
+    description: orm.Mapped[str] = orm.mapped_column(sqlalchemy.String(4096),
+                                                     nullable=False,
+                                                     comment="The description of the embed")
+    url: orm.Mapped[str | None] = orm.mapped_column(sqlalchemy.String(256),
+                                                    nullable=True,
+                                                    comment="The url of the embed")
+    color: orm.Mapped[int | None] = orm.mapped_column(sqlalchemy.Integer(),
+                                                      nullable=True,
+                                                      comment="The color of the embed")
+    footer: orm.Mapped[str | None] = orm.mapped_column(sqlalchemy.String(2048),
+                                                       nullable=True,
+                                                       comment="The footer of the embed")
+    image: orm.Mapped[str] = orm.mapped_column(sqlalchemy.String(256), nullable=True, comment="The image of the embed")
+    thumbnail: orm.Mapped[str | None] = orm.mapped_column(sqlalchemy.String(256),
+                                                          nullable=True,
+                                                          comment="The thumbnail of the embed")
+    author: orm.Mapped[str | None] = orm.mapped_column(sqlalchemy.String(256),
+                                                       nullable=True,
+                                                       comment="The author of the embed")
 
     # Relationships
     guild: orm.Mapped["Guild"] = orm.relationship(
@@ -515,7 +468,7 @@ class StaffRole(Base):
     __tablename__ = "staff_roles"
     __table_args__ = {
         "comment": ("Roles that are allowed to view ticket notes,"
-                    " and have acess to staff commands.")
+                    " and have access to staff commands.")
     }
 
     # Simple columns
@@ -533,8 +486,7 @@ class StaffRole(Base):
     )
 
     # Relationships
-    guild: orm.Mapped["Guild"] = orm.relationship(back_populates="staff_roles",
-                                                  lazy="selectin")
+    guild: orm.Mapped["Guild"] = orm.relationship(back_populates="staff_roles", lazy="selectin")
 
     # SNOWFLAKE PROTOCOL
     @orm.reconstructor
@@ -562,9 +514,7 @@ class ObserversRole(Base):
     """
 
     __tablename__ = "observer_roles"
-    __table_args__ = {
-        "comment": "Roles that are automatically added to tickets notes."
-    }
+    __table_args__ = {"comment": "Roles that are automatically added to tickets notes."}
 
     # Simple columns
     role_id: orm.Mapped[int] = orm.mapped_column(
@@ -581,8 +531,7 @@ class ObserversRole(Base):
     )
 
     # Relationships
-    guild: orm.Mapped["Guild"] = orm.relationship(
-        back_populates="observers_roles", lazy="selectin")
+    guild: orm.Mapped["Guild"] = orm.relationship(back_populates="observers_roles", lazy="selectin")
 
     # SNOWFLAKE PROTOCOL
     @orm.reconstructor
@@ -610,9 +559,7 @@ class CommunityRole(Base):
     """
 
     __tablename__ = "community_roles"
-    __table_args__ = {
-        "comment": "Roles that are allowed to view tickets, but aren't staff."
-    }
+    __table_args__ = {"comment": "Roles that are allowed to view tickets, but aren't staff."}
 
     # Simple columns
     role_id: orm.Mapped[int] = orm.mapped_column(
@@ -629,8 +576,7 @@ class CommunityRole(Base):
     )
 
     # Relationships
-    guild: orm.Mapped["Guild"] = orm.relationship(
-        back_populates="community_roles", lazy="selectin")
+    guild: orm.Mapped["Guild"] = orm.relationship(back_populates="community_roles", lazy="selectin")
 
     # SNOWFLAKE PROTOCOL
     @orm.reconstructor
@@ -679,8 +625,7 @@ class CommunityPing(Base):
     )
 
     # Relationships
-    guild: orm.Mapped["Guild"] = orm.relationship(
-        back_populates="community_pings", lazy="selectin")
+    guild: orm.Mapped["Guild"] = orm.relationship(back_populates="community_pings", lazy="selectin")
 
     # SNOWFLAKE PROTOCOL
     @orm.reconstructor
@@ -694,7 +639,7 @@ class CommunityPing(Base):
 
 
 class Member(Base):
-    """Members table
+    """Member table
 
     This is the table for the members.
     It is an association table between the users and the guilds.
@@ -721,9 +666,8 @@ class Member(Base):
         sqlalchemy.BigInteger(),
         sqlalchemy.ForeignKey("users.user_id"),
         nullable=False,
-        comment=(
-            "Unique discord-provided user ID."
-            " Used in conjunction with guild_id to make a unique primary key"),
+        comment=("Unique discord-provided user ID."
+                 " Used in conjunction with guild_id to make a unique primary key"),
         primary_key=True,
         unique=False,
     )
@@ -731,9 +675,8 @@ class Member(Base):
         sqlalchemy.BigInteger(),
         sqlalchemy.ForeignKey("general_configs.guild_id"),
         nullable=False,
-        comment=(
-            "Unique Guild ID of parent guild."
-            " Used in conjunction with user_id to make a unique primary key"),
+        comment=("Unique Guild ID of parent guild."
+                 " Used in conjunction with user_id to make a unique primary key"),
         primary_key=True,
         unique=False,
     )
@@ -752,14 +695,12 @@ class Member(Base):
         default=None)
 
     # Relationships
-    guild: orm.Mapped["Guild"] = orm.relationship(back_populates="members",
-                                                  lazy="selectin")
-    user: orm.Mapped["User"] = orm.relationship(back_populates="memberships",
-                                                lazy="selectin")
+    guild: orm.Mapped["Guild"] = orm.relationship(back_populates="members", lazy="selectin")
+    user: orm.Mapped["User"] = orm.relationship(back_populates="memberships", lazy="selectin")
 
 
 class User(Base):
-    """Users table
+    """User table
 
     This is the table for the users.
     It contains the user ID.
@@ -788,12 +729,10 @@ class User(Base):
     )
 
     # Toggles
-    is_owner: orm.Mapped[bool] = orm.mapped_column(
-        default=False, comment="Is the user the owner of the bot?")
+    is_owner: orm.Mapped[bool] = orm.mapped_column(default=False, comment="Is the user the owner of the bot?")
 
     # Relationships
-    memberships: orm.Mapped[list["Member"]] = orm.relationship(
-        back_populates="user", lazy="raise")
+    memberships: orm.Mapped[list["Member"]] = orm.relationship(back_populates="user", lazy="raise")
     # Disabled for now gets sqlalchemy confused
     # pylint: disable=line-too-long
     # guilds: orm.Mapped[list["Guild"]] = orm.relationship(

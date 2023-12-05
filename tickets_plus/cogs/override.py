@@ -19,7 +19,7 @@ Typical usage example:
 # This Source Code may also be made available under the following
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
-# If later approved by the Initial Contrubotor, GPL-3.0-or-later.
+# If later approved by the Initial Contributor, GPL-3.0-or-later.
 
 import asyncio
 import logging
@@ -38,9 +38,7 @@ _CNFG = config.MiniConfig()
 
 
 @app_commands.guilds(_CNFG.getitem("dev_guild_id"))
-class Overrides(commands.GroupCog,
-                name="override",
-                description="Owner override commands."):
+class Overrides(commands.GroupCog, name="override", description="Owner override commands."):
     """Owner override commands.
 
     This class contains commands that are only available to the bot owner.
@@ -50,11 +48,11 @@ class Overrides(commands.GroupCog,
     """
 
     def __init__(self, bot_instance: bot.TicketsPlusBot):
-        """Initialises the cog.
+        """Initializes the cog.
 
-        This method initialises the cog.
+        This method initializes the cog.
         It also sets the bot instance as a private attribute.
-        And finally initialises the superclass.
+        And finally initializes the superclass.
 
         Args:
             bot_instance: The bot instance.
@@ -66,9 +64,7 @@ class Overrides(commands.GroupCog,
     @app_commands.command(name="reload", description="Reloads the bot's cogs.")
     @checks.is_owner_check()
     @app_commands.describe(sync="Syncs the tree after reloading cogs.")
-    async def reload(self,
-                     ctx: discord.Interaction,
-                     sync: bool = False) -> None:
+    async def reload(self, ctx: discord.Interaction, sync: bool = False) -> None:
         """Reloads the bot's cogs.
 
         This command reloads all cogs in the EXTENSIONS list.
@@ -108,9 +104,7 @@ class Overrides(commands.GroupCog,
         logging.info("Closing...")
         await self._bt.close()
 
-    @app_commands.command(
-        name="pull",
-        description="Pulls the latest changes from the git repo. DANGEROUS!")
+    @app_commands.command(name="pull", description="Pulls the latest changes from the git repo. DANGEROUS!")
     @checks.is_owner_check()
     async def pull(self, ctx: discord.Interaction) -> None:
         """Pulls the latest changes from the git repo.
@@ -125,10 +119,9 @@ class Overrides(commands.GroupCog,
         confr = views.Confirm()
         emd = discord.Embed(
             title="Pull from git",
-            description=(
-                "Are you sure you want to pull from git?\n"
-                "This is a dangerous command, as it can break the bot.\n"
-                "If you are not sure what you are doing, abort now."),
+            description=("Are you sure you want to pull from git?\n"
+                         "This is a dangerous command, as it can break the bot.\n"
+                         "If you are not sure what you are doing, abort now."),
             color=discord.Color.red(),
         )
         await ctx.response.send_message(embed=emd, view=confr)
@@ -143,9 +136,7 @@ class Overrides(commands.GroupCog,
             await ctx.followup.edit_message(mgs.id, embed=emd)
             return
         if not confr.value:
-            emd = discord.Embed(title="Pull from git",
-                                description="Cancelled.",
-                                color=discord.Color.orange())
+            emd = discord.Embed(title="Pull from git", description="Cancelled.", color=discord.Color.orange())
             await ctx.followup.edit_message(mgs.id, embed=emd)
             return
         emd = discord.Embed(
@@ -211,7 +202,7 @@ class Overrides(commands.GroupCog,
         This command sends the config to the user who invoked the command.
         I don't really know if it works with the new db system.
         It is required to specify a guild ID. This is because the config
-        is guild specific.
+        is guild-specific.
 
         Args:
             ctx: The interaction context.
@@ -228,10 +219,8 @@ class Overrides(commands.GroupCog,
                 color=discord.Color.random(),
             )
             emd.add_field(name="OPEN MESSAGE", value=guild_confg.open_message)
-            emd.add_field(name="STAFF TEAM NAME",
-                          value=guild_confg.staff_team_name)
-            emd.add_field(name="FIRST AUTOCLOSE",
-                          value=guild_confg.first_autoclose)
+            emd.add_field(name="STAFF TEAM NAME", value=guild_confg.staff_team_name)
+            emd.add_field(name="FIRST AUTO-CLOSE", value=guild_confg.first_autoclose)
             emd.add_field(name="MSG DISCOVERY", value=guild_confg.msg_discovery)
             emd.add_field(name="STRIP BUTTONS", value=guild_confg.strip_buttons)
         await ctx.user.send(embed=emd)
@@ -262,7 +251,7 @@ class Overrides(commands.GroupCog,
 async def setup(bot_instance: bot.TicketsPlusBot):
     """Sets up the overrides.
 
-    We add the overrides cog to the bot.
+    We add the override cog to the bot.
 
     Args:
         bot_instance: The bot.

@@ -16,7 +16,7 @@ Typical usage example:
 # This Source Code may also be made available under the following
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
-# If later approved by the Initial Contrubotor, GPL-3.0-or-later.
+# If later approved by the Initial Contributor, GPL-3.0-or-later.
 
 import datetime
 import logging
@@ -32,33 +32,29 @@ from tickets_plus.ext import exceptions
 
 @app_commands.guild_only()
 @app_commands.default_permissions(administrator=True)
-class Settings(commands.GroupCog,
-               name="settings",
-               description="Settings for the bot."):
+class Settings(commands.GroupCog, name="settings", description="Settings for the bot."):
     """Provides commands to change the bot's settings.
 
     These settings are guild-specific and are stored in the database.
-    We suggest the settings to be only changed by administrators,
-    however this can be changed discord-side.
+    We suggest the settings to be only changed by administrators;
+    however, this can be changed discord-side.
     This is a group cog, so all commands are under the settings group.
     """
 
     def __init__(self, bot_instance: bot.TicketsPlusBot):
-        """Initialises the cog.
+        """Initializes the cog.
 
-        We initialise the variables we need.
-        Then we call the super class's __init__ method.
+        We initialize the variables we need.
+        Then we call the superclasses __init__ method.
 
         Args:
-            bot: The bot instance.
+            bot_instance: The bot instance.
         """
         self._bt = bot_instance
         super().__init__()
         logging.info("Loaded %s", self.__class__.__name__)
 
-    async def ticket_types_autocomplete(
-            self, ctx: discord.Interaction,
-            arg: str) -> List[app_commands.Choice[str]]:
+    async def ticket_types_autocomplete(self, ctx: discord.Interaction, arg: str) -> List[app_commands.Choice[str]]:
         """Autocomplete for ticket types.
 
         This function is used to autocomplete the ticket types.
@@ -72,21 +68,14 @@ class Settings(commands.GroupCog,
             A list of choices for the autocomplete.
         """
         async with self._bt.get_connection() as conn:
-            ticket_types = await conn.get_ticket_types(
-                ctx.guild_id  # type: ignore
-            )
-        return [
-            app_commands.Choice(name=t.prefix, value=t.prefix)
-            for t in ticket_types
-            if arg in t.prefix
-        ]
+            ticket_types = await conn.get_ticket_types(ctx.guild_id  # type: ignore
+                                                      )
+        return [app_commands.Choice(name=t.prefix, value=t.prefix) for t in ticket_types if arg in t.prefix]
 
-    @app_commands.command(name="ticketbot",
-                          description="Change the ticket bots for your server.")
+    @app_commands.command(name="ticketbot", description="Change the ticket bots for your server.")
     @app_commands.describe(user="The user to add to ticket bots.")
-    async def change_tracked(self, ctx: discord.Interaction,
-                             user: discord.User) -> None:
-        """Changes the tickets bot for the server.
+    async def change_tracked(self, ctx: discord.Interaction, user: discord.User) -> None:
+        """Changes the ticket bot for the server.
 
         This command is used to change the ticket bots users.
         Ticket bots are users that can create tickets to be handled by our bot.
@@ -101,21 +90,19 @@ class Settings(commands.GroupCog,
                 user.id,
                 ctx.guild_id,  # type: ignore
             )
-            emd = discord.Embed(title="Ticket Bot List Edited")
+            color = discord.Color.green() if new else discord.Color.red()
+            emd = discord.Embed(title="Ticket Bot List Edited", color=color)
             if not new:
                 await conn.delete(ticket_user)
                 emd.add_field(name="Removed:", value=user.mention)
-                emd.color = discord.Color.red()
             else:
                 emd.add_field(name="Added:", value=user.mention)
-                emd.color = discord.Color.green()
             await conn.commit()
         await ctx.followup.send(embed=emd, ephemeral=True)
 
     @app_commands.command(name="staff", description="Change the staff roles.")
     @app_commands.describe(role="The role to add/remove from staff roles.")
-    async def change_staff(self, ctx: discord.Interaction,
-                           role: discord.Role) -> None:
+    async def change_staff(self, ctx: discord.Interaction, role: discord.Role) -> None:
         """Changes the staff roles for the server.
 
         This command is used to change the staff roles.
@@ -132,32 +119,29 @@ class Settings(commands.GroupCog,
                 role.id,
                 ctx.guild_id,  # type: ignore
             )
-            emd = discord.Embed(title="Staff Role List Edited")
+            color = discord.Color.green() if new else discord.Color.red()
+            emd = discord.Embed(title="Staff Role List Edited", color=color)
             if not new:
                 await conn.delete(staff_role)
                 emd.add_field(name="Removed:", value=role.mention)
-                emd.color = discord.Color.red()
             else:
                 emd.add_field(name="Added:", value=role.mention)
-                emd.color = discord.Color.green()
             await conn.commit()
         await ctx.followup.send(embed=emd, ephemeral=True)
 
-    @app_commands.command(name="observers",
-                          description="Change the observers roles.")
+    @app_commands.command(name="observers", description="Change the observers roles.")
     @app_commands.describe(role="The role to add/remove from observers roles.")
-    async def change_observers(self, ctx: discord.Interaction,
-                               role: discord.Role) -> None:
-        """Changes the observers roles for the server.
+    async def change_observers(self, ctx: discord.Interaction, role: discord.Role) -> None:
+        """Changes the observer roles for the server.
 
-        This command is used to change the observers roles.
-        Observers roles are roles that are automatically added to ticket notes.
+        This command is used to change the observer roles.
+        Observer roles are roles that are automatically added to ticket notes.
         They are to be used in conjunction with the staff roles.
         As observers don't have access to staff commands.
 
         Args:
             ctx: The interaction context.
-            role: The role to add/remove from observers roles.
+            role: The role to add/remove from observer roles.
         """
         await ctx.response.defer(ephemeral=True)
         async with self._bt.get_connection() as conn:
@@ -165,29 +149,25 @@ class Settings(commands.GroupCog,
                 role.id,
                 ctx.guild_id,  # type: ignore
             )
-            emd = discord.Embed(title="Observers Role List Edited")
+            color = discord.Color.green() if new else discord.Color.red()
+            emd = discord.Embed(title="Observers Role List Edited", color=color)
             emd.set_footer(text="Warning! Ticket notes are currently legacy, please use the main bot for ticket notes.")
             if not new:
                 await conn.delete(obsrvrs)
                 emd.add_field(name="Removed:", value=role.mention)
-                emd.color = discord.Color.red()
             else:
                 emd.add_field(name="Added:", value=role.mention)
-                emd.color = discord.Color.green()
             await conn.commit()
         await ctx.followup.send(embed=emd, ephemeral=True)
 
-    @app_commands.command(name="communitysupport",
-                          description="Change the community support roles.")
-    @app_commands.describe(
-        role="The role to add/remove from community support roles.")
-    async def change_community_roles(self, ctx: discord.Interaction,
-                                     role: discord.Role) -> None:
+    @app_commands.command(name="communitysupport", description="Change the community support roles.")
+    @app_commands.describe(role="The role to add/remove from community support roles.")
+    async def change_community_roles(self, ctx: discord.Interaction, role: discord.Role) -> None:
         """Modifies the server's community support roles.
 
         This command is used to change the community support roles.
         Community support roles are roles that are automatically added to
-        community support tickets. But do not recive any permissions.
+        community support tickets. But do not receive any permissions.
         They are not pinged when a new ticket is created.
 
         Args:
@@ -200,23 +180,19 @@ class Settings(commands.GroupCog,
                 role.id,
                 ctx.guild_id,  # type: ignore
             )
-            emd = discord.Embed(title="Community Support Role List Edited")
+            color = discord.Color.green() if new else discord.Color.red()
+            emd = discord.Embed(title="Community Support Role List Edited", color=color)
             if not new:
                 await conn.delete(comsup)
                 emd.add_field(name="Removed:", value=role.mention)
-                emd.color = discord.Color.red()
             else:
                 emd.add_field(name="Added:", value=role.mention)
-                emd.color = discord.Color.green()
             await conn.commit()
         await ctx.followup.send(embed=emd, ephemeral=True)
 
-    @app_commands.command(name="communityping",
-                          description="Change the community ping roles.")
-    @app_commands.describe(
-        role="The role to add/remove from community ping roles.")
-    async def change_community_ping_roles(self, ctx: discord.Interaction,
-                                          role: discord.Role) -> None:
+    @app_commands.command(name="communityping", description="Change the community ping roles.")
+    @app_commands.describe(role="The role to add/remove from community ping roles.")
+    async def change_community_ping_roles(self, ctx: discord.Interaction, role: discord.Role) -> None:
         """Modifies the server's community ping roles.
 
         This command is used to change the community ping roles.
@@ -236,22 +212,19 @@ class Settings(commands.GroupCog,
                 role.id,
                 ctx.guild_id,  # type: ignore
             )
-            emd = discord.Embed(title="Community Ping Role List Edited")
+            color = discord.Color.green() if new else discord.Color.red()
+            emd = discord.Embed(title="Community Ping Role List Edited", color=color)
             if not new:
                 await conn.delete(comsup)
                 emd.add_field(name="Removed:", value=role.mention)
-                emd.color = discord.Color.red()
             else:
                 emd.add_field(name="Added:", value=role.mention)
-                emd.color = discord.Color.green()
             await conn.commit()
         await ctx.followup.send(embed=emd, ephemeral=True)
 
-    @app_commands.command(name="openmsg",
-                          description="Change the open message.")
+    @app_commands.command(name="openmsg", description="Change the open message.")
     @app_commands.describe(message="The new open message.")
-    async def change_openmsg(self, ctx: discord.Interaction,
-                             message: str) -> None:
+    async def change_openmsg(self, ctx: discord.Interaction, message: str) -> None:
         """This command is used to change the open message.
 
         This is the message that opens a new ticket notes thread.
@@ -277,15 +250,13 @@ class Settings(commands.GroupCog,
             old = guild.open_message
             guild.open_message = message
             await conn.commit()
-        emd = discord.Embed(title="Open Message Changed",
-                            color=discord.Color.yellow())
+        emd = discord.Embed(title="Open Message Changed", color=discord.Color.yellow())
         emd.add_field(name="Old message:", value=old)
         emd.add_field(name="New message:", value=message)
         emd.set_footer(text="Warning! Ticket notes are currently legacy, please use the main bot for ticket notes.")
         await ctx.followup.send(embed=emd, ephemeral=True)
 
-    @app_commands.command(name="penrole",
-                          description="Change the penalty roles.")
+    @app_commands.command(name="penrole", description="Change the penalty roles.")
     @app_commands.describe(role="The role to set as a penalty role.")
     @app_commands.choices(penal=[
         app_commands.Choice(name="Support Block", value=0),
@@ -320,11 +291,9 @@ class Settings(commands.GroupCog,
         emd.add_field(name="New role:", value=role.mention)
         await ctx.followup.send(embed=emd, ephemeral=True)
 
-    @app_commands.command(name="staffteamname",
-                          description="Change the staff team's name.")
+    @app_commands.command(name="staffteamname", description="Change the staff team's name.")
     @app_commands.describe(name="The new staff team's name.")
-    async def change_staffteamname(self, ctx: discord.Interaction,
-                                   name: str) -> None:
+    async def change_staffteamname(self, ctx: discord.Interaction, name: str) -> None:
         """This command is used to change the staff team's name.
 
         We use this name when the bot sends messages as the staff team.
@@ -348,14 +317,12 @@ class Settings(commands.GroupCog,
             old = guild.staff_team_name
             guild.staff_team_name = name
             await conn.commit()
-        emd = discord.Embed(title="Staff Team Name Changed",
-                            color=discord.Color.yellow())
+        emd = discord.Embed(title="Staff Team Name Changed", color=discord.Color.yellow())
         emd.add_field(name="Old name:", value=old)
         emd.add_field(name="New name:", value=name)
         await ctx.followup.send(embed=emd, ephemeral=True)
 
-    @app_commands.command(name="timings",
-                          description="Change any internal bot timings.")
+    @app_commands.command(name="timings", description="Change any internal bot timings.")
     @app_commands.describe(
         category="The category of timing to change.",
         days="The new timing time days.",
@@ -363,8 +330,8 @@ class Settings(commands.GroupCog,
         minutes="The new timing time minutes.",
     )
     @app_commands.choices(category=[
-        app_commands.Choice(name="First Response Autoclose", value=0),
-        app_commands.Choice(name="Last Response Autoclose", value=1),
+        app_commands.Choice(name="First Response Auto-close", value=0),
+        app_commands.Choice(name="Last Response Auto-close", value=1),
         app_commands.Choice(name="Ticket Close Warning", value=2),
     ])
     async def change_autoclose(self,
@@ -373,21 +340,21 @@ class Settings(commands.GroupCog,
                                days: int = 0,
                                hours: int = 0,
                                minutes: int = 0) -> None:
-        """Set the guild-wide autoclose time.
+        """Set the guild-wide auto-close time.
 
-        This command is used to change the autoclose time.
+        This command is used to change the auto-close time.
         We use this time to correctly calculate the time until a ticket
-        is automatically closed. This is the time that is displayed
+        is automatically closed. This is the time displayed
         in the ticket's description. Additionally, this is the time
         we may later use to warn the user that their ticket is about
         to be closed.
 
         Args:
             ctx: The interaction context.
-            category: The category of autoclose time to change.
-            days: The new autoclose time days. Defaults to 0.
-            hours: The new autoclose time hours. Defaults to 0.
-            minutes: The new autoclose time minutes. Defaults to 0.
+            category: The category of auto-close time to change.
+            days: The new auto-close time days. Default to 0.
+            hours: The new auto-close time hours. Default to 0.
+            minutes: The new auto-close time minutes. Default to 0.
         """
         await ctx.response.defer(ephemeral=True)
         async with self._bt.get_connection() as conn:
@@ -406,20 +373,13 @@ class Settings(commands.GroupCog,
                 prev = changed_close
             if days + hours + minutes == 0:
                 changed_close = None
-                emd = discord.Embed(title=f"{category_txt} Disabled",
-                                    color=discord.Color.red())
-                emd.add_field(name="Previous autoclose time:",
-                              value=f"{str(prev)}")
+                emd = discord.Embed(title=f"{category_txt} Disabled", color=discord.Color.red())
+                emd.add_field(name="Previous auto-close time:", value=f"{str(prev)}")
             else:
-                changed_close = datetime.timedelta(days=days,
-                                                   hours=hours,
-                                                   minutes=minutes)
-                emd = discord.Embed(title=f"{category_txt} Timings Changed",
-                                    color=discord.Color.yellow())
-                emd.add_field(name="Previous autoclose time:",
-                              value=f"{str(prev)}")
-                emd.add_field(name="New autoclose time:",
-                              value=f"{str(changed_close)}")
+                changed_close = datetime.timedelta(days=days, hours=hours, minutes=minutes)
+                emd = discord.Embed(title=f"{category_txt} Timings Changed", color=discord.Color.yellow())
+                emd.add_field(name="Previous auto-close time:", value=f"{str(prev)}")
+                emd.add_field(name="New auto-close time:", value=f"{str(changed_close)}")
             if category.value == 1:
                 guild.any_autoclose = changed_close
             elif category.value == 2:
@@ -429,8 +389,7 @@ class Settings(commands.GroupCog,
             await conn.commit()
         await ctx.followup.send(embed=emd, ephemeral=True)
 
-    @app_commands.command(name="toggle",
-                          description="Toggle a specified True/False value.")
+    @app_commands.command(name="toggle", description="Toggle a specified True/False value.")
     @app_commands.describe(value="The value to toggle.")
     @app_commands.choices(value=[
         app_commands.Choice(name="Message Discovery", value=0),
@@ -438,8 +397,7 @@ class Settings(commands.GroupCog,
         app_commands.Choice(name="Role Stripping", value=2),
         app_commands.Choice(name="Integrated with Tickets", value=3)
     ])
-    async def toggle_value(self, ctx: discord.Interaction,
-                           value: app_commands.Choice[int]) -> None:
+    async def toggle_value(self, ctx: discord.Interaction, value: app_commands.Choice[int]) -> None:
         """A generic toggle command.
 
         A more space efficient way to implement the toggle commands.
@@ -465,25 +423,20 @@ class Settings(commands.GroupCog,
                 new_status = not guild.integrated
                 guild.integrated = new_status
             await conn.commit()
-        emd = discord.Embed(
-            title="Value Toggled",
-            description=f"{value.name} is now {new_status}",
-            color=discord.Color.green() if new_status else discord.Color.red())
+        emd = discord.Embed(title="Value Toggled",
+                            description=f"{value.name} is now {new_status}",
+                            color=discord.Color.green() if new_status else discord.Color.red())
         await ctx.followup.send(embed=emd, ephemeral=True)
 
-    @app_commands.command(name="tickettype",
-                          description="Create/Delete a ticket type.")
-    @app_commands.describe(
-        name=("The name of the ticket type."
-              " This should be the prefix you use for the ticket type."
-              " ie. #<name>-<number>."),
-        comping="Whether or not to ping the community role.",
-        comaccs="Whether or not to give the community role matched ticket.",
-        strpbuttns="Whether or not to strip buttons from the ticket.",
-        ignore="Whether or not to ignore the ticket type.")
-    @app_commands.rename(comping="communityping",
-                         comaccs="communityaccess",
-                         strpbuttns="stripbuttons")
+    @app_commands.command(name="tickettype", description="Create/Delete a ticket type.")
+    @app_commands.describe(name=("The name of the ticket type."
+                                 " This should be the prefix you use for the ticket type."
+                                 " ie. #<name>-<number>."),
+                           comping="Whether or not to ping the community role.",
+                           comaccs="Whether or not to give the community role matched ticket.",
+                           strpbuttns="Whether or not to strip buttons from the ticket.",
+                           ignore="Whether or not to ignore the ticket type.")
+    @app_commands.rename(comping="communityping", comaccs="communityaccess", strpbuttns="stripbuttons")
     @app_commands.autocomplete(name=ticket_types_autocomplete)
     async def create_ticket_type(self,
                                  ctx: discord.Interaction,
@@ -500,11 +453,12 @@ class Settings(commands.GroupCog,
         settings customization.
 
         Args:
+            ctx: Interaction context
             name: The name of the new ticket type.
-            comping: Whether or not to ping the community role.
-            comaccs: Whether or not to give the community role view tickets.
-            strpbuttns: Whether or not to strip buttons from the ticket.
-            ignore: Whether or not to ignore the ticket type.
+            comping: Whether to ping the community role.
+            comaccs: Whether to give the community role view tickets.
+            strpbuttns: Whether to strip buttons from the ticket.
+            ignore: Whether to ignore the ticket type.
         """
         await ctx.response.defer(ephemeral=True)
         async with self._bt.get_connection() as conn:
@@ -527,19 +481,15 @@ class Settings(commands.GroupCog,
             await conn.commit()
         await ctx.followup.send(embed=emd, ephemeral=True)
 
-    @app_commands.command(name="edittickettype",
-                          description="Edit a ticket type.")
-    @app_commands.describe(
-        name=("The name of the ticket type."
-              " This should be the prefix you use for the ticket type."
-              " ie. #<name>-<number>."),
-        comping="Whether or not to ping the community role.",
-        comaccs="Whether or not to give the community role matched ticket.",
-        strpbuttns="Whether or not to strip buttons from the ticket.",
-        ignore="Whether or not to ignore the ticket type.")
-    @app_commands.rename(comping="communityping",
-                         comaccs="communityaccess",
-                         strpbuttns="stripbuttons")
+    @app_commands.command(name="edittickettype", description="Edit a ticket type.")
+    @app_commands.describe(name=("The name of the ticket type."
+                                 " This should be the prefix you use for the ticket type."
+                                 " ie. #<name>-<number>."),
+                           comping="Whether or not to ping the community role.",
+                           comaccs="Whether or not to give the community role matched ticket.",
+                           strpbuttns="Whether or not to strip buttons from the ticket.",
+                           ignore="Whether or not to ignore the ticket type.")
+    @app_commands.rename(comping="communityping", comaccs="communityaccess", strpbuttns="stripbuttons")
     @app_commands.autocomplete(name=ticket_types_autocomplete)
     async def edit_ticket_type(self,
                                ctx: discord.Interaction,
@@ -556,15 +506,15 @@ class Settings(commands.GroupCog,
         settings customization.
 
         Args:
+            ctx: Discord interaction context.
             name: The name of the ticket type.
-            comping: Whether or not to ping the community role.
-            comaccs: Whether or not to give the community role view tickets.
-            strpbuttns: Whether or not to strip buttons from the ticket.
-            ignore: Whether or not to ignore the ticket type.
+            comping: Whether to ping the community role.
+            comaccs: Whether to give the community role view tickets.
+            strpbuttns: Whether to strip buttons from the ticket.
+            ignore: Whether to ignore the ticket type.
         """
         if not any([comping, comaccs, strpbuttns]):
-            raise exceptions.InvalidParameters(
-                "You must specify at least one value to edit.")
+            raise exceptions.InvalidParameters("You must specify at least one value to edit.")
         await ctx.response.defer(ephemeral=True)
         async with self._bt.get_connection() as conn:
             new, tick_type = await conn.get_ticket_type(
@@ -572,8 +522,7 @@ class Settings(commands.GroupCog,
                 name=name,
             )
             if new:
-                raise exceptions.InvalidParameters(
-                    "Ticket type does not exist.")
+                raise exceptions.InvalidParameters("Ticket type does not exist.")
             else:
                 if comping is not None:
                     tick_type.comping = comping

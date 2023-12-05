@@ -19,7 +19,7 @@ Typical usage example:
 # This Source Code may also be made available under the following
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
-# If later approved by the Initial Contrubotor, GPL-3.0-or-later.
+# If later approved by the Initial Contributor, GPL-3.0-or-later.
 
 from discord import app_commands
 
@@ -41,7 +41,7 @@ class TicketsCheckFailure(app_commands.CheckFailure):
 
     An app command failed the ticket checks.
     This is usually used when a user tries to execute a command
-    that is not allowed in the current ticket state.
+     not allowed in the current ticket state.
     """
 
 
@@ -49,7 +49,7 @@ class ReferenceNotFound(TicketsPlusCommandError):
     """Command executed with invalid reference.
 
     A previously valid reference no longer resolves successfully.
-    Mostly cause by manual deletion of the referenced object,
+    Mostly caused by manual deletion of the referenced object,
     by the user.
     """
 

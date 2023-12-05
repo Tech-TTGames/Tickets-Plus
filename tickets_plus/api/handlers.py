@@ -3,7 +3,7 @@
 This module contains the handlers for the application interface.
 As it stands, these are not for use by the end user, but rather
 can be used by the main bot to deliver ticket data to our app.
-Not to be used directly, but rather through the routes module.
+Not to be used directly, but rather through the routes' module.
 
 Typical usage example:
     ```py
@@ -18,7 +18,7 @@ Typical usage example:
 # This Source Code may also be made available under the following
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
-# If later approved by the Initial Contrubotor, GPL-3.0-or-later.
+# If later approved by the Initial Contributor, GPL-3.0-or-later.
 
 import json
 
@@ -34,7 +34,7 @@ from tickets_plus.database import models
 class BotHandler(web.RequestHandler):
     """Handler for the bot to send data to the app.
 
-    This handler is used to recive data into the bot
+    This handler is used to receive data into the bot
     """
 
     def initialize(self, bot_instance: bot.TicketsPlusBot) -> None:
@@ -57,7 +57,11 @@ class BotHandler(web.RequestHandler):
         # pylint: disable=line-too-long # skipcq: FLK-E501
         self.set_header("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload")
         # pylint: disable=line-too-long # skipcq: FLK-E501
-        self.set_header("Content-Security-Policy", "default-src 'none'; script-src 'none'; object-src 'none'; style-src 'none'; img-src 'none'; font-src 'none'; connect-src 'self'; media-src 'none'; frame-src 'none'; worker-src 'none'; manifest-src 'none'")
+        self.set_header(
+            "Content-Security-Policy", "default-src 'none'; script-src 'none'; object-src 'none'; "
+            "style-src 'none'; img-src 'none'; font-src 'none'; connect-src "
+            "'self'; media-src 'none'; frame-src 'none'; worker-src 'none'; "
+            "manifest-src 'none'")
         self.set_header("X-Content-Type-Options", "nosniff")
 
     # pylint: disable=invalid-overridden-method
@@ -76,9 +80,7 @@ class BotHandler(web.RequestHandler):
             self.write({"error": "No authentication token provided."})
             self.finish()
             return
-        if self.request.headers.get(
-                "ticketsplus-api-auth") != self._bt.stat_confg.getitem(
-                    "auth_token"):
+        if self.request.headers.get("ticketsplus-api-auth") != self._bt.stat_confg.getitem("auth_token"):
             self.set_status(401, "Invalid authentication token.")
             self.write({"error": "Invalid authentication token."})
             self.finish()
@@ -159,20 +161,19 @@ class TicketHandler(BotHandler):
                 self.finish()
                 return
             user = self._bt.get_user(user_id)
-            await events.Events.ticket_creation(self, db, (guild, gld), channel,
-                                                user)
+            await events.Events.ticket_creation(self, db, (guild, gld), channel, user)
             self.set_status(200, "OK")
             self.finish()
 
 
 class OverrideHandler(BotHandler):
-    """Basic messaging capabilites with the bot
+    """Basic messaging capabilities with the bot
 
     Handles override messages being sent.
     """
 
     async def post(self):
-        """Handles override attempt.
+        """Handles override attempts.
 
         Tries to meet the parameters specified in the attempt.
 

@@ -1,6 +1,6 @@
 # Welcome to Tickets+
 
-<img align="left" src="https://raw.githubusercontent.com/Tech-TTGames/Tickets-Plus/main/branding/rounded.png" height="200" width="200"/>
+<img align="left" src="https://raw.githubusercontent.com/Tech-TTGames/Tickets-Plus/main/branding/rounded.png" height="200" width="200" alt="The Tickets Plus logo"/>
 
 [![CodeQL](https://github.com/Tech-TTGames/Tickets-Plus/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/Tech-TTGames/Tickets-Plus/actions/workflows/codeql.yml) [![Pylint](https://github.com/Tech-TTGames/Tickets-Plus/actions/workflows/pylint.yml/badge.svg?branch=main)](https://github.com/Tech-TTGames/Tickets-Plus/actions/workflows/pylint.yml) [![DeepSource](https://deepsource.io/gh/Tech-TTGames/Tickets-Plus.svg/?label=active+issues&show_trend=true&token=ourUeg696DFMDcZDoZi0ZqGn)](https://deepsource.io/gh/Tech-TTGames/Tickets-Plus/?ref=repository-badge) [![](https://shields.tosdr.org/en_9853.svg)](https://tosdr.org/en/service/9853)
 
@@ -85,7 +85,7 @@ Here are the steps to host your copy of [this bot.](https://github.com/Tech-TTGa
       - The **_easy link_** - `https://discord.com/api/oauth2/authorize?client_id=<CLIENT_ID>&permissions=8&scope=bot%20applications.commands`
       - The _safer link_ - `https://discord.com/api/oauth2/authorize?client_id=<CLIENT_ID>&permissions=535059492048&scope=bot%20applications.commands`
 8. Set up API (optional): This is an advanced step that will not be described in detail. (If certificate not set API skipped) If you want to use it here's some guidelines:
-   1. Create a SSL certificate. Either self-signed or from a CA (like Let's Encrypt).
+   1. Create an SSL certificate. Either self-signed or from a CA (like Let's Encrypt).
    2. Enter the path to the certificate in config.json under "ssl_cert", an in secret.json under "ssl_key" the path to the key.
    3. Create a safe token for the API and enter it in secret.json under "auth_token".
    4. And you're done with the basic setup. You can now use the API. If you want to use more bells and whistles, do it yourself.
@@ -96,17 +96,14 @@ Here are the steps to host your copy of [this bot.](https://github.com/Tech-TTGa
       - The URL is the URL of the domain/IP you are hosting the API on, with the port if you are using one.
       - The protocol _must_ be HTTPS.
       - The path is just `/`.
-9. Copy your _main_ guild ID and paste it into config.json under "dev_guild_id". This will enable the dev commands in your server. (Reqired)
+9. Copy your _main_ guild ID and paste it into config.json under "dev_guild_id". This will enable the dev commands in your server. (Required)
 10. Start your bot! Use `poetry run start` or after activating venv (if present) `python3 /tickets_plus/`
     - Probably add a background service that will restart the bot on boot. _I use systemd for my bots._
 11. Finally send `<bot ping> sync` in the bot's DMs to sync / commands.
 
-### Database Documentation
-
-- [Database Documentation](https://tickets-plus.techttgames.dev/database_info.html)
 
 [^1]: This bot is not affiliated with the Tickets Bot team. When a feature is added to the main bot, any feature that is no longer needed will be discontinued here.
-[^0]: [Tech-TTGames](https:\github.com\Tech-TTGames), I'm the only one here right now. I had some help in general, but I'm the only one who has done any coding. More people are welcome to join. I had help with organization and checking my code from [kk5dire](https://github.com/kk5dire) and [Ben Foster](https://github.com/benfoster04) with hosting and some documentation changes.
+[^0]: [Tech-TTGames](https://github.com/Tech-TTGames), I'm the only one here right now. I had some help in general, but I'm the only one who has done any coding. More people are welcome to join. I had help with organization and checking my code from [kk5dire](https://github.com/kk5dire) and [Ben Foster](https://github.com/benfoster04) with hosting and some documentation changes.
 [^2]: This setup assumes you have the main bot added to the server and configured. Support will not be provided to those who do not assume a likewise configuration.
 [^3]: Staff role defined in per-server settings.
 [^4]: Community roles defined in per-server settings.

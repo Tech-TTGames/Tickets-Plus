@@ -1,7 +1,7 @@
 """This is the event handling extension for Tickets+.
 
 We add any and all event listeners here.
-At the moment we only have discord.py event listeners.
+At the moment, we only have discord.py event listeners.
 But should we add any other event listeners, we can add them here.
 
 Typical usage example:
@@ -17,14 +17,13 @@ Typical usage example:
 # This Source Code may also be made available under the following
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
-# If later approved by the Initial Contrubotor, GPL-3.0-or-later.
+# If later approved by the Initial Contributor, GPL-3.0-or-later.
 from __future__ import annotations
 
 import asyncio
 import datetime
 import logging
 import re
-import string
 from typing import Any, Tuple
 
 import discord
@@ -94,7 +93,7 @@ class Events(commands.Cog, name="Events"):
                 await channel.set_permissions(
                     rol,
                     overwrite=overwrite,
-                    reason="Penalty Enforcmement",
+                    reason="Penalty Enforcement",
                 )
         if guild.community_roles and ticket_type.comaccs:
             comm_roles = await confg.get_all_community_roles(gld.id)
@@ -118,8 +117,7 @@ class Events(commands.Cog, name="Events"):
                 )
         if guild.community_pings and ticket_type.comping:
             comm_pings = await confg.get_all_community_pings(gld.id)
-            inv = await channel.send(" ".join(
-                [f"<@&{role.role_id}>" for role in comm_pings]))
+            inv = await channel.send(" ".join([f"<@&{role.role_id}>" for role in comm_pings]))
             await asyncio.sleep(0.25)
             await inv.delete()
         descr = (f"Ticket {channel.name}\n"
@@ -132,8 +130,7 @@ class Events(commands.Cog, name="Events"):
             descr += f"\nCloses <t:{int((channel.created_at + guild.first_autoclose).timestamp())}:R>"
             # skipcq: FLK-E501 # pylint: disable=line-too-long
             descr += "\nIf no one responds, the ticket will be closed automatically. Thank you for your patience!"
-        await channel.edit(topic=descr,
-                           reason="More information for the ticket.")
+        await channel.edit(topic=descr, reason="More information for the ticket.")
         if guild.strip_buttons and ticket_type.strpbuttns:
             await asyncio.sleep(5)
             async for msg in channel.history(oldest_first=True, limit=2):
@@ -145,7 +142,7 @@ class Events(commands.Cog, name="Events"):
     async def message_discovery(self, message: discord.Message) -> None:
         """Discovers the message linked to.
 
-        Fetches a message from it's discord link and responds with the
+        Fetches a message from its discord link and responds with the
         message content.
 
         Args:
@@ -153,7 +150,7 @@ class Events(commands.Cog, name="Events"):
         """
         alpha = re.search(
             # skipcq: FLK-E501 # pylint: disable=line-too-long
-            r"https:\/\/(?:canary\.)?discord\.com\/channels\/(?P<srv>\d*)\/(?P<cha>\d*)\/(?P<msg>\d*)",
+            r"https://(?:canary\.)?discord\.com/channels/(?P<srv>\d*)/(?P<cha>\d*)/(?P<msg>\d*)",
             message.content,
         )
         if alpha:
@@ -178,26 +175,22 @@ class Events(commands.Cog, name="Events"):
                                                  f" {chan.name}"
                                                  f" at {time}")
                 else:
-                    discovered_result = discord.Embed(
-                        description=got_msg.content, color=0x0D0EB4)
-                    discovered_result.set_footer(
-                        text="Sent in "
-                        f"{chan.name} at {time}"  # type: ignore
-                    )
+                    discovered_result = discord.Embed(description=got_msg.content, color=0x0D0EB4)
+                    discovered_result.set_footer(text="Sent in "
+                                                 f"{chan.name} at {time}"  # type: ignore
+                                                )
                 discovered_result.set_author(
                     name=got_msg.author.name,
                     icon_url=got_msg.author.display_avatar.url,
                 )
-                discovered_result.set_image(url=got_msg.attachments[0].url
-                                            if got_msg.attachments else None)
+                discovered_result.set_image(url=got_msg.attachments[0].url if got_msg.attachments else None)
                 await message.reply(embed=discovered_result)
 
-    async def handle_anon(self, message: discord.Message, ticket: models.Ticket,
-                          cnfg: layer.OnlineConfig,
+    async def handle_anon(self, message: discord.Message, ticket: models.Ticket, cnfg: layer.OnlineConfig,
                           guild: models.Guild) -> None:
         """Handles ticket anon messages.
 
-        Grabs a message and anonymises it, then sends it to the ticket.
+        Grabs a message and anonymizes it, then send it to the ticket.
 
         Args:
             message: The message to handle.
@@ -214,7 +207,7 @@ class Events(commands.Cog, name="Events"):
                 parsed_role = message.guild.get_role(  # type: ignore
                     role.role_id)
                 if parsed_role in message.author.roles:  # type: ignore
-                    # Alredy checked for member
+                    # Already checked for member
                     staff = True
                     break
             if not staff:
@@ -226,8 +219,7 @@ class Events(commands.Cog, name="Events"):
             )
             await message.delete()
 
-    async def update_autoclose(self, message: discord.Message,
-                               ticket: models.Ticket, guild: models.Guild,
+    async def update_autoclose(self, message: discord.Message, ticket: models.Ticket, guild: models.Guild,
                                cnfg: layer.OnlineConfig) -> None:
         """Updates channel topic autoclose time.
 
@@ -241,8 +233,7 @@ class Events(commands.Cog, name="Events"):
         """
         chan = message.channel
         if guild.any_autoclose:
-            time_since_update = (datetime.datetime.utcnow() -
-                                 ticket.last_response)
+            time_since_update = (datetime.datetime.utcnow() - ticket.last_response)
             if time_since_update >= datetime.timedelta(minutes=5):
                 crrnt = chan.topic  # type: ignore
                 if crrnt is None:
@@ -250,8 +241,7 @@ class Events(commands.Cog, name="Events"):
                     crrnt = (
                         f"Ticket: {chan.name}\n"  # type: ignore
                         # skipcq: FLK-E501
-                        f"Closes: <t:{int((message.created_at + guild.any_autoclose).timestamp())}:R>"
-                    )
+                        f"Closes: <t:{int((message.created_at + guild.any_autoclose).timestamp())}:R>")
                 else:
                     # pylint: disable=line-too-long
                     crrnt = re.sub(
@@ -264,8 +254,7 @@ class Events(commands.Cog, name="Events"):
                 await cnfg.commit()
 
     @commands.Cog.listener(name="on_guild_channel_create")
-    async def on_channel_create(self,
-                                channel: discord.abc.GuildChannel) -> None:
+    async def on_channel_create(self, channel: discord.abc.GuildChannel) -> None:
         """Runs when a channel is created.
 
         Handles the checking and facilitating of ticket creation.
@@ -287,17 +276,14 @@ class Events(commands.Cog, name="Events"):
                 )
                 if guild.integrated:
                     return
-                async for entry in gld.audit_logs(
-                        limit=3, action=discord.AuditLogAction.channel_create):
+                async for entry in gld.audit_logs(limit=3, action=discord.AuditLogAction.channel_create):
                     if not entry.user:
                         continue
-                    if entry.target == channel and await confg.check_ticket_bot(
-                            entry.user.id, gld.id):
+                    if entry.target == channel and await confg.check_ticket_bot(entry.user.id, gld.id):
                         await self.ticket_creation(confg, (gld, guild), channel)
 
     @commands.Cog.listener(name="on_guild_channel_delete")
-    async def on_channel_delete(self,
-                                channel: discord.abc.GuildChannel) -> None:
+    async def on_channel_delete(self, channel: discord.abc.GuildChannel) -> None:
         """Cleanups for when a ticket channel is deleted.
 
         This is the main event that handles the deletion of tickets.
@@ -330,8 +316,7 @@ class Events(commands.Cog, name="Events"):
                 if actv_member.status_till is not None:
                     # Split this up to avoid None comparison.
                     # pylint: disable=line-too-long
-                    if actv_member.status_till <= datetime.datetime.utcnow(
-                    ):  # type: ignore
+                    if actv_member.status_till <= datetime.datetime.utcnow():  # type: ignore
                         # Check if the penalty has expired.
                         actv_member.status = 0
                         actv_member.status_till = None
@@ -345,8 +330,7 @@ class Events(commands.Cog, name="Events"):
                         actv_member.status_till = None
                         await cnfg.commit()
                         return
-                    role = member.guild.get_role(
-                        actv_member.guild.support_block)
+                    role = member.guild.get_role(actv_member.guild.support_block)
                     if role is not None:
                         await member.add_roles(role)
                 elif actv_member.status == 2:
@@ -357,8 +341,7 @@ class Events(commands.Cog, name="Events"):
                         actv_member.status_till = None
                         await cnfg.commit()
                         return
-                    role = member.guild.get_role(
-                        actv_member.guild.helping_block)
+                    role = member.guild.get_role(actv_member.guild.helping_block)
                     if role is not None:
                         await member.add_roles(role)
 

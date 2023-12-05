@@ -18,7 +18,7 @@ Typical usage example:
 # This Source Code may also be made available under the following
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
-# If later approved by the Initial Contrubotor, GPL-3.0-or-later.
+# If later approved by the Initial Contributor, GPL-3.0-or-later.
 
 from discord.ext import commands, tasks
 
@@ -125,11 +125,9 @@ class Routines(commands.Cog):
                     appnd = (
                         "Please respond soon, or it will be closed "
                         # pylint: disable=line-too-long # skipcq: FLK-E501
-                        f"<t:{int((ticket.last_response + gld.any_autoclose).timestamp())}:R>."
-                    )
-                txt = (
-                    f"Your ticket <#{ticket.channel_id}> in {actv_guild.name} "
-                    f"is still open. {appnd}")
+                        f"<t:{int((ticket.last_response + gld.any_autoclose).timestamp())}:R>.")
+                txt = (f"Your ticket <#{ticket.channel_id}> in {actv_guild.name} "
+                       f"is still open. {appnd}")
                 await actv_member.send(txt)
             await conn.commit()
 

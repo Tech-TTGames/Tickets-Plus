@@ -1,8 +1,8 @@
 """Routes for the API.
 
 A factory function for the API is provided, which takes a
-:class:`tickets_plus.bot.TicketsPlusBot` object and returns a
-:class:`tornado.web.Application` object.
+ :class:`tickets_plus.bot.TicketsPlusBot` object and returns a
+ :class:`tornado.web.Application` object.
 
 Typical usage example:
     ```py
@@ -20,7 +20,7 @@ Typical usage example:
 # This Source Code may also be made available under the following
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
-# If later approved by the Initial Contrubotor, GPL-3.0-or-later.
+# If later approved by the Initial Contributor, GPL-3.0-or-later.
 
 from tornado import web
 

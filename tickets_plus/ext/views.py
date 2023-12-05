@@ -19,7 +19,7 @@ Typical usage example:
 # This Source Code may also be made available under the following
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
-# If later approved by the Initial Contrubotor, GPL-3.0-or-later.
+# If later approved by the Initial Contributor, GPL-3.0-or-later.
 
 import discord
 
@@ -46,9 +46,8 @@ class Confirm(discord.ui.View):
         self.value = None
 
     @discord.ui.button(label="Confirm", style=discord.ButtonStyle.green)
-    async def confirm(self, interaction: discord.Interaction,
-                      button: discord.ui.Button):
-        """The confirm button was pressed.
+    async def confirm(self, interaction: discord.Interaction, button: discord.ui.Button):
+        """The 'confirm' button was pressed.
 
         We set the return value to True, disable the button and stop the view.
 
@@ -62,8 +61,7 @@ class Confirm(discord.ui.View):
         self.stop()
 
     @discord.ui.button(label="Cancel", style=discord.ButtonStyle.red)
-    async def cancel(self, interaction: discord.Interaction,
-                     button: discord.ui.Button):
+    async def cancel(self, interaction: discord.Interaction, button: discord.ui.Button):
         """The cancel button.
 
         We set the return value to False, disable the button and stop the view.
