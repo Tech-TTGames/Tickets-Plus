@@ -233,7 +233,7 @@ class Events(commands.Cog, name="Events"):
         """
         chan = message.channel
         if guild.any_autoclose:
-            time_since_update = (datetime.datetime.utcnow() - ticket.last_response)
+            time_since_update = datetime.datetime.utcnow() - ticket.last_response
             if time_since_update >= datetime.timedelta(minutes=5):
                 crrnt = chan.topic  # type: ignore
                 if crrnt is None:
