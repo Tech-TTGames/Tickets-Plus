@@ -168,6 +168,7 @@ async def start_bot(stat_data: config.MiniConfig = config.MiniConfig()) -> None:
                 stat_data.getitem("ssl_cert"),
                 config.Secret().ssl_key,
             )
+        # pylint: disable=broad-exception-caught # skipcq: PYL-W0718
         except Exception as e:
             _ = e
             logging.info("SSL cert not found. Starting without API...")
