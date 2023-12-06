@@ -22,9 +22,11 @@ def upgrade() -> None:
     op.add_column('general_configs',
                   sa.Column('legacy_threads',
                             sa.Boolean(),
-                            nullable=False,
+                            nullable=True,
                             comment='Whether the server has legacy threads'),
                   schema='tickets_plus')
+    op.execute('UPDATE tickets_plus.general_configs SET legacy_threads = TRUE')
+    op.alter_column('general_configs', 'legacy_threads', nullable=False, schema='tickets_plus')
     op.alter_column('general_configs',
                     'first_autoclose',
                     existing_type=postgresql.INTERVAL(),
