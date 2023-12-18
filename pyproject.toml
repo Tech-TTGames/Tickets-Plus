@@ -29,7 +29,7 @@ optional = true
 
 [tool.poetry.group.dev.dependencies]
 yapf = "^0.40.2"
-pylint = "^3.0.2"
+pylint = "^3.0.3"
 pdoc = "^14.1.0"
 
 [tool.poetry.scripts]
