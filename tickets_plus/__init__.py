@@ -107,7 +107,7 @@ async def start_bot(stat_data: config.MiniConfig = config.MiniConfig()) -> None:
         return
     print("Logging: OK")
 
-    # Set up bot
+    # Set up database
     try:
         logging.info("Creating engine...")
         if "asyncpg" in stat_data.getitem("dbtype"):
