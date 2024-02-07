@@ -72,18 +72,18 @@ class StaffCmmd(commands.Cog, name="StaffCommands"):
         await ctx.response.defer(ephemeral=True)
         async with self._bt.get_connection() as confg:
             guild = await confg.get_guild(ctx.guild_id)  # type: ignore # checked in decorator
-            sanitized_message = utils.escape_mentions(message)
+            if not ctx.user.resolved_permissions.mention_everyone:
+                message = utils.escape_mentions(message)
             if isinstance(ctx.channel, discord.Thread):
-                ticket = await confg.fetch_ticket(ctx.channel.parent.id  # type: ignore
-                                                 )
+                ticket = await confg.fetch_ticket(ctx.channel.parent.id)
                 if ticket is None:
                     raise exceptions.InvalidLocation("The parent channel is not a ticket.")
                 if ticket.staff_note_thread != ctx.channel.id:
                     raise exceptions.InvalidLocation("This channel is not the designated staff"
                                                      " notes thread.")
-                await ctx.followup.send(f"Responding to ticket with message:\n{sanitized_message}")
+                await ctx.followup.send(f"Responding to ticket with message:\n{message}")
                 await ctx.channel.parent.send(  # type: ignore
-                    f"**{guild.staff_team_name}:** {sanitized_message}")
+                    f"**{guild.staff_team_name}:** {message}")
 
             elif isinstance(ctx.channel, discord.TextChannel):
                 ticket = await confg.fetch_ticket(ctx.channel.id)
@@ -91,10 +91,10 @@ class StaffCmmd(commands.Cog, name="StaffCommands"):
                     raise exceptions.InvalidLocation("This channel is not a ticket."
                                                      " If it is, use /register.")
                 await ctx.followup.send(
-                    f"Responding to ticket with message:\n{sanitized_message}",
+                    f"Responding to ticket with message:\n{message}",
                     ephemeral=True,
                 )
-                await ctx.channel.send(f"**{guild.staff_team_name}:** {sanitized_message}")
+                await ctx.channel.send(f"**{guild.staff_team_name}:** {message}")
 
             await confg.close()
 
