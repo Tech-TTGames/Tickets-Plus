@@ -80,12 +80,13 @@ class Events(commands.Cog, name="Events"):
         thr_id = nts_thrd.id if nts_thrd else None
         await confg.get_ticket(channel.id, gld.id, user_id, thr_id)
         if guild.helping_block:
-            overwrite = discord.PermissionOverwrite()
-            overwrite.view_channel = False
-            overwrite.add_reactions = False
-            overwrite.send_messages = False
-            overwrite.read_messages = False
-            overwrite.read_message_history = False
+            overwrite = discord.PermissionOverwrite(
+                view_channel=False,
+                add_reactions=False,
+                send_messages=False,
+                read_messages=False,
+                read_message_history=False,
+            )
             rol = gld.get_role(guild.helping_block)
             if rol is None:
                 guild.helping_block = None
@@ -97,15 +98,16 @@ class Events(commands.Cog, name="Events"):
                 )
         if guild.community_roles and ticket_type.comaccs:
             comm_roles = await confg.get_all_community_roles(gld.id)
-            overwrite = discord.PermissionOverwrite()
-            overwrite.view_channel = True
-            overwrite.add_reactions = True
-            overwrite.send_messages = True
-            overwrite.read_messages = True
-            overwrite.read_message_history = True
-            overwrite.attach_files = True
-            overwrite.embed_links = True
-            overwrite.use_application_commands = True
+            overwrite = discord.PermissionOverwrite(
+                view_channel=True,
+                add_reactions=True,
+                send_messages=True,
+                read_messages=True,
+                read_message_history=True,
+                attach_files=True,
+                embed_links=True,
+                use_application_commands=True,
+            )
             for role in comm_roles:
                 rle = gld.get_role(role.role_id)
                 if rle is None:

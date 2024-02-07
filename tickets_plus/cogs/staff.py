@@ -193,7 +193,7 @@ class StaffCmmd(commands.Cog, name="StaffCommands"):
             channel = ctx.channel
             async with self._bt.get_connection() as confg:
                 guild = await confg.get_guild(ctx.guild_id)  # type: ignore # checked in decorator
-                if thread is None:
+                if thread is None and guild.legacy_threads:
                     thread = await channel.create_thread(
                         name="Staff Notes",
                         reason=f"Staff notes for Ticket {channel.name}",
