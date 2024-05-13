@@ -16,7 +16,7 @@ Typical usage example:
 # This Source Code may also be made available under the following
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
-# If later approved by the Initial Contrubotor, GPL-3.0-or-later.
+# If later approved by the Initial Contributor, GPL-3.0-or-later.
 import asyncio
 import json
 import pathlib
@@ -40,11 +40,11 @@ from toolbox.legacy import Config  # isort:skip # nopep8
 
 # pylint: disable=invalid-name
 def main():
-    """A interactive script to migrate from the old config file to the new file.
+    """An interactive script to migrate from the old config file to the new file.
 
     This script will create the database schema and tables if they do not exist.
     It will also load the config file into the database.
-    At the end of file an eval option is provided for advanced users.
+    At the end of the file, an eval option is provided for advanced users.
     """
     print("Starting migration script...")
     new = 0
@@ -148,7 +148,7 @@ def main():
                         f.write(configjson)
                     print("Config file saved.")
             print(
-                "I will now create the database schema and tables if they do not exist."  # pylint: disable=line-too-long
+                "I will now create the database schema and tables if they do not exist."
             )
             engine = sa_asyncio.create_async_engine(
                 URL.create(drivername=config["dbtype"],
@@ -164,10 +164,10 @@ def main():
     else:
         print("A valid v0.1 config file was found.")
         print(
-            "If you would like to create a new config file, please delete the existing one."  # pylint: disable=line-too-long
+            "If you would like to create a new config file, please delete the existing one."
         )
         print(
-            "I will now create the database schema and tables if they do not exist."  # pylint: disable=line-too-long
+            "I will now create the database schema and tables if they do not exist."
         )
         engine = sa_asyncio.create_async_engine(cnfg.get_url())  # type: ignore
         asyncio.run(throwaway2(engine))
@@ -191,7 +191,7 @@ def main():
 async def throwaway(engine: sa_asyncio.AsyncEngine, legacy, cnfg=None) -> None:
     """Throwaway function to run asyncpg.
 
-    Does nothing more just allows asyncpg to be used.
+    Does nothing more than just allow asyncpg to be used
     """
     async with engine.begin() as conn:
         await conn.execute(
@@ -245,7 +245,7 @@ async def throwaway(engine: sa_asyncio.AsyncEngine, legacy, cnfg=None) -> None:
 async def throwaway2(engine: sa_asyncio.AsyncEngine) -> None:
     """Throwaway function to run asyncpg.
 
-    Does nothing more just allows asyncpg to be used.
+    Does nothing more than just allow asyncpg to be used.
     """
     async with engine.begin() as conn:
         await conn.execute(

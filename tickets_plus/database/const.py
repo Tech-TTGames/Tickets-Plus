@@ -18,24 +18,23 @@ Typical usage example:
 # This Source Code may also be made available under the following
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
-# If later approved by the Initial Contrubotor, GPL-3.0-or-later.
+# If later approved by the Initial Contributor, GPL-3.0-or-later.
 
-import logging
 import logging.handlers
 import pathlib
 
 import discord
 
-VERSION = "v0.1.1.0a"
+VERSION = "v0.2.0.0"
 """The current version of the bot as a string.
 
 FORMAT:
 v[major].[minor].[release].[build]
 
 MAJOR and MINOR version changes can be compatibility-breaking.
-Compability-breaking changes are changes that require manual intervention
+Compatibility-breaking changes are changes that require manual intervention
 by the USER to update the bot. Internal changes that do not require
-manual intervention by the USER are not considered compability-breaking.
+manual intervention by the USER are not considered compatibility-breaking.
 """
 PROG_DIR = pathlib.Path(__file__).parent.parent.parent.absolute()
 """The absolute path to the root directory of the bot."""

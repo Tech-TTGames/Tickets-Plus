@@ -18,7 +18,7 @@ Typical usage example:
 # This Source Code may also be made available under the following
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
-# If later approved by the Initial Contrubotor, GPL-3.0-or-later.
+# If later approved by the Initial Contributor, GPL-3.0-or-later.
 
 import logging
 import types
@@ -33,9 +33,7 @@ from tickets_plus.ext import checks, exceptions
 
 
 @commands.guild_only()
-class TagUtils(commands.GroupCog,
-               name="tag",
-               description="A for all your tagging needs!"):
+class TagUtils(commands.GroupCog, name="tag", description="A for all your tagging needs!"):
     """Suitable for all your tagging needs!
 
     This is the cog responsible for managing tags, which are essentially
@@ -46,9 +44,9 @@ class TagUtils(commands.GroupCog,
     def __init__(self, bot_instance: bot.TicketsPlusBot):
         """Initializes the TagUtils cog.
 
-        This method initialises the cog.
+        This method initializes the cog.
         It also sets the bot instance as a private attribute.
-        And finally initialises the superclass.
+        And finally initializes the superclass.
 
         Args:
             bot_instance: The bot instance.
@@ -57,8 +55,7 @@ class TagUtils(commands.GroupCog,
         super().__init__()
         logging.info("Loaded %s", self.__class__.__name__)
 
-    async def tag_autocomplete(self, ctx: discord.Interaction,
-                               arg: str) -> List[app_commands.Choice[str]]:
+    async def tag_autocomplete(self, ctx: discord.Interaction, arg: str) -> List[app_commands.Choice[str]]:
         """Autocomplete for tags.
 
         This method is used to autocomplete tags.
@@ -77,15 +74,14 @@ class TagUtils(commands.GroupCog,
             if arg.lower() in tag.tag_name.lower()
         ]
 
-    async def prep_tag(
-            self, guild: int, tag: str, mention: Optional[discord.User]
-    ) -> Tuple[str, None | discord.Embed]:
+    async def prep_tag(self, guild: int, tag: str, mention: Optional[discord.User]) -> Tuple[str, None | discord.Embed]:
         """Basic tag preparation.
 
         Grabs the tag and packages it into a message and embed.
-        message also mentions the user if specified.
+        The message also mentions the user if specified.
 
         Args:
+            guild: The guild to fetch the tag from.
             tag: The tag to send.
             mention: The user to mention.
 
@@ -110,9 +106,7 @@ class TagUtils(commands.GroupCog,
         return messg, emd
 
     @app_commands.command(name="send", description="Send a tag")
-    @app_commands.describe(tag="The tag to send",
-                           mention="The user to mention",
-                           anon="Send anonymously")
+    @app_commands.describe(tag="The tag to send", mention="The user to mention", anon="Send anonymously")
     @app_commands.autocomplete(tag=tag_autocomplete)
     async def send(self,
                    ctx: discord.Interaction,
@@ -128,6 +122,7 @@ class TagUtils(commands.GroupCog,
             ctx: The interaction context.
             tag: The tag to send.
             mention: The user to mention.
+            anon: Whether to send anonymously.
         """
         await ctx.response.defer(ephemeral=False)
         if isinstance(ctx.channel, (
@@ -164,21 +159,19 @@ class TagUtils(commands.GroupCog,
         author="The author of the embed",
     )
     @app_commands.autocomplete(tag_name=tag_autocomplete)
-    async def create(self, ctx: discord.Interaction, tag_name: str,
-                     content: str, title: Optional[str], url: Optional[str],
-                     color: Optional[str], footer: Optional[str],
-                     image: Optional[str], thumbnail: Optional[str],
-                     author: Optional[str]) -> None:
+    async def create(self, ctx: discord.Interaction, tag_name: str, content: str, title: Optional[str],
+                     url: Optional[str], color: Optional[str], footer: Optional[str], image: Optional[str],
+                     thumbnail: Optional[str], author: Optional[str]) -> None:
         """Creates or deletes a tag.
 
         This command creates a tag, which is a snippet of text that can be
         called up with a command.
         If embed parameters are specified, it creates an embed.
-        if the tag already exists, it deletes it.
+        If the tag already exists, it deletes it.
 
         Args:
             ctx: The interaction context.
-            tag: The tag to create.
+            tag_name: The tag to create.
             content: The content of the tag.
             title: The title of the embed.
             url: The url of the embed.
@@ -203,9 +196,8 @@ class TagUtils(commands.GroupCog,
             "author": author
         }
         if any(opt_params.values()) and not title:
-            raise exceptions.InvalidParameters(
-                "You need to specify a title"
-                " if you want to use embed parameters!")
+            raise exceptions.InvalidParameters("You need to specify a title"
+                                               " if you want to use embed parameters!")
         if color:
             parsed_color = discord.Color.from_str(color).value
         opt_params["color"] = parsed_color
@@ -241,10 +233,8 @@ class TagUtils(commands.GroupCog,
         author="The author of the embed",
     )
     @app_commands.autocomplete(tag=tag_autocomplete)
-    async def edit(self, ctx: discord.Interaction, tag: str,
-                   content: Optional[str], title: Optional[str],
-                   url: Optional[str], color: Optional[str],
-                   footer: Optional[str], image: Optional[str],
+    async def edit(self, ctx: discord.Interaction, tag: str, content: Optional[str], title: Optional[str],
+                   url: Optional[str], color: Optional[str], footer: Optional[str], image: Optional[str],
                    thumbnail: Optional[str], author: Optional[str]) -> None:
         """Edits a tag.
 
@@ -290,16 +280,13 @@ class TagUtils(commands.GroupCog,
             if title:
                 tag_data.title = title
             if not tag_data.title and any(opt_params.values()):
-                raise exceptions.InvalidParameters(
-                    "You need to specify a title if"
-                    " you want to use embed parameters!")
+                raise exceptions.InvalidParameters("You need to specify a title if"
+                                                   " you want to use embed parameters!")
             for param, value in opt_params.items():
                 if value:
                     setattr(tag_data, param, value)
             await conn.commit()
-        emd = discord.Embed(title="Tag edited!",
-                            description=f"Tag `{tag}` edited!",
-                            color=discord.Color.green())
+        emd = discord.Embed(title="Tag edited!", description=f"Tag `{tag}` edited!", color=discord.Color.green())
         await ctx.response.send_message(embed=emd, ephemeral=True)
 
 

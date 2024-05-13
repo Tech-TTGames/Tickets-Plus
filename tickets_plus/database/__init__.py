@@ -2,7 +2,7 @@
 
 This package contains the database layer, models, const and config.
 It is used by the bot to store and retrieve data from the database.
-Get configuration values from the confg module.
+Get configuration values from the config module.
 And get constants from the const module.
 
 Typical usage example:
@@ -20,4 +20,4 @@ Typical usage example:
 # This Source Code may also be made available under the following
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
-# If later approved by the Initial Contrubotor, GPL-3.0-or-later.
+# If later approved by the Initial Contributor, GPL-3.0-or-later.

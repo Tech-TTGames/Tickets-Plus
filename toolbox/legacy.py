@@ -17,7 +17,7 @@ Typical usage example:
 # This Source Code may also be made available under the following
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
-# If later approved by the Initial Contrubotor, GPL-3.0-or-later.
+# If later approved by the Initial Contributor, GPL-3.0-or-later.
 
 import json
 import logging
@@ -39,19 +39,19 @@ from tickets_plus.database.const import PROG_DIR  # isort:skip # nopep8
 
 
 class Config:
-    """DEPRECATED. Class for convinient config access"""
+    """DEPRECATED. Class for convenient config access"""
 
     # pylint: disable=line-too-long
     # I'm keeping this class for migration,
     # but it's deprecated and will be removed in the future.
-    # Also I'm not going to update the docstrings for this class to the google-style ones.
+    # Also, I'm not going to update the docstrings for this class to the google-style ones.
     # I'm just going to leave them as they are.
 
     def __init__(self,
                  bot: commands.Bot | Literal["offline"],
                  legacy: bool = False) -> None:
         self._file = pathlib.Path(PROG_DIR, "config.json")
-        with open(self._file, encoding="utf-8", mode="r") as config_f:
+        with open(self._file, encoding="utf-8") as config_f:
             self._config: dict = json.load(config_f)
         if not legacy:
             logging.warning("Config is deprecated and read-only."
@@ -140,5 +140,5 @@ class Config:
 
     @property
     def owner(self) -> list[int]:
-        """List of user ids who are owner"""
+        """List of user ids who are an owner"""
         return self._config.get("owner_id", [414075045678284810])

@@ -26,7 +26,7 @@ Typical usage example:
 # This Source Code may also be made available under the following
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
-# If later approved by the Initial Contrubotor, GPL-3.0-or-later.
+# If later approved by the Initial Contributor, GPL-3.0-or-later.
 
 import logging
 import os
@@ -54,11 +54,10 @@ def sigint_handler(sign, frame):
 signal.signal(signal.SIGINT, sigint_handler)
 
 
-async def start_bot(stat_data: config.MiniConfig = config.MiniConfig()
-                   ) -> None:  # shush deepsource # skipcq: FLK-E124
+async def start_bot(stat_data: config.MiniConfig = config.MiniConfig()) -> None:  # shush deepsource # skipcq: FLK-E124
     """Sets up the bot and starts it. Coroutine.
 
-    This function uses the exitsting .json files to set up the bot.
+    This function uses the existing .json files to set up the bot.
     It also sets up logging, and starts the bot.
 
     Args:
@@ -71,9 +70,7 @@ async def start_bot(stat_data: config.MiniConfig = config.MiniConfig()
     try:
         # Set up logging
         dt_fmr = "%Y-%m-%d %H:%M:%S"
-        const.HANDLER.setFormatter(
-            logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s",
-                              dt_fmr))
+        const.HANDLER.setFormatter(logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s", dt_fmr))
 
         # Set up bot logging
         logging.root.setLevel(logging.INFO)
@@ -110,18 +107,17 @@ async def start_bot(stat_data: config.MiniConfig = config.MiniConfig()
         return
     print("Logging: OK")
 
-    # Set up bot
+    # Set up database
     try:
         logging.info("Creating engine...")
         if "asyncpg" in stat_data.getitem("dbtype"):
-            engine = sa_asyncio.create_async_engine(
-                stat_data.get_url(),
-                pool_size=10,
-                max_overflow=-1,
-                pool_recycle=600,
-                connect_args={"server_settings": {
-                    "jit": "off"
-                }})
+            engine = sa_asyncio.create_async_engine(stat_data.get_url(),
+                                                    pool_size=10,
+                                                    max_overflow=-1,
+                                                    pool_recycle=600,
+                                                    connect_args={"server_settings": {
+                                                        "jit": "off"
+                                                    }})
         else:
             engine = sa_asyncio.create_async_engine(
                 stat_data.get_url(),
@@ -131,9 +127,7 @@ async def start_bot(stat_data: config.MiniConfig = config.MiniConfig()
             )
         logging.info("Engine created. Ensuring tables...")
         async with engine.begin() as conn:
-            await conn.execute(
-                sqlalchemy.schema.CreateSchema("tickets_plus",
-                                               if_not_exists=True))
+            await conn.execute(sqlalchemy.schema.CreateSchema("tickets_plus", if_not_exists=True))
             await conn.run_sync(models.Base.metadata.create_all)
             await conn.commit()
         logging.info("Tables ensured. Starting bot...")
@@ -151,8 +145,7 @@ async def start_bot(stat_data: config.MiniConfig = config.MiniConfig()
             intents=const.INTENTS,
             command_prefix=commands.when_mentioned,
             status=discord.Status.online,
-            activity=discord.Activity(type=discord.ActivityType.playing,
-                                      name="with tickets"),
+            activity=discord.Activity(type=discord.ActivityType.playing, name="with tickets"),
         )
     # pylint: disable=broad-exception-caught # skipcq: PYL-W0718
     except Exception as exc:
@@ -165,7 +158,7 @@ async def start_bot(stat_data: config.MiniConfig = config.MiniConfig()
 
     # Tornado API setup
     try:
-        api = routes.make_app(bot_instance)
+        api_routes = routes.make_app(bot_instance)
         tls_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
         tls_ctx.options |= ssl.OP_NO_TLSv1_2
         tls_ctx.options |= ssl.OP_CIPHER_SERVER_PREFERENCE
@@ -175,7 +168,9 @@ async def start_bot(stat_data: config.MiniConfig = config.MiniConfig()
                 stat_data.getitem("ssl_cert"),
                 config.Secret().ssl_key,
             )
-        except FileNotFoundError:
+        # pylint: disable=broad-exception-caught # skipcq: PYL-W0718
+        except Exception as e:
+            _ = e
             logging.info("SSL cert not found. Starting without API...")
             print("API: SKIPPED (SSL cert not found)")
         else:
@@ -184,7 +179,7 @@ async def start_bot(stat_data: config.MiniConfig = config.MiniConfig()
             if tkn is None or tkn in frbddn:
                 raise ValueError("API Auth token not set.")
             logging.info("SSL cert and key loaded. Starting API...")
-            api.listen(443, protocol="https", ssl_options=tls_ctx)
+            api_routes.listen(443, protocol="https", ssl_options=tls_ctx)
     # pylint: disable=broad-exception-caught # skipcq: PYL-W0718
     except Exception as exc:
         logging.exception("API setup failed. Aborting startup.")

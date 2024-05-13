@@ -16,7 +16,7 @@ Typical usage example:
 # This Source Code may also be made available under the following
 # Secondary Licenses when the conditions for such availability set forth
 # in the Eclipse Public License, v. 2.0 are satisfied: GPL-3.0-only OR
-# If later approved by the Initial Contrubotor, GPL-3.0-or-later.
+# If later approved by the Initial Contributor, GPL-3.0-or-later.
 
 import datetime
 import logging
@@ -49,8 +49,7 @@ class StaffCmmd(commands.Cog, name="StaffCommands"):
         self._bt = bot_instance
         logging.info("Loaded %s", self.__class__.__name__)
 
-    @app_commands.command(name="respond",
-                          description="Respond to a ticket as the bot.")
+    @app_commands.command(name="respond", description="Respond to a ticket as the bot.")
     @app_commands.guild_only()
     @checks.is_staff_check()
     @app_commands.describe(message="The message to send to the ticket.")
@@ -72,46 +71,38 @@ class StaffCmmd(commands.Cog, name="StaffCommands"):
         """
         await ctx.response.defer(ephemeral=True)
         async with self._bt.get_connection() as confg:
-            guild = await confg.get_guild(
-                ctx.guild_id)  # type: ignore # checked in decorator
-            sanitized_message = utils.escape_mentions(message)
+            guild = await confg.get_guild(ctx.guild_id)  # type: ignore # checked in decorator
+            if not ctx.user.resolved_permissions.mention_everyone:
+                message = utils.escape_mentions(message)
             if isinstance(ctx.channel, discord.Thread):
-                ticket = await confg.fetch_ticket(
-                    ctx.channel.parent.id  # type: ignore
-                )
+                ticket = await confg.fetch_ticket(ctx.channel.parent.id)
                 if ticket is None:
-                    raise exceptions.InvalidLocation(
-                        "The parent channel is not a ticket.")
+                    raise exceptions.InvalidLocation("The parent channel is not a ticket.")
                 if ticket.staff_note_thread != ctx.channel.id:
-                    raise exceptions.InvalidLocation(
-                        "This channel is not the designated staff"
-                        " notes thread.")
-                await ctx.followup.send(
-                    f"Responding to ticket with message:\n{sanitized_message}")
+                    raise exceptions.InvalidLocation("This channel is not the designated staff"
+                                                     " notes thread.")
+                await ctx.followup.send(f"Responding to ticket with message:\n{message}")
                 await ctx.channel.parent.send(  # type: ignore
-                    f"**{guild.staff_team_name}:** {sanitized_message}")
+                    f"**{guild.staff_team_name}:** {message}")
 
             elif isinstance(ctx.channel, discord.TextChannel):
                 ticket = await confg.fetch_ticket(ctx.channel.id)
                 if ticket is None:
-                    raise exceptions.InvalidLocation(
-                        "This channel is not a ticket."
-                        " If it is, use /register.")
+                    raise exceptions.InvalidLocation("This channel is not a ticket."
+                                                     " If it is, use /register.")
                 await ctx.followup.send(
-                    f"Responding to ticket with message:\n{sanitized_message}",
+                    f"Responding to ticket with message:\n{message}",
                     ephemeral=True,
                 )
-                await ctx.channel.send(
-                    f"**{guild.staff_team_name}:** {sanitized_message}")
+                await ctx.channel.send(f"**{guild.staff_team_name}:** {message}")
 
             await confg.close()
 
-    @app_commands.command(name="join",
-                          description="Join a ticket's staff notes.")
+    @app_commands.command(name="join", description="Join a ticket's staff notes.")
     @app_commands.guild_only()
     @checks.is_staff_check()
     async def join(self, ctx: discord.Interaction) -> None:
-        """Adds the user to the ticket's staff notes thread.
+        """Adds the user to the ticket's staff note thread.
 
         This command is used to add the user to the ticket's staff notes thread.
         It's used to allow staff to join notes without the need for the
@@ -129,29 +120,25 @@ class StaffCmmd(commands.Cog, name="StaffCommands"):
         """
         await ctx.response.defer(ephemeral=True)
         async with self._bt.get_connection() as confg:
-            # We don't need account for DMs here, due to the guild_only.
+            # We don't need an account for DMs here, due to the guild_only.
             ticket = await confg.fetch_ticket(ctx.channel.id)  # type: ignore
             if ticket is None:
                 raise exceptions.InvalidLocation("This channel is not a ticket."
                                                  " If it is, use /register.")
             if ticket.staff_note_thread is None:
-                raise exceptions.InvalidLocation(
-                    "This ticket has no staff notes.")
+                raise exceptions.InvalidLocation("This ticket has no staff notes.")
             thred = ctx.guild.get_thread(  # type: ignore
                 ticket.staff_note_thread)
             if thred is None:
-                raise exceptions.ReferenceNotFound(
-                    "This ticket's staff notes thread is missing."
-                    " Was it deleted?")
-            emd = discord.Embed(
-                title="Success!",
-                description="You have joined the staff notes thread.",
-                color=discord.Color.green())
+                raise exceptions.ReferenceNotFound("This ticket's staff notes thread is missing."
+                                                   " Was it deleted?")
+            emd = discord.Embed(title="Success!",
+                                description="You have joined the staff notes thread.",
+                                color=discord.Color.green())
             await thred.add_user(ctx.user)
             await ctx.followup.send(embed=emd, ephemeral=True)
 
-    @app_commands.command(name="anonymize",
-                          description="Toggle anonymous staff responses.")
+    @app_commands.command(name="anonymize", description="Toggle anonymous staff responses.")
     @app_commands.guild_only()
     @checks.is_staff_check()
     async def anonymize(self, ctx: discord.Interaction) -> None:
@@ -172,26 +159,20 @@ class StaffCmmd(commands.Cog, name="StaffCommands"):
             # Checked by discord in decorator
             ticket = await confg.fetch_ticket(ctx.channel.id)  # type: ignore
             if ticket is None:
-                raise exceptions.InvalidLocation(
-                    "This channel is not a ticket.")
+                raise exceptions.InvalidLocation("This channel is not a ticket.")
             ticket.anonymous = not ticket.anonymous
             status = ticket.anonymous
             await confg.commit()
-        emd = discord.Embed(
-            title="Success!",
-            description=f"Anonymous staff responses are now {status}.",
-            color=discord.Color.green() if status else discord.Color.red())
+        emd = discord.Embed(title="Success!",
+                            description=f"Anonymous staff responses are now {status}.",
+                            color=discord.Color.green() if status else discord.Color.red())
         await ctx.followup.send(embed=emd, ephemeral=True)
 
-    @app_commands.command(
-        name="register",
-        description="Register an existing channel as a ticket.")
+    @app_commands.command(name="register", description="Register an existing channel as a ticket.")
     @app_commands.describe(thread="The staff notes thread for the ticket.")
     @app_commands.guild_only()
     @checks.is_staff_check()
-    async def register(self,
-                       ctx: discord.Interaction,
-                       thread: discord.Thread | None = None) -> None:
+    async def register(self, ctx: discord.Interaction, thread: discord.Thread | None = None) -> None:
         """A migration command to register an existing channel as a ticket.
 
         We have this command to allow users to migrate from the old version,
@@ -211,26 +192,22 @@ class StaffCmmd(commands.Cog, name="StaffCommands"):
         if isinstance(ctx.channel, discord.TextChannel):
             channel = ctx.channel
             async with self._bt.get_connection() as confg:
-                guild = await confg.get_guild(
-                    ctx.guild_id)  # type: ignore # checked in decorator
-                if thread is None:
+                guild = await confg.get_guild(ctx.guild_id)  # type: ignore # checked in decorator
+                if thread is None and guild.legacy_threads:
                     thread = await channel.create_thread(
                         name="Staff Notes",
                         reason=f"Staff notes for Ticket {channel.name}",
                         auto_archive_duration=10080,
                     )
-                    await thread.send(
-                        string.Template(guild.open_message).safe_substitute(
-                            channel=channel.mention))
+                    await thread.send(string.Template(guild.open_message).safe_substitute(channel=channel.mention))
                 new, ticket = await confg.get_ticket(
                     ctx.channel.id,
                     ctx.guild_id,  # type: ignore
                     thread.id)
                 # Unused, we just want to check if it's new and commit it.
-                del ticket  # skipcq: PTC-W0043
+                del ticket
                 if not new:
-                    raise exceptions.InvalidLocation(
-                        "This channel is already a ticket.")
+                    raise exceptions.InvalidLocation("This channel is already a ticket.")
                 await confg.commit()
             emd = discord.Embed(title="Success!",
                                 description="Registered channel as a ticket.",
@@ -239,8 +216,7 @@ class StaffCmmd(commands.Cog, name="StaffCommands"):
             return
         raise exceptions.InvalidLocation("Invalid command execution space.")
 
-    @app_commands.command(name="usrstatus",
-                          description="Set a new user status.")
+    @app_commands.command(name="usrstatus", description="Set a new user status.")
     @app_commands.guild_only()
     @checks.is_staff_check()
     @app_commands.describe(
@@ -265,9 +241,10 @@ class StaffCmmd(commands.Cog, name="StaffCommands"):
         """Set a new user status.
 
         This command is used to set a new user status.
-        It's used to block users from opening tickets, or from getting support.
+        It's used to block users from opening tickets or from getting support.
 
         Args:
+            interaction: Discord interaction.
             target: The user to set the status for.
             status: The new status.
             days: The new status time days.
@@ -284,71 +261,53 @@ class StaffCmmd(commands.Cog, name="StaffCommands"):
             if status.value == 0:
                 member.status_till = None
                 await confg.commit()
-                emd = discord.Embed(
-                    title="Success!",
-                    description=f"Removed status from {target.mention}.",
-                    color=discord.Color.green())
-                emd2 = discord.Embed(
-                    title="Status Removed",
-                    description=(
-                        f"Your status in {target.guild.name} has been removed"
-                        f" by {interaction.user.display_name}."),
-                    color=discord.Color.green())
+                emd = discord.Embed(title="Success!",
+                                    description=f"Removed status from {target.mention}.",
+                                    color=discord.Color.green())
+                emd2 = discord.Embed(title="Status Removed",
+                                     description=(f"Your status in {target.guild.name} has been removed"
+                                                  f" by {interaction.user.display_name}."),
+                                     color=discord.Color.green())
             else:
                 if days + hours + minutes == 0:
                     penalty_time = "Indefinitely"
                     member.status_till = None
                 else:
-                    penalty_time = datetime.timedelta(days=days,
-                                                      hours=hours,
-                                                      minutes=minutes)
+                    penalty_time = datetime.timedelta(days=days, hours=hours, minutes=minutes)
                     member.status_till = utils.utcnow() + penalty_time
                 if status.value == 1:
                     if member.guild.support_block is None:
-                        raise exceptions.InvalidParameters(
-                            "The support block role has not been set.\n"
-                            "This may be intentional.\n"
-                            "If not please set it up using the /settings.")
-                    await target.add_roles(
-                        discord.Object(member.guild.support_block))
-                    emd = discord.Embed(
-                        title="Success!",
-                        description=(
-                            f"Blocked {target.mention} from opening tickets"
-                            f" for {str(penalty_time)}."),
-                        color=discord.Color.red())
-                    emd2 = discord.Embed(
-                        title="Support Blocked",
-                        description=(
-                            "You have been blocked from opening tickets from"
-                            f" {target.guild.name} for {str(penalty_time)}."),
-                        color=discord.Color.red())
+                        raise exceptions.InvalidParameters("The support block role has not been set.\n"
+                                                           "This may be intentional.\n"
+                                                           "If not please set it up using the /settings.")
+                    await target.add_roles(discord.Object(member.guild.support_block))
+                    emd = discord.Embed(title="Success!",
+                                        description=(f"Blocked {target.mention} from opening tickets"
+                                                     f" for {str(penalty_time)}."),
+                                        color=discord.Color.red())
+                    emd2 = discord.Embed(title="Support Blocked",
+                                         description=("You have been blocked from opening tickets from"
+                                                      f" {target.guild.name} for {str(penalty_time)}."),
+                                         color=discord.Color.red())
                 else:
                     if member.guild.helping_block is None:
-                        raise exceptions.InvalidParameters(
-                            "The helping block role has not been set.\n"
-                            "This may be intentional.\n"
-                            "If not please set it up using the /settings.")
-                    await target.add_roles(
-                        discord.Object(member.guild.helping_block))
-                    emd = discord.Embed(
-                        title="Success!",
-                        description=(
-                            f"Blocked {target.mention} "
-                            f"from providing support for {str(penalty_time)}."),
-                        color=discord.Color.red())
-                    emd2 = discord.Embed(
-                        title="Community Support Blocked",
-                        description=("You have been blocked from providing "
-                                     f"support from {target.guild.name}"
-                                     f" for {str(penalty_time)}."),
-                        color=discord.Color.red())
+                        raise exceptions.InvalidParameters("The helping block role has not been set.\n"
+                                                           "This may be intentional.\n"
+                                                           "If not please set it up using the /settings.")
+                    await target.add_roles(discord.Object(member.guild.helping_block))
+                    emd = discord.Embed(title="Success!",
+                                        description=(f"Blocked {target.mention} "
+                                                     f"from providing support for {str(penalty_time)}."),
+                                        color=discord.Color.red())
+                    emd2 = discord.Embed(title="Community Support Blocked",
+                                         description=("You have been blocked from providing "
+                                                      f"support from {target.guild.name}"
+                                                      f" for {str(penalty_time)}."),
+                                         color=discord.Color.red())
                     if member.guild.strip_roles:
-                        roles = await confg.get_all_community_roles(
-                            interaction.guild_id)  # type: ignore
+                        roles = await confg.get_all_community_roles(interaction.guild_id)  # type: ignore
                         unpck = [discord.Object(rle.role_id) for rle in roles]
-                        await target.remove_roles(
-                            *unpck, reason="Community Support Blocked")
+                        await target.remove_roles(*unpck, reason="Community Support Blocked")
             await confg.commit()
         await interaction.followup.send(embed=emd, ephemeral=True)
         try:
