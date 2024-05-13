@@ -161,9 +161,10 @@ class TicketHandler(BotHandler):
                 self.finish()
                 return
             user = self._bt.get_user(user_id)
-            await events.Events.ticket_creation(self, db, (guild, gld), channel, user)
             self.set_status(200, "OK")
             self.finish()
+            await events.Events.ticket_creation(self, db, (guild, gld), channel, user)
+
 
 
 class OverrideHandler(BotHandler):
