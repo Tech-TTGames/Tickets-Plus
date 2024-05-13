@@ -182,7 +182,7 @@ class Overrides(commands.GroupCog, name="override", description="Owner override 
         """
         await ctx.response.defer(thinking=True)
         logging.info("Sending logs to %s...", str(ctx.user))
-        filename = f"bot.log{'.'+str(id_no) if id_no else ''}"
+        filename = f"bot.log{"."+str(id_no) if id_no else ""}"
         file_path = os.path.join(const.PROG_DIR, "log", filename)
         try:
             await ctx.user.send(file=discord.File(fp=file_path))

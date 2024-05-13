@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.11"]
+        python-version: ["3.12"]
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
@@ -20,7 +20,7 @@ jobs:
       uses: actions/cache@v3
       with:
         path: ~/.local  # the path depends on the OS
-        key: poetry-0  # increment to reset cache
+        key: poetry-1  # increment to reset cache
     - name: Install Poetry
       if: steps.cached-poetry.outputs.cache-hit != 'true'
       uses: snok/install-poetry@v1

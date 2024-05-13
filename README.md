@@ -52,10 +52,10 @@ Here are the steps to host your copy of [this bot.](https://github.com/Tech-TTGa
 
 1. Open the directory you want the project to be placed in.
 2. Use `git clone https://github.com/Tech-TTGames/Tickets-Plus.git` or download and unpack [the repo](https://github.com/Tech-TTGames/Tickets-Plus/archive/refs/heads/main.zip).
-3. Ensure that python3.11 is installed and available, same for pip.
+3. Ensure that python3.12 is installed and available, same for pip.
 4. Run `curl -sSL https://install.python-poetry.org | python3 -`. And follow instructions provided there.
    - Change some poetry settings as-needed. You can add the `--local` flag to set those settings only to the current directory
-      - `poetry config virtualenvs.in-project true` installs the virtual environment in the project, not in a poetry-specific location (recommended).
+     - `poetry config virtualenvs.in-project true` installs the virtual environment in the project, not in a poetry-specific location (recommended).
 5. Run `poetry install`
    - Depending on the DB used, add `-E pgsql` or `-E sqlite`
    - If you want development packages, add `--with dev`
@@ -63,17 +63,17 @@ Here are the steps to host your copy of [this bot.](https://github.com/Tech-TTGa
    1. Set up automatic PostgreSQL startup on [Linux](https://www.postgresql.org/docs/current/server-start.html) and for windows just start it via `services.msc`
    2. Set up user and database for the bot. `<FIELD>` are required and to be replaced with your stuff. [FIELD] are optional and can be ignored.
       - Linux:
-         1. `sudo -u postgres -i`
-         2. `createuser --pwprompt <dbuser>`
-            The prompt will ask you for a password for new user - `<dbpass>`.
-         3. `createdb -E UTF8 -O <dbuser> <dbname> [comment]`
-            `<dbuser>` being the same as in the previous step.
+        1. `sudo -u postgres -i`
+        2. `createuser --pwprompt <dbuser>`
+           The prompt will ask you for a password for new user - `<dbpass>`.
+        3. `createdb -E UTF8 -O <dbuser> <dbname> [comment]`
+           `<dbuser>` being the same as in the previous step.
       - Windows:
-         1. If the installed PostgreSQL bin isn't in PATH, use `cd` to go to the installation bin.
-         2. `createuser --pwprompt -U postgres <dbuser>`
-            The prompt will ask you for the password of the postgres user and the password for the new user - `<dbpass>`.
-         3. `createdb -E UTF8 -O <dbuser> -U postgres <dbname> [comment]`
-            `<dbuser>` being the same as in the previous step.
+        1. If the installed PostgreSQL bin isn't in PATH, use `cd` to go to the installation bin.
+        2. `createuser --pwprompt -U postgres <dbuser>`
+           The prompt will ask you for the password of the postgres user and the password for the new user - `<dbpass>`.
+        3. `createdb -E UTF8 -O <dbuser> -U postgres <dbname> [comment]`
+           `<dbuser>` being the same as in the previous step.
    3. Fill out config.json based on the database config environment. (refer to example_config.json)
       - Don't change “dbtype” unless you're using SQLite.
       - Unless you are using a remote server/changed config, don't touch “dbhost” and “dbport”.
@@ -100,9 +100,10 @@ Here are the steps to host your copy of [this bot.](https://github.com/Tech-TTGa
       - The path is just `/`.
 9. Copy your _main_ guild ID and paste it into config.json under "dev_guild_id". This will enable the dev commands in your server. (Required)
 10. Start your bot! Use `poetry run start` or after activating venv (if present) `python3 /tickets_plus/`
-   - Probably add a background service that will restart the bot on boot. _I use systemd for my bots._
-11. Finally send `<bot ping> sync` in the bot's DMs to sync / commands.
 
+- Probably add a background service that will restart the bot on boot. _I use systemd for my bots._
+
+11. Finally send `<bot ping> sync` in the bot's DMs to sync / commands.
 
 [^1]: This bot is not affiliated with the Tickets Bot team. When a feature is added to the main bot, any feature that is no longer needed will be discontinued here.
 [^0]: [Tech-TTGames](https://github.com/Tech-TTGames), I'm the only one here right now. I had some help in general, but I'm the only one who has done any coding. More people are welcome to join. I had help with organization and checking my code from [kk5dire](https://github.com/kk5dire) and [Ben Foster](https://github.com/benfoster04) with hosting and some documentation changes.
