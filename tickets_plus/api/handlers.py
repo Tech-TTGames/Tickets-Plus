@@ -166,7 +166,6 @@ class TicketHandler(BotHandler):
             await events.Events.ticket_creation(self, db, (guild, gld), channel, user)
 
 
-
 class OverrideHandler(BotHandler):
     """Basic messaging capabilities with the bot
 
