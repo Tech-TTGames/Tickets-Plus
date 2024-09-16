@@ -770,13 +770,13 @@ files = [
 
 [[package]]
 name = "pdoc"
-version = "14.6.0"
+version = "14.7.0"
 description = "API Documentation for Python Projects"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "pdoc-14.6.0-py3-none-any.whl", hash = "sha256:36c42c546a317d8e3e8c0b39645f24161374de0c7066ccaae76628d721e49ba5"},
-    {file = "pdoc-14.6.0.tar.gz", hash = "sha256:6e98a24c5e0ca5d188397969cf82581836eaef13f172fc3820047bfe15c61c9a"},
+    {file = "pdoc-14.7.0-py3-none-any.whl", hash = "sha256:72377a907efc6b2c5b3c56b717ef34f11d93621dced3b663f3aede0b844c0ad2"},
+    {file = "pdoc-14.7.0.tar.gz", hash = "sha256:2d28af9c0acc39180744ad0543e4bbc3223ecba0d1302db315ec521c51f71f93"},
 ]
 
 [package.dependencies]
@@ -1171,4 +1171,4 @@ sqlite = ["aiosqlite"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "6abd58be8b51c56f80567c9ebbd75d1c815e6e931963274f0c2f77378da581f5"
+content-hash = "d2b6315143fea1aa30f19902b5eeb7c5a546d5c58c567ea032c2b7eba878bfa6"
