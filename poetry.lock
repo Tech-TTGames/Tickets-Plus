@@ -160,13 +160,13 @@ tz = ["backports.zoneinfo"]
 
 [[package]]
 name = "astroid"
-version = "3.2.2"
+version = "3.3.3"
 description = "An abstract syntax tree for Python with inference support."
 optional = false
-python-versions = ">=3.8.0"
+python-versions = ">=3.9.0"
 files = [
-    {file = "astroid-3.2.2-py3-none-any.whl", hash = "sha256:e8a0083b4bb28fcffb6207a3bfc9e5d0a68be951dd7e336d5dcf639c682388c0"},
-    {file = "astroid-3.2.2.tar.gz", hash = "sha256:8ead48e31b92b2e217b6c9733a21afafe479d52d6e164dd25fb1a770c7c3cf94"},
+    {file = "astroid-3.3.3-py3-none-any.whl", hash = "sha256:2d79acfd3c594b6a2d4141fea98a1d62ab4a52e54332b1f1ddcf07b652cc5c0f"},
+    {file = "astroid-3.3.3.tar.gz", hash = "sha256:63f8c5370d9bad8294163c87b2d440a7fdf546be6c72bbeac0549c93244dbd72"},
 ]
 
 [[package]]
@@ -830,17 +830,17 @@ windows-terminal = ["colorama (>=0.4.6)"]
 
 [[package]]
 name = "pylint"
-version = "3.2.3"
+version = "3.3.0"
 description = "python code static checker"
 optional = false
-python-versions = ">=3.8.0"
+python-versions = ">=3.9.0"
 files = [
-    {file = "pylint-3.2.3-py3-none-any.whl", hash = "sha256:b3d7d2708a3e04b4679e02d99e72329a8b7ee8afb8d04110682278781f889fa8"},
-    {file = "pylint-3.2.3.tar.gz", hash = "sha256:02f6c562b215582386068d52a30f520d84fdbcf2a95fc7e855b816060d048b60"},
+    {file = "pylint-3.3.0-py3-none-any.whl", hash = "sha256:02dce1845f68974b9b03045894eb3bf05a8b3c7da9fd10af4de3c91e69eb92f1"},
+    {file = "pylint-3.3.0.tar.gz", hash = "sha256:c685fe3c061ee5fb0ce7c29436174ab84a2f525fce2a268b1986e921e083fe22"},
 ]
 
 [package.dependencies]
-astroid = ">=3.2.2,<=3.3.0-dev0"
+astroid = ">=3.3.3,<=3.4.0-dev0"
 colorama = {version = ">=0.4.5", markers = "sys_platform == \"win32\""}
 dill = {version = ">=0.3.7", markers = "python_version >= \"3.12\""}
 isort = ">=4.2.5,<5.13.0 || >5.13.0,<6"
@@ -1171,4 +1171,4 @@ sqlite = ["aiosqlite"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "6abd58be8b51c56f80567c9ebbd75d1c815e6e931963274f0c2f77378da581f5"
+content-hash = "0713a12cd88c1d5d592f1d5a70bc1e9d50d65374ec9da94bef15fba758ae6946"
