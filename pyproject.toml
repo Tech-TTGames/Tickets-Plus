@@ -28,7 +28,7 @@ database = ["asyncpg", "aiosqlite"]
 optional = true
 
 [tool.poetry.group.dev.dependencies]
-yapf = "^0.40.2"
+yapf = "^0.43.0"
 pylint = "^3.2.3"
 pdoc = "^14.6.0"
 
