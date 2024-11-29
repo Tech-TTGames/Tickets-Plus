@@ -179,7 +179,7 @@ async def start_bot(stat_data: config.MiniConfig = config.MiniConfig()) -> None:
             if tkn is None or tkn in frbddn:
                 raise ValueError("API Auth token not set.")
             logging.info("SSL cert and key loaded. Starting API...")
-            api_routes.listen(443, protocol="https", ssl_options=tls_ctx)
+            api_routes.listen(stat_data.getitem("https_port"), protocol="https", ssl_options=tls_ctx)
     # pylint: disable=broad-exception-caught # skipcq: PYL-W0718
     except Exception as exc:
         logging.exception("API setup failed. Aborting startup.")
