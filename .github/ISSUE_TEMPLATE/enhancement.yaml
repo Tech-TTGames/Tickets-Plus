@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thank you for suggesting an enhancement to Ticlets+! Please provide us with further information below so that we can better understand your request.
+        Thank you for suggesting an enhancement to Tickets+! Please provide us with further information below so that we can better understand your request.
 
   - type: textarea
     id: summary
