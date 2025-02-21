@@ -136,7 +136,7 @@ class Events(commands.Cog, name="Events"):
         if guild.strip_buttons and ticket_type.strpbuttns:
             await asyncio.sleep(5)
             async for msg in channel.history(oldest_first=True, limit=2):
-                if await confg.check_ticket_bot(msg.author.id, gld.id):
+                if await confg.check_ticket_bot(msg.author.id, gld.id) and msg.embeds:
                     await channel.send(embeds=msg.embeds)
                     await msg.delete()
         await confg.commit()
