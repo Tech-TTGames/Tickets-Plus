@@ -152,14 +152,14 @@ docs = ["sphinx (==8.1.3)", "sphinx-mdinclude (==0.6.1)"]
 
 [[package]]
 name = "alembic"
-version = "1.15.1"
+version = "1.16.1"
 description = "A database migration tool for SQLAlchemy."
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "alembic-1.15.1-py3-none-any.whl", hash = "sha256:197de710da4b3e91cf66a826a5b31b5d59a127ab41bd0fc42863e2902ce2bbbe"},
-    {file = "alembic-1.15.1.tar.gz", hash = "sha256:e1a1c738577bca1f27e68728c910cd389b9a92152ff91d902da649c192e30c49"},
+    {file = "alembic-1.16.1-py3-none-any.whl", hash = "sha256:0cdd48acada30d93aa1035767d67dff25702f8de74d7c3919f2e8492c8db2e67"},
+    {file = "alembic-1.16.1.tar.gz", hash = "sha256:43d37ba24b3d17bc1eb1024fe0f51cd1dc95aeb5464594a02c6bb9ca9864bfa4"},
 ]
 
 [package.dependencies]
@@ -1383,4 +1383,4 @@ sqlite = ["aiosqlite"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.12"
-content-hash = "ef6e912355b1c4853d9f7d357926fcaf9120b8138b6a49ff90461ee3226f1229"
+content-hash = "c2ffc80f759fd2a9445a2ffbcf387dd5fa693e10fb202eeb7fcc74a802f4e79d"
