@@ -124,7 +124,7 @@ class TagUtils(commands.GroupCog, name="tag", description="A for all your taggin
             mention: The user to mention.
             anon: Whether to send anonymously.
         """
-        await ctx.response.defer(ephemeral=False)
+        await ctx.response.defer(ephemeral=anon)
         if isinstance(ctx.channel, (
                 discord.ForumChannel,
                 discord.StageChannel,
