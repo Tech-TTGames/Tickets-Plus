@@ -11,7 +11,7 @@ exclude = ["branding"]
 [tool.poetry.dependencies]
 python = "^3.12"
 "discord.py" = "^2.5.2"
-SQLAlchemy = {extras = ["asyncio"], version = "^2.0.41"}
+SQLAlchemy = {extras = ["asyncio"], version = "^2.0.42"}
 alembic = {extras = ["tz"], version = "^1.16.1"}
 asyncpg = { version = "^0.30.0", optional = true }
 aiosqlite = { version = "^0.21.0", optional = true }
