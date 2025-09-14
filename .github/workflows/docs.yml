@@ -19,18 +19,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
-          python-version: '3.12'
-
+          python-version: '3.13'
       - name: Load cached Poetry installation
         id: cached-poetry
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.local  # the path depends on the OS
-          key: poetry-1  # increment to reset cache
+          key: poetry-2  # increment to reset cache
       - name: Install Poetry
         if: steps.cached-poetry.outputs.cache-hit != 'true'
         uses: snok/install-poetry@v1
@@ -42,7 +41,7 @@ jobs:
         run: poetry run pdoc tickets_plus -d google -e tickets_plus=https://github.com/Tech-TTGames/Tickets-Plus/tree/main/tickets_plus/ --footer-text "Tickets+ v0.1.0.0" -o ./docs/ --logo-link https://tickets-plus.techttgames.dev/ --logo https://raw.githubusercontent.com/Tech-TTGames/Tickets-Plus/main/branding/rounded.png -t ./pdoc/
 
       - name: Prep Pages
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: docs/
 

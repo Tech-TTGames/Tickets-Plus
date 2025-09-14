@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tickets-plus"
-version = "0.3.0.0a"
+version = "0.3.0.0b"
 description = "A companion bot adding some extensions to Tickets discord bot. Experimental."
 authors = ["Tech. TTGames <50541739+Tech-TTGames@users.noreply.github.com>"]
 license = "EPL-2.0"
@@ -9,8 +9,8 @@ packages = [{include = "tickets_plus"}]
 exclude = ["branding"]
 
 [tool.poetry.dependencies]
-python = "^3.12"
-"discord.py" = "^2.5.2"
+python = ">=3.12.8,<3.14"
+"discord.py" = "^2.6.3"
 SQLAlchemy = {extras = ["asyncio"], version = "^2.0.43"}
 alembic = {extras = ["tz"], version = "^1.16.5"}
 asyncpg = { version = "^0.30.0", optional = true }
