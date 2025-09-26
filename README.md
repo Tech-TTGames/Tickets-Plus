@@ -1,6 +1,7 @@
 # Welcome to Tickets+
-
-<img align="left" src="https://raw.githubusercontent.com/Tech-TTGames/Tickets-Plus/main/branding/rounded.png" height="200" width="200" alt="The Tickets Plus logo"/>
+<div class="github-only" style="display:none;">
+  <img align="left" src="https://raw.githubusercontent.com/Tech-TTGames/Tickets-Plus/main/branding/rounded.png" height="200" width="200" alt="The Tickets Plus logo"/>
+</div>
 
 [![CodeQL](https://github.com/Tech-TTGames/Tickets-Plus/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/Tech-TTGames/Tickets-Plus/actions/workflows/codeql.yml) [![Pylint](https://github.com/Tech-TTGames/Tickets-Plus/actions/workflows/pylint.yml/badge.svg?branch=main)](https://github.com/Tech-TTGames/Tickets-Plus/actions/workflows/pylint.yml) [![DeepSource](https://deepsource.io/gh/Tech-TTGames/Tickets-Plus.svg/?label=active+issues&show_trend=true&token=ourUeg696DFMDcZDoZi0ZqGn)](https://deepsource.io/gh/Tech-TTGames/Tickets-Plus/?ref=repository-badge) [![](https://shields.tosdr.org/en_9853.svg)](https://tosdr.org/en/service/9853)
 
@@ -110,4 +111,4 @@ Here are the steps to host your copy of [this bot.](https://github.com/Tech-TTGa
 [^2]: This setup assumes you have the main bot added to the server and configured. Support will not be provided to those who do not assume a likewise configuration.
 [^3]: Staff role defined in per-server settings.
 [^4]: Community roles defined in per-server settings.
-[^5]: Tickets bot defined in per-server settings.
+[^5]: Tickets bot defined in per-server settings. 
