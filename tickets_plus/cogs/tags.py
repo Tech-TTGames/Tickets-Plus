@@ -73,7 +73,7 @@ class TagUtils(commands.GroupCog, name="tag", description="A for all your taggin
             if len(choices) >= 25:
                 break
             if arg.lower() in tag.tag_name.lower():
-                choices.append(tag.tag_name)
+                choices.append(app_commands.Choice(name=tag.tag_name, value=tag.tag_name))
         return choices
 
     async def prep_tag(self, guild: int, tag: str, mention: Optional[discord.User]) -> Tuple[str, None | discord.Embed]:
