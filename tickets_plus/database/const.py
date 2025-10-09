@@ -25,7 +25,7 @@ import pathlib
 
 import discord
 
-VERSION = "v0.3.0.0b"
+VERSION = "v0.3.0.0c"
 """The current version of the bot as a string.
 
 FORMAT:

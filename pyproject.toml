@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tickets-plus"
-version = "0.3.0.0b"
+version = "0.3.0.0c"
 description = "A companion bot adding some extensions to Tickets discord bot. Experimental."
 authors = ["Tech. TTGames <50541739+Tech-TTGames@users.noreply.github.com>"]
 license = "EPL-2.0"
