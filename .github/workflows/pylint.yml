@@ -17,10 +17,10 @@ jobs:
       with:
         path: ~/.local  # the path depends on the OS
         key: poetry-3  # increment to reset cache
-    - name: Install Poetry
+    - name: Install Poetry (Cache MISS)
       if: steps.cached-poetry.outputs.cache-hit != 'true'
       run: pipx install poetry
-    - name: Install Poetry
+    - name: Install Poetry (Cache HIT)
       if: steps.cached-poetry.outputs.cache-hit == 'true'
       run: pipx ensurepath
     - name: Setup Python ${{ matrix.python-version }}
