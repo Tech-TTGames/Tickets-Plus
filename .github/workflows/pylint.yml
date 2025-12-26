@@ -20,6 +20,9 @@ jobs:
     - name: Install Poetry
       if: steps.cached-poetry.outputs.cache-hit != 'true'
       run: pipx install poetry
+    - name: Install Poetry
+      if: steps.cached-poetry.outputs.cache-hit == 'true'
+      run: pipx ensurepath
     - name: Setup Python ${{ matrix.python-version }}
       uses: actions/setup-python@v6
       with:
