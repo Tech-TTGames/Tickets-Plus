@@ -11,18 +11,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v6
-    - name: Load cached Poetry installation
-      id: cached-poetry
-      uses: actions/cache@v5
-      with:
-        path: ~/.local  # the path depends on the OS
-        key: poetry-3  # increment to reset cache
-    - name: Install Poetry (Cache MISS)
-      if: steps.cached-poetry.outputs.cache-hit != 'true'
+    - name: Install Poetry
       run: pipx install poetry
-    - name: Install Poetry (Cache HIT)
-      if: steps.cached-poetry.outputs.cache-hit == 'true'
-      run: pipx ensurepath
     - name: Setup Python ${{ matrix.python-version }}
       uses: actions/setup-python@v6
       with:
@@ -31,5 +21,4 @@ jobs:
     - name: Install poetry requirements
       run: poetry install --with dev
     - name: Analysing the code with pylint
-      run: |
-        poetry run pylint $(git ls-files '*.py') --fail-under 10
+      run: poetry run pylint . --fail-under 10
