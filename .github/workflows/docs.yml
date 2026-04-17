@@ -41,7 +41,7 @@ jobs:
         run: poetry run pdoc tickets_plus -d google -e tickets_plus=https://github.com/Tech-TTGames/Tickets-Plus/tree/main/tickets_plus/ --footer-text "Tickets+ v0.1.0.0" -o ./docs/ --logo-link https://tickets-plus.techttgames.dev/ --logo https://raw.githubusercontent.com/Tech-TTGames/Tickets-Plus/main/branding/rounded.png -t ./pdoc/
 
       - name: Prep Pages
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v5
         with:
           path: docs/
 
