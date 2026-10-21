@@ -1,46 +1,54 @@
-[tool.poetry]
+[project]
 name = "tickets-plus"
 version = "0.3.0.0c"
 description = "A companion bot adding some extensions to Tickets discord bot. Experimental."
-authors = ["Tech. TTGames <50541739+Tech-TTGames@users.noreply.github.com>"]
-license = "EPL-2.0"
+authors = [{ name = "Tech. TTGames", email = "50541739+Tech-TTGames@users.noreply.github.com" }]
+requires-python = ">=3.13,<3.14"
 readme = "README.md"
-packages = [{include = "tickets_plus"}]
-exclude = ["branding"]
+license = "EPL-2.0"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.13",
+]
+dependencies = [
+    "discord.py>=2.6.4,<3",
+    "SQLAlchemy[asyncio]>=2.0.44,<3",
+    "alembic[tz]>=1.17.2,<2",
+    "pynacl>=1.5.0,<2",
+    "tornado>=6.5,<7",
+    "tzdata>=2025.2,<2027",
+]
 
-[tool.poetry.dependencies]
-python = ">=3.12.8,<3.14"
-"discord.py" = "^2.6.4"
-SQLAlchemy = {extras = ["asyncio"], version = "^2.0.44"}
-alembic = {extras = ["tz"], version = "^1.17.2"}
-asyncpg = { version = "^0.31.0", optional = true }
-aiosqlite = { version = "^0.21.0", optional = true }
-pynacl = "^1.5.0"
-tornado = "^6.5"
-tzdata = "^2025.2"
+[project.optional-dependencies]
+sqlite = ["aiosqlite>=0.21.0,<0.22"]
+pgsql = ["asyncpg>=0.30.0,<0.31"]
+database = [
+    "asyncpg>=0.30.0,<0.31",
+    "aiosqlite>=0.21.0,<0.22",
+]
 
-[tool.poetry.extras]
-sqlite = ["aiosqlite"]
-pgsql = ["asyncpg"]
-database = ["asyncpg", "aiosqlite"]
-
-[tool.poetry.group.dev]
-optional = true
-
-[tool.poetry.group.dev.dependencies]
-yapf = "^0.43.0"
-pylint = "^4.0.4"
-pdoc = "^16.0.0"
-
-[tool.poetry.scripts]
+[project.scripts]
 start = "tickets_plus.__main__:main"
 migrate = "toolbox.migrate:main"
 nuke = "toolbox.nuke:main"
 
+[dependency-groups]
+dev = [
+    "yapf>=0.43.0,<0.44",
+    "pylint>=4.0.4,<5",
+    "pdoc>=16.0.0,<17",
+]
+
+[tool.uv.build-backend]
+module-name = ["tickets_plus"]
+module-root = ""
+source-exclude = ["branding"]
+wheel-exclude = ["branding"]
+
+[build-system]
+requires = ["uv_build>=0.13.4,<0.14.0"]
+build-backend = "uv_build"
+
 [tool.yapf]
 based_on_style = "google"
 column_limit = 120
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
