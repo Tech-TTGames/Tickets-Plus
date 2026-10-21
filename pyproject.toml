@@ -21,9 +21,9 @@ dependencies = [
 
 [project.optional-dependencies]
 sqlite = ["aiosqlite>=0.21.0,<0.23"]
-pgsql = ["asyncpg>=0.30.0,<0.31"]
+pgsql = ["asyncpg>=0.30.0,<0.33"]
 database = [
-    "asyncpg>=0.30.0,<0.31",
+    "asyncpg>=0.30.0,<0.33",
     "aiosqlite>=0.21.0,<0.23",
 ]
 

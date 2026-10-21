@@ -103,18 +103,19 @@ wheels = [
 
 [[package]]
 name = "asyncpg"
-version = "0.30.0"
+version = "0.32.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/2f/4c/7c991e080e106d854809030d8584e15b2e996e26f16aee6d757e387bc17d/asyncpg-0.30.0.tar.gz", hash = "sha256:c551e9928ab6707602f44811817f82ba3c446e018bfe1d3abecc8ba5f3eac851", size = 957746, upload-time = "2024-10-20T00:30:41.127Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/80/4e/59dc964f962f09e3ed472e5d2d3ba670a41a2be25080dc62ab3db507ff5e/asyncpg-0.32.0.tar.gz", hash = "sha256:45e64e56714d888330b884aad1dfb363d0bf43fb343e3d1a8968525f3bade478", size = 1075156, upload-time = "2026-10-06T20:32:40.251Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/3a/22/e20602e1218dc07692acf70d5b902be820168d6282e69ef0d3cb920dc36f/asyncpg-0.30.0-cp313-cp313-macosx_10_13_x86_64.whl", hash = "sha256:05b185ebb8083c8568ea8a40e896d5f7af4b8554b64d7719c0eaa1eb5a5c3a70", size = 670373, upload-time = "2024-10-20T00:29:55.165Z" },
-    { url = "https://files.pythonhosted.org/packages/3d/b3/0cf269a9d647852a95c06eb00b815d0b95a4eb4b55aa2d6ba680971733b9/asyncpg-0.30.0-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:c47806b1a8cbb0a0db896f4cd34d89942effe353a5035c62734ab13b9f938da3", size = 634745, upload-time = "2024-10-20T00:29:57.14Z" },
-    { url = "https://files.pythonhosted.org/packages/8e/6d/a4f31bf358ce8491d2a31bfe0d7bcf25269e80481e49de4d8616c4295a34/asyncpg-0.30.0-cp313-cp313-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:9b6fde867a74e8c76c71e2f64f80c64c0f3163e687f1763cfaf21633ec24ec33", size = 3512103, upload-time = "2024-10-20T00:29:58.499Z" },
-    { url = "https://files.pythonhosted.org/packages/96/19/139227a6e67f407b9c386cb594d9628c6c78c9024f26df87c912fabd4368/asyncpg-0.30.0-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:46973045b567972128a27d40001124fbc821c87a6cade040cfcd4fa8a30bcdc4", size = 3592471, upload-time = "2024-10-20T00:30:00.354Z" },
-    { url = "https://files.pythonhosted.org/packages/67/e4/ab3ca38f628f53f0fd28d3ff20edff1c975dd1cb22482e0061916b4b9a74/asyncpg-0.30.0-cp313-cp313-musllinux_1_2_aarch64.whl", hash = "sha256:9110df111cabc2ed81aad2f35394a00cadf4f2e0635603db6ebbd0fc896f46a4", size = 3496253, upload-time = "2024-10-20T00:30:02.794Z" },
-    { url = "https://files.pythonhosted.org/packages/ef/5f/0bf65511d4eeac3a1f41c54034a492515a707c6edbc642174ae79034d3ba/asyncpg-0.30.0-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:04ff0785ae7eed6cc138e73fc67b8e51d54ee7a3ce9b63666ce55a0bf095f7ba", size = 3662720, upload-time = "2024-10-20T00:30:04.501Z" },
-    { url = "https://files.pythonhosted.org/packages/e7/31/1513d5a6412b98052c3ed9158d783b1e09d0910f51fbe0e05f56cc370bc4/asyncpg-0.30.0-cp313-cp313-win32.whl", hash = "sha256:ae374585f51c2b444510cdf3595b97ece4f233fde739aa14b50e0d64e8a7a590", size = 560404, upload-time = "2024-10-20T00:30:06.537Z" },
-    { url = "https://files.pythonhosted.org/packages/c8/a4/cec76b3389c4c5ff66301cd100fe88c318563ec8a520e0b2e792b5b84972/asyncpg-0.30.0-cp313-cp313-win_amd64.whl", hash = "sha256:f59b430b8e27557c3fb9869222559f7417ced18688375825f8f12302c34e915e", size = 621623, upload-time = "2024-10-20T00:30:09.024Z" },
+    { url = "https://files.pythonhosted.org/packages/6a/ee/b6b5870b51e004880d9a216313ea7d4f180961c5869f32e58e8cb9b71e96/asyncpg-0.32.0-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:c032869fd9c3c9fd1a86ad67e53f63906159068087c2674dd1e19be3cffff571", size = 683362, upload-time = "2026-10-06T20:31:08.078Z" },
+    { url = "https://files.pythonhosted.org/packages/d8/8b/1f450742bc6eab0c015cae26aef94fac2ff29433e3f18a019126c3912c49/asyncpg-0.32.0-cp313-cp313-macosx_11_0_x86_64.whl", hash = "sha256:0c764dce865b41878396e736d4d2c6c6ce3a8e1b61d1f6bb292e30d265ae7ca6", size = 706652, upload-time = "2026-10-06T20:31:09.524Z" },
+    { url = "https://files.pythonhosted.org/packages/05/dc/13f3c0ef7e867bafdccd470e5cfae1f2fd9a7085c771546bd4b94018e043/asyncpg-0.32.0-cp313-cp313-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:925ce1cc54419d468bfb77632d91e5e2be5be0fdf9d43680c68fe7cedf87051a", size = 3698244, upload-time = "2026-10-06T20:31:10.894Z" },
+    { url = "https://files.pythonhosted.org/packages/1f/64/b00ef3fc0d861c28a1937f08d2c7f6e6119c152b414d50fa800c3aee83b5/asyncpg-0.32.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:4cec40b66a36b14921c155db78631cd96ed00e225fdf38dd5532e9aef350a498", size = 3801314, upload-time = "2026-10-06T20:31:12.964Z" },
+    { url = "https://files.pythonhosted.org/packages/de/1b/215067d97a13206ce1565da920ddbefe5a1e5f89903e6de862fdd0a034a1/asyncpg-0.32.0-cp313-cp313-musllinux_1_2_aarch64.whl", hash = "sha256:1fba43a9a230ce4d2b4593b761b8e03630c613c282b24566e27c7f53695273b1", size = 3598650, upload-time = "2026-10-06T20:31:14.797Z" },
+    { url = "https://files.pythonhosted.org/packages/37/45/2bfcb5c9b04df3f17fd367647c9f3ee9fe64ea0612b509a6b1832afcedae/asyncpg-0.32.0-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:c7a8f7fa8304f757e23cccb8ffef6a6fce0b6320ffc565a884ee3cd0dfad1ac5", size = 3762739, upload-time = "2026-10-06T20:31:17.186Z" },
+    { url = "https://files.pythonhosted.org/packages/08/45/e6b37756e6c8979fe070e9821654244f38319493f5b0589e549d9a40c001/asyncpg-0.32.0-cp313-cp313-win32.whl", hash = "sha256:d809399022e244eb86bb532a4ae9a45746e0f6dc5154fd6aa2f6ad63fa3f5373", size = 551065, upload-time = "2026-10-06T20:31:18.812Z" },
+    { url = "https://files.pythonhosted.org/packages/ee/46/0a4e92f4310da644b28595b22ef2fff1ffd3dab84953dc8b4c5eef72b764/asyncpg-0.32.0-cp313-cp313-win_amd64.whl", hash = "sha256:38640b106705fef8b0f46cdb5fd9dcf6a638eed5cadb0f441714a21405ca8a0a", size = 625571, upload-time = "2026-10-06T20:31:20.571Z" },
+    { url = "https://files.pythonhosted.org/packages/35/f4/48ed4b580b99b1fabc480c707229bb8f1e4ba0f5b24a50822b339efe1e48/asyncpg-0.32.0-cp313-cp313-win_arm64.whl", hash = "sha256:d78145adedfe51dc2fda623e6602cf816dabc2eafcff693bd50484321a1c9034", size = 576342, upload-time = "2026-10-06T20:31:22.29Z" },
 ]
 
 [[package]]
@@ -591,8 +592,8 @@ requires-dist = [
     { name = "aiosqlite", marker = "extra == 'database'", specifier = ">=0.21.0,<0.23" },
     { name = "aiosqlite", marker = "extra == 'sqlite'", specifier = ">=0.21.0,<0.23" },
     { name = "alembic", extras = ["tz"], specifier = ">=1.17.2,<2" },
-    { name = "asyncpg", marker = "extra == 'database'", specifier = ">=0.30.0,<0.31" },
-    { name = "asyncpg", marker = "extra == 'pgsql'", specifier = ">=0.30.0,<0.31" },
+    { name = "asyncpg", marker = "extra == 'database'", specifier = ">=0.30.0,<0.33" },
+    { name = "asyncpg", marker = "extra == 'pgsql'", specifier = ">=0.30.0,<0.33" },
     { name = "discord-py", specifier = ">=2.6.4,<3" },
     { name = "pynacl", specifier = ">=1.5.0,<2" },
     { name = "sqlalchemy", extras = ["asyncio"], specifier = ">=2.0.44,<3" },
