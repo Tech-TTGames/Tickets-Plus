@@ -19,12 +19,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
-
+        uses: actions/checkout@main
       - name: Install uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@v10.3.1
         with:
           enable-cache: true
+          cache-python: true
 
       - name: Setup Python and reqs
         run: uv sync --dev
@@ -34,7 +34,7 @@ jobs:
         run: uv run pdoc tickets_plus -d google -e tickets_plus=https://github.com/Tech-TTGames/Tickets-Plus/tree/main/tickets_plus/ --footer-text "Tickets+ v0.2.0.0" -o ./docs/ --logo-link https://tickets-plus.techttgames.dev/ --logo https://raw.githubusercontent.com/Tech-TTGames/Tickets-Plus/main/branding/rounded.png -t ./pdoc/
 
       - name: Prep Pages
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@main
         with:
           path: docs/
 
@@ -51,4 +51,4 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@main
